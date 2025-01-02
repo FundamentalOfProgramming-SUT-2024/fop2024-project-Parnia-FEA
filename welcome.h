@@ -9,14 +9,14 @@
 void welcome_menu();
 
 void welcome_menu() {
-    ITEM **items;
-    ITEM *cur_item;
-	int c, i;				
+    ITEM **items;			
 	MENU *my_menu;
+    int c, i;
     char *choices[] = {"Create Account", "Log In"};
+    char *choices_numbers[] = {" ", " "};
     items = (ITEM **)calloc(3, sizeof(ITEM *));
     for(i = 0; i < 2; ++i) {       
-        items[i] = new_item(choices[i], choices[i]);
+        items[i] = new_item(choices_numbers[i], choices[i]);
 	}
 	items[2] = (ITEM *)NULL;
 	my_menu = new_menu((ITEM **)items);
