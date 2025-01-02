@@ -1,6 +1,7 @@
 #include <curses.h>
 #include <form.h>
 #include <string.h>
+#include <ctype.h>
 
 #define MAX_SIZE 50
 #define LENGTH 214
@@ -28,8 +29,9 @@ int main() {
 
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_CYAN, COLOR_BLACK);
+    init_pair(3, COLOR_GREEN, COLOR_BLACK);
 
-    create_account_menu(1, 1, 1, 1);
+    create_account_menu(0, 0, 0, 0);
     endwin();
     return 0;
 }
@@ -65,8 +67,10 @@ void create_account_menu(int is_username, int length_password, int is_password, 
         mvprintw(line_number, 87,"The email must have the format xxx@y.zzz");
     }
     attroff(COLOR_PAIR(1));
-    attron(COLOR_PAIR(2));
+    attron(COLOR_PAIR(3));
     mvprintw(31, 101, "Create Account");
+    attroff(COLOR_PAIR(3));
+    attron(COLOR_PAIR(2));
     mvprintw(32, 95, "Username :");
     mvprintw(33, 95, "Password :");
     mvprintw(34, 95, "Email Address :");
@@ -120,6 +124,15 @@ void create_account_menu(int is_username, int length_password, int is_password, 
     if (is_username || length_password || is_password || is_email) {
         create_account_menu(is_username, length_password, is_password, is_email);
     }
+    else {
+        attron(COLOR_PAIR(2));
+        mvprintw(33, 85,"Sign Up was successful. Now you Can Log in to the game.");
+        attroff(COLOR_PAIR(2));
+        FILE *users;
+        users = fopen("users.txt", "a");
+        fprintf(users, "\n%s\n%s\n%s\n", entered_username, entered_password, entered_email);
+        fclose(users);
+    }
     while (true) {
         char c = getch();
         if (c == 'q')
@@ -135,17 +148,78 @@ void add_char(char *array, int ch) {
 }
 
 int check_username(char *array) {
+    FILE *users;
+    users = fopen("users.txt", "r");
+    char line[MAX_SIZE];
+    int line_number = 0;
+    while (fgets(line, MAX_SIZE, users)) {
+        if(line_number % 4 == 1) {
+            line[strlen(line)-1] = '\0';
+            if (strcmp(array, line) == 0) {
+                fclose(users);
+                return 1;
+            }
+        }
+        line_number++;
+    }
+    fclose(users);
     return 0;
 }
 
 int check_length_password(char *array) {
-    return 0;
+    if (strlen(array) >= 7)
+        return 0;
+    return 1;
 }
 
 int check_password(char *array) {
-    return 0;
+    int flag_digit = 0;
+    int flag_small_ch = 0;
+    int flag_capital_ch = 0;
+    for (int i = 0; i < strlen(array); i++) {
+        if (isdigit(array[i])) {
+            flag_digit = 1;
+        }
+        if (islower(array[i])) {
+            flag_small_ch = 1;
+        }
+        if (isupper(array[i])) {
+            flag_capital_ch = 1;
+        }
+    }
+    if (flag_digit && flag_small_ch && flag_capital_ch)
+        return 0;
+    return 1;
 }
 
 int check_email(char *array) {
-    return 0;
+    int cnt = 0;
+    int idx = -1;
+    for (int i = 0; i < strlen(array); i++) {
+        if (array[i] == '@') {
+            cnt++;
+            idx = i;
+        }
+    }
+    if (cnt == 1) {
+        int cnt2 = 0;
+        int idx2 = -1;
+        for (int i = idx+1; i < strlen(array); i++) {
+            if (array[i] == '.') {
+                cnt2++;
+                idx2 = i;
+            }
+        }
+        if (cnt2 == 1) {
+            if (idx2 == idx + 1 || idx == 0 || idx2 == strlen(array) - 1)
+                return 1;
+            for (int i = 0; i < strlen(array); i++) {
+                if (i != idx && i != idx2 && !isalpha(array[i])) {
+                    return 1;
+                }
+            }
+            return 0;
+        }
+    }
+    return 1;
 }
