@@ -107,10 +107,12 @@ void create_account_menu(int is_username, int length_password, int is_password, 
         attron(COLOR_PAIR(2));
         mvprintw(33, 85,"Sign Up was successful. Now you Can Log in to the game.");
         attroff(COLOR_PAIR(2));
+        refresh();
         FILE *users;
         users = fopen("users.txt", "a");
         fprintf(users, "\n%s\n%s\n%s\n", entered_username, entered_password, entered_email);
         fclose(users);
+        sleep(5);
         return;
     }
 }

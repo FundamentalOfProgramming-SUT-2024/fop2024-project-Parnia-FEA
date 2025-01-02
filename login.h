@@ -2,6 +2,9 @@
 #include <form.h>
 #include <string.h>
 #include <ctype.h>
+#include <unistd.h>
+#include "user.h"
+#include "game-menu.h"
 
 #define MAX_SIZE 50
 
@@ -80,7 +83,8 @@ void login_menu(int is_username, int is_password) {
         login_menu(1, 0);
     }
     else {
-        is_password = check_password_correct(entered_username, entered_password);
+        char entered_email[MAX_SIZE];
+        is_password = check_password_correct(entered_username, entered_password, entered_email);
         if (is_password) {
             login_menu(0, 1);
             return;
@@ -89,6 +93,13 @@ void login_menu(int is_username, int is_password) {
             attron(COLOR_PAIR(2));
             mvprintw(33, 107 - ((strlen(entered_username)+8)/2),"Welcome %s", entered_username);
             attroff(COLOR_PAIR(2));
+            sleep(5);
+            User *user;
+            strcpy(user->username, entered_username);
+            strcpy(user->password, entered_password);
+            strcpy(user->email, entered_email);
+            game_menu(user);
+            login_menu(0, 0);
         }
     }
 }
@@ -117,7 +128,7 @@ int has_username(char *entered_username) {
     return 1;
 }
 
-int check_password_correct(char *entered_username, char *entered_password) {
+int check_password_correct(char *entered_username, char *entered_password, char *entered_email) {
     FILE *users;
     users = fopen("users.txt", "r");
     char line[MAX_SIZE];
@@ -128,11 +139,15 @@ int check_password_correct(char *entered_username, char *entered_password) {
             if (strcmp(entered_username, line) == 0) {
                 fgets(line, MAX_SIZE, users);
                 line[strlen(line)-1] = '\0';
-                fclose(users);
                 if (strcmp(entered_password, line) == 0) {
+                    fgets(line, MAX_SIZE, users);
+                    line[strlen(line)-1] = '\0';
+                    strcpy(entered_email, line);
+                    fclose(users);
                     return 0;
                 }
                 else {
+                    fclose(users);
                     return 1;
                 }
             }
