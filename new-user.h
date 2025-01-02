@@ -4,14 +4,6 @@
 #include <ctype.h>
 
 #define MAX_SIZE 50
-#define LENGTH 214
-#define WIDTH 66
-
-typedef struct {
-    char username[MAX_SIZE];
-    char password[MAX_SIZE];
-    char email[MAX_SIZE];
-} User;
 
 void create_account_menu(int, int, int, int);
 void add_char(char *, int);
@@ -19,22 +11,6 @@ int check_username(char *);
 int check_length_password(char *);
 int check_password(char *);
 int check_email(char *);
-
-int main() {
-    initscr();
-    cbreak();
-	noecho();
-    keypad(stdscr, TRUE);
-    start_color();
-
-    init_pair(1, COLOR_RED, COLOR_BLACK);
-    init_pair(2, COLOR_CYAN, COLOR_BLACK);
-    init_pair(3, COLOR_GREEN, COLOR_BLACK);
-
-    create_account_menu(0, 0, 0, 0);
-    endwin();
-    return 0;
-}
 
 void create_account_menu(int is_username, int length_password, int is_password, int is_email) {
     FIELD *field[4];
@@ -74,6 +50,7 @@ void create_account_menu(int is_username, int length_password, int is_password, 
     mvprintw(32, 95, "Username :");
     mvprintw(33, 95, "Password :");
     mvprintw(34, 95, "Email Address :");
+    mvprintw(LINES - 2, 0, "Press F1 to return to the previous menu.");
     mvprintw(32, 105, " ");
     attroff(COLOR_PAIR(2));
     refresh();
@@ -83,7 +60,7 @@ void create_account_menu(int is_username, int length_password, int is_password, 
     entered_password[0] = '\0';
     entered_email[0] = '\0';
     int flag = 0;
-    while((ch = getch()) != '\n') {	
+    while((ch = getch()) != '\n' && ch != KEY_F(1)) {	
         switch(ch) {	
             case KEY_DOWN:
 				form_driver(new_account, REQ_NEXT_FIELD);
@@ -116,6 +93,8 @@ void create_account_menu(int is_username, int length_password, int is_password, 
 	free_field(field[0]);
 	free_field(field[1]);
     free_field(field[2]);
+    if (ch == KEY_F(1))
+        return;
     //if it's ok the returned value will be 0. Else it will be 1.
     is_username = check_username(entered_username);
     length_password = check_length_password(entered_password);
@@ -132,13 +111,7 @@ void create_account_menu(int is_username, int length_password, int is_password, 
         users = fopen("users.txt", "a");
         fprintf(users, "\n%s\n%s\n%s\n", entered_username, entered_password, entered_email);
         fclose(users);
-    }
-    while (true) {
-        char c = getch();
-        if (c == 'q')
-            break;
-        if (c == 'c')
-            clear();
+        return;
     }
 }
 

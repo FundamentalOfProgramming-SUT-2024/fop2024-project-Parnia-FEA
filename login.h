@@ -4,35 +4,11 @@
 #include <ctype.h>
 
 #define MAX_SIZE 50
-#define LENGTH 214
-#define WIDTH 66
-
-typedef struct {
-    char username[MAX_SIZE];
-    char password[MAX_SIZE];
-    char email[MAX_SIZE];
-} User;
 
 void login_menu(int, int);
-void add_char(char *, int);
+void add_char1(char *, int);
 int has_username(char *);
 int check_password_correct(char *, char *);
-
-int main() {
-    initscr();
-    cbreak();
-	noecho();
-    keypad(stdscr, TRUE);
-    start_color();
-
-    init_pair(1, COLOR_RED, COLOR_BLACK);
-    init_pair(2, COLOR_CYAN, COLOR_BLACK);
-    init_pair(3, COLOR_GREEN, COLOR_BLACK);
-
-    login_menu(0, 0);
-    endwin();
-    return 0;
-}
 
 void login_menu(int is_username, int is_password) {
     FIELD *field[3];
@@ -59,6 +35,7 @@ void login_menu(int is_username, int is_password) {
     attron(COLOR_PAIR(2));
     mvprintw(33, 95, "Username :");
     mvprintw(34, 95, "Password :");
+    mvprintw(LINES - 2, 0, "Press F1 to return to the previous menu.");
     mvprintw(33, 105, " ");
     attroff(COLOR_PAIR(2));
     refresh();
@@ -67,7 +44,7 @@ void login_menu(int is_username, int is_password) {
     entered_username[0] = '\0';
     entered_password[0] = '\0';
     int flag = 0;
-    while((ch = getch()) != '\n') {	
+    while((ch = getch()) != '\n' && ch != KEY_F(1)) {	
         switch(ch) {	
             case KEY_DOWN:
 				form_driver(login, REQ_NEXT_FIELD);
@@ -83,10 +60,10 @@ void login_menu(int is_username, int is_password) {
 				form_driver(login, ch);
                 switch(flag) {
                     case 0:
-                        add_char(entered_username, ch);
+                        add_char1(entered_username, ch);
                         break;
                     case 1:
-                        add_char(entered_password, ch);
+                        add_char1(entered_password, ch);
                         break;
                 }
 				break;
@@ -96,6 +73,8 @@ void login_menu(int is_username, int is_password) {
 	free_form(login);
 	free_field(field[0]);
 	free_field(field[1]);
+    if (ch == KEY_F(1))
+        return;
     is_username = has_username(entered_username);
     if (is_username) {
         login_menu(1, 0);
@@ -112,16 +91,9 @@ void login_menu(int is_username, int is_password) {
             attroff(COLOR_PAIR(2));
         }
     }
-    while (true) {
-        char c = getch();
-        if (c == 'q')
-            break;
-        if (c == 'c')
-            clear();
-    }
 }
 
-void add_char(char *array, int ch) {
+void add_char1(char *array, int ch) {
     char c[2] = {(char) ch, '\0'};
     strcat(array, c);
 }
