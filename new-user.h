@@ -105,13 +105,13 @@ void create_account_menu(int is_username, int length_password, int is_password, 
         create_account_menu(is_username, length_password, is_password, is_email);
     }
     else {
-        attron(COLOR_PAIR(2));
+        attron(COLOR_PAIR(2) | A_BLINK);
         mvprintw(33, 85,"Sign Up was successful. Now you Can Log in to the game.");
-        attroff(COLOR_PAIR(2));
+        attroff(COLOR_PAIR(2) | A_BLINK);
         refresh();
         FILE *users;
         users = fopen("users.txt", "a");
-        fprintf(users, "\n%s\n%s\n%s\n", entered_username, entered_password, entered_email);
+        fprintf(users, "{\n%s\n%s\n%s\n}\n", entered_username, entered_password, entered_email);
         fclose(users);
         sleep(5);
         return;
@@ -127,16 +127,15 @@ int check_username(char *array) {
     FILE *users;
     users = fopen("users.txt", "r");
     char line[MAX_SIZE];
-    int line_number = 0;
     while (fgets(line, MAX_SIZE, users)) {
-        if(line_number % 4 == 1) {
+        if (strcmp(line, "{\n") == 0) {
+            fgets(line, MAX_SIZE, users);
             line[strlen(line)-1] = '\0';
             if (strcmp(array, line) == 0) {
                 fclose(users);
                 return 1;
             }
         }
-        line_number++;
     }
     fclose(users);
     return 0;
