@@ -1,7 +1,9 @@
+#ifndef WELCOME_H
+#define WELCOME_H
 #include <curses.h>
 #include <menu.h>
 #include <stdlib.h>
-#include "new-user.h"
+#include "new_user.h"
 #include "login.h"
 
 #define MAX_SIZE 50
@@ -9,8 +11,10 @@
 void welcome_menu();
 
 void welcome_menu() {
-    ITEM **items;			
+    clear();
+	ITEM **items;			
 	MENU *my_menu;
+	WINDOW *menu_win;
     int c, i;
     char *choices[] = {"Create Account", "Log In"};
     char *choices_numbers[] = {" ", " "};
@@ -20,13 +24,20 @@ void welcome_menu() {
 	}
 	items[2] = (ITEM *)NULL;
 	my_menu = new_menu((ITEM **)items);
-
+	menu_win = newwin(2, 40, 32, 100);
+	keypad(menu_win, TRUE);
+	set_menu_win(my_menu, menu_win);
+	set_menu_sub(my_menu, derwin(menu_win, 2, 40, 0, 0));
 	mvprintw(LINES - 3, 0, "Press <ENTER> to see the option selected");
 	mvprintw(LINES - 2, 0, "Up and Down arrow keys to navigate (F1 to Exit)");
-	post_menu(my_menu);
+	attron(COLOR_PAIR(2) | A_BLINK);
+	mvprintw(29, 104, "WELCOME!");
+	attroff(COLOR_PAIR(2) | A_BLINK);
 	refresh();
+	post_menu(my_menu);
+	wrefresh(menu_win);
 	int flag = 0;
-	while((c = getch()) != KEY_F(1)) {       
+	while((c = wgetch(menu_win)) != KEY_F(1)) {       
         switch(c) {	
             case KEY_DOWN:
 				menu_driver(my_menu, REQ_DOWN_ITEM);
@@ -67,3 +78,5 @@ void welcome_menu() {
 		free_item(items[i]);
 	free_menu(my_menu);
 }
+
+#endif

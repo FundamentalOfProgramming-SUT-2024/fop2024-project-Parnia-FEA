@@ -1,22 +1,26 @@
+#ifndef GAME_MENU_H
+#define GAME_MENU_H
 #include <curses.h>
 #include <menu.h>
 #include <string.h>
 #include <stdlib.h>
-#include "create-new-game.h"
-#include "continue-game.h"
-#include "score-board.h"
+#include "create_new_game.h"
+#include "continue_game.h"
+#include "scoreboard.h"
 #include "setting.h"
 #include "user.h"
 
 #define MAX_SIZE 50
 
-void game_menu(User *user) {
+void game_menu_func(User *user) {
+	clear();
     ITEM **items;			
 	MENU *my_menu;
+	WINDOW *menu_win;
     int c, i;
     char *choices[] = {"New Game", "Continue Game", "Score Board", "Settings"};
     char *choices_numbers[] = {" ", " ", " ", " "};
-    void (*func[4]) (User *) = {create_new_game, continue_game, show_score_board, show_settings};
+    void (*func[4]) (User *) = {create_new_game_func, continue_game_func, show_score_board, show_settings};
     items = (ITEM **)calloc(5, sizeof(ITEM *));
     for(i = 0; i < 4; ++i) {       
         items[i] = new_item(choices_numbers[i], choices[i]);
@@ -24,11 +28,18 @@ void game_menu(User *user) {
 	}
 	items[4] = (ITEM *)NULL;
 	my_menu = new_menu((ITEM **)items);
-
+	menu_win = newwin(4, 40, 32, 100);
+	keypad(menu_win, TRUE);
+	set_menu_win(my_menu, menu_win);
+	set_menu_sub(my_menu, derwin(menu_win, 4, 40, 0, 0));
 	mvprintw(LINES - 3, 0, "Press <ENTER> to see the option selected");
 	mvprintw(LINES - 2, 0, "Up and Down arrow keys to navigate (F1 to Log Out)");
-	post_menu(my_menu);
+	attron(COLOR_PAIR(1) | A_BLINK);
+	mvprintw(29, 104, "WELCOME!");
+	attroff(COLOR_PAIR(1) | A_BLINK);
 	refresh();
+	post_menu(my_menu);
+	wrefresh(menu_win);
 
 	while((c = getch()) != KEY_F(1)) {       
         switch(c) {	
@@ -56,3 +67,5 @@ void game_menu(User *user) {
 		free_item(items[i]);
 	free_menu(my_menu);
 }
+
+#endif

@@ -1,19 +1,22 @@
+#ifndef LOGIN_H
+#define LOGIN_H
 #include <curses.h>
 #include <form.h>
 #include <string.h>
 #include <ctype.h>
 #include <unistd.h>
 #include "user.h"
-#include "game-menu.h"
+#include "game_menu.h"
 
 #define MAX_SIZE 50
 
 void login_menu(int, int);
 void add_char1(char *, int);
-int has_username(char *);
-int check_password_correct(char *, char *, char *);
+int has_username(char *, char *, char *);
+int check_password_correct(char *, char *);
 
 void login_menu(int is_username, int is_password) {
+    clear();
     FIELD *field[3];
     FORM  *login;
     field[0] = new_field(1, MAX_SIZE-1, 33, 106, 0, 0);
@@ -38,9 +41,9 @@ void login_menu(int is_username, int is_password) {
     attron(COLOR_PAIR(2));
     mvprintw(33, 95, "Username :");
     mvprintw(34, 95, "Password :");
+    attroff(COLOR_PAIR(2));
     mvprintw(LINES - 2, 0, "Press F1 to return to the previous menu.");
     mvprintw(33, 105, " ");
-    attroff(COLOR_PAIR(2));
     refresh();
     int ch;
     char entered_username[MAX_SIZE], entered_password[MAX_SIZE];
@@ -78,13 +81,13 @@ void login_menu(int is_username, int is_password) {
 	free_field(field[1]);
     if (ch == KEY_F(1))
         return;
-    is_username = has_username(entered_username);
+    char file_password[MAX_SIZE], file_email[MAX_SIZE];
+    is_username = has_username(entered_username, file_password, file_email);
     if (is_username) {
         login_menu(1, 0);
     }
     else {
-        char entered_email[MAX_SIZE];
-        is_password = check_password_correct(entered_username, entered_password, entered_email);
+        is_password = check_password_correct(entered_password, file_password);
         if (is_password) {
             login_menu(0, 1);
             return;
@@ -100,8 +103,8 @@ void login_menu(int is_username, int is_password) {
             User *user_ptr = &user;
             strcpy(user_ptr->username, entered_username);
             strcpy(user_ptr->password, entered_password);
-            strcpy(user_ptr->email, entered_email);
-            game_menu(user_ptr);
+            strcpy(user_ptr->email, file_email);
+            game_menu_func(user_ptr);
             login_menu(0, 0);
         }
     }
@@ -112,52 +115,34 @@ void add_char1(char *array, int ch) {
     strcat(array, c);
 }
 
-int has_username(char *entered_username) {
+int has_username(char *entered_username, char *file_password, char *file_email) {
     FILE *users;
     users = fopen("users.txt", "r");
     char line[MAX_SIZE];
-    int line_number = 0;
     while (fgets(line, MAX_SIZE, users)) {
-        if(line_number % 4 == 1) {
+        if (strcmp(line, "{\n") == 0) {
+            fgets(line, MAX_SIZE, users);
             line[strlen(line)-1] = '\0';
             if (strcmp(entered_username, line) == 0) {
+                fgets(line, MAX_SIZE, users);
+                line[strlen(line)-1] = '\0';
+                strcpy(file_password, line);
+                fgets(line, MAX_SIZE, users);
+                line[strlen(line)-1] = '\0';
+                strcpy(file_email, line);
                 fclose(users);
                 return 0;
             }
         }
-        line_number++;
     }
     fclose(users);
     return 1;
 }
 
-int check_password_correct(char *entered_username, char *entered_password, char *entered_email) {
-    FILE *users;
-    users = fopen("users.txt", "r");
-    char line[MAX_SIZE];
-    int line_number = 0;
-    while (fgets(line, MAX_SIZE, users)) {
-        if(line_number % 4 == 1) {
-            line[strlen(line)-1] = '\0';
-            if (strcmp(entered_username, line) == 0) {
-                fgets(line, MAX_SIZE, users);
-                line[strlen(line)-1] = '\0';
-                if (strcmp(entered_password, line) == 0) {
-                    //mvprintw(1, 1, "done");
-                    fgets(line, MAX_SIZE, users);
-                    line[strlen(line)-1] = '\0';
-                    strcpy(entered_email, line);
-                    fclose(users);
-                    return 0;
-                }
-                else {
-                    fclose(users);
-                    return 1;
-                }
-            }
-        }
-        line_number++;
-    }
-    fclose(users);
+int check_password_correct(char *entered_password, char *file_password) {
+    if (strcmp(entered_password, file_password) == 0)
+        return 0;
     return 1;
 }
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef SCOREBOARD_H
+#define SCOREBOARD_H
 #include <curses.h>
 #include "user.h"
 
@@ -6,3 +8,5 @@
 void show_score_board (User *user) {
 
 }
+
+#endif

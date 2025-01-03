@@ -1,3 +1,5 @@
+#ifndef NEW_USER_H
+#define NEW_USER_H
 #include <curses.h>
 #include <form.h>
 #include <string.h>
@@ -14,6 +16,7 @@ int check_password(char *);
 int check_email(char *);
 
 void create_account_menu(int is_username, int length_password, int is_password, int is_email) {
+    clear();
     FIELD *field[4];
     FORM  *new_account;
     field[0] = new_field(1, MAX_SIZE-1, 32, 106, 0, 0);
@@ -51,9 +54,9 @@ void create_account_menu(int is_username, int length_password, int is_password, 
     mvprintw(32, 95, "Username :");
     mvprintw(33, 95, "Password :");
     mvprintw(34, 95, "Email Address :");
+    attroff(COLOR_PAIR(2));
     mvprintw(LINES - 2, 0, "Press F1 to return to the previous menu.");
     mvprintw(32, 105, " ");
-    attroff(COLOR_PAIR(2));
     refresh();
     int ch;
     char entered_username[MAX_SIZE], entered_password[MAX_SIZE], entered_email[MAX_SIZE];
@@ -198,3 +201,4 @@ int check_email(char *array) {
     }
     return 1;
 }
+#endif
