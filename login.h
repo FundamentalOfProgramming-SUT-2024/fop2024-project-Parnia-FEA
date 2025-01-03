@@ -11,7 +11,7 @@
 void login_menu(int, int);
 void add_char1(char *, int);
 int has_username(char *);
-int check_password_correct(char *, char *);
+int check_password_correct(char *, char *, char *);
 
 void login_menu(int is_username, int is_password) {
     FIELD *field[3];
@@ -90,15 +90,18 @@ void login_menu(int is_username, int is_password) {
             return;
         }
         else {
-            attron(COLOR_PAIR(2));
+            attron(COLOR_PAIR(2) | A_BLINK);
             mvprintw(33, 107 - ((strlen(entered_username)+8)/2),"Welcome %s", entered_username);
-            attroff(COLOR_PAIR(2));
+            attroff(COLOR_PAIR(2) | A_BLINK);
+            refresh();
             sleep(5);
-            User *user;
-            strcpy(user->username, entered_username);
-            strcpy(user->password, entered_password);
-            strcpy(user->email, entered_email);
-            game_menu(user);
+            clear();
+            User user;
+            User *user_ptr = &user;
+            strcpy(user_ptr->username, entered_username);
+            strcpy(user_ptr->password, entered_password);
+            strcpy(user_ptr->email, entered_email);
+            game_menu(user_ptr);
             login_menu(0, 0);
         }
     }
@@ -140,6 +143,7 @@ int check_password_correct(char *entered_username, char *entered_password, char 
                 fgets(line, MAX_SIZE, users);
                 line[strlen(line)-1] = '\0';
                 if (strcmp(entered_password, line) == 0) {
+                    //mvprintw(1, 1, "done");
                     fgets(line, MAX_SIZE, users);
                     line[strlen(line)-1] = '\0';
                     strcpy(entered_email, line);

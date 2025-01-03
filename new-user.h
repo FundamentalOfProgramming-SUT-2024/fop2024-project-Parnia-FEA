@@ -2,6 +2,7 @@
 #include <form.h>
 #include <string.h>
 #include <ctype.h>
+#include <unistd.h>
 
 #define MAX_SIZE 50
 

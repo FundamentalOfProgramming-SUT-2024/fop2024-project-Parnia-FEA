@@ -9,13 +9,6 @@
 #define LENGTH 214
 #define WIDTH 66
 
-typedef struct {
-    char username[MAX_SIZE];
-    char password[MAX_SIZE];
-    char email[MAX_SIZE];
-} User;
-
-
 int main() {
     initscr();
     cbreak();

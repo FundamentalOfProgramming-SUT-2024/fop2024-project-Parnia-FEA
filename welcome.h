@@ -25,21 +25,20 @@ void welcome_menu() {
 	mvprintw(LINES - 2, 0, "Up and Down arrow keys to navigate (F1 to Exit)");
 	post_menu(my_menu);
 	refresh();
-
+	int flag = 0;
 	while((c = getch()) != KEY_F(1)) {       
         switch(c) {	
             case KEY_DOWN:
 				menu_driver(my_menu, REQ_DOWN_ITEM);
+				flag ++;
 				break;
 			case KEY_UP:
 				menu_driver(my_menu, REQ_UP_ITEM);
+				flag ++;
 				break;
 			case 10:
 			{	
-                ITEM *cur_item;
-				cur_item = current_item(my_menu);
-                char *cur_item_name;
-                if (strcmp(choices[0], (cur_item->name).str) == 0) {
+                if (flag % 2 == 0) {
                     create_account_menu(0, 0, 0, 0);
                     unpost_menu(my_menu);
 	                for(i = 0; i < 2; ++i)
