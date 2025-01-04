@@ -41,7 +41,7 @@ void game_menu_func(User *user) {
 	post_menu(my_menu);
 	wrefresh(menu_win);
 
-	while((c = getch()) != KEY_F(1)) {       
+	while((c = wgetch(menu_win)) != KEY_F(1)) {       
         switch(c) {	
             case KEY_DOWN:
 				menu_driver(my_menu, REQ_DOWN_ITEM);
@@ -50,20 +50,24 @@ void game_menu_func(User *user) {
 				menu_driver(my_menu, REQ_UP_ITEM);
 				break;
 			case 10:
-			{	
+			{
                 ITEM *cur_item;
 				void (*p)(User *);
 				cur_item = current_item(my_menu);
 				p = (void (*) (User *)) item_userptr(cur_item);
-				(*p)(user);
 				pos_menu_cursor(my_menu);
-				break;
+				unpost_menu(my_menu);
+				for(i = 0; i < 4; ++i)
+					free_item(items[i]);
+				free_menu(my_menu);
+				wrefresh(menu_win);
+				(*p)(user);
+				return;
 			}
-			break;
 		}
 	}	
 	unpost_menu(my_menu);
-	for(i = 0; i < 2; ++i)
+	for(i = 0; i < 4; ++i)
 		free_item(items[i]);
 	free_menu(my_menu);
 }

@@ -97,7 +97,7 @@ void login_menu(int is_username, int is_password) {
             mvprintw(33, 107 - ((strlen(entered_username)+8)/2),"Welcome %s", entered_username);
             attroff(COLOR_PAIR(2) | A_BLINK);
             refresh();
-            sleep(5);
+            sleep(3);
             clear();
             User user;
             User *user_ptr = &user;

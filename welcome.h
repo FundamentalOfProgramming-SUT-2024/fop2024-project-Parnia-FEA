@@ -51,6 +51,7 @@ void welcome_menu() {
 			{	
                 if (flag % 2 == 0) {
                     create_account_menu(0, 0, 0, 0);
+					pos_menu_cursor(my_menu);
                     unpost_menu(my_menu);
 	                for(i = 0; i < 2; ++i)
 		                free_item(items[i]);
@@ -60,6 +61,7 @@ void welcome_menu() {
                 }
                 else {
                     login_menu(0, 0);
+					pos_menu_cursor(my_menu);
                     unpost_menu(my_menu);
 	                for(i = 0; i < 2; ++i)
 		                free_item(items[i]);
