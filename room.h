@@ -22,7 +22,7 @@ typedef struct {
     int floor;
     int room_number;
     int num_of_doors;
-    Door* doors[MAX_SIZE];
+    Door* doors[1000];
 } Room;
 
 typedef struct {
