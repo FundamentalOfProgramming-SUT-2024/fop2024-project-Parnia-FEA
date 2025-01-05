@@ -4,14 +4,8 @@
 #define MAX_SIZE 50
 
 typedef struct {
-    int x;
-    int y;
-} Point;
-
-typedef struct {
     int x_coor;
     int y_coor;
-    int model;
 } Door;
 
 typedef struct {
@@ -24,9 +18,5 @@ typedef struct {
     int num_of_doors;
     Door* doors[1000];
 } Room;
-
-typedef struct {
-    char total_screen[4][60][200];
-} Screen;
 
 #endif
