@@ -19,4 +19,9 @@ typedef struct {
     Door* doors[1000];
 } Room;
 
+typedef struct {
+    int x;
+    int y;
+} Corridor;
+
 #endif
