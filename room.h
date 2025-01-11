@@ -16,6 +16,7 @@ typedef struct {
     int floor;
     int room_number;
     int num_of_doors;
+    int theme;
     Door* doors[1000];
 } Room;
 

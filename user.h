@@ -14,6 +14,8 @@ typedef struct {
     int map_screen[4][60][200];
     char map_screen_char[4][60][200];
     int visible[4][60][200];
+    int end_x;
+    int end_y;
     int current_floor;
     int current_x;
     int current_y;

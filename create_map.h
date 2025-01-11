@@ -58,6 +58,7 @@ void create_map (User *user) {
             }
             rooms[i][j] -> ulx = x;
             rooms[i][j] -> uly = y;
+            rooms[i][j] -> theme = 6;
             for (int k = y; k < y + rooms[i][j] -> height; k++) {
                 for (int l = x; l < x + rooms[i][j] -> width; l++) {
                     screen[i][k][l] = j + 1;
@@ -341,6 +342,9 @@ void create_map (User *user) {
                 (user -> map_screen)[f][i][j] = screen[f][i][j];
                 (user -> map_screen_char)[f][i][j] = screen_char[f][i][j];
                 (user -> visible)[f][i][j] = 0;
+                if (screen_char[f][i][j] == '#') {
+                    (user -> map_screen)[f][i][j] = -1;
+                }
             }
         }
     }
@@ -350,9 +354,23 @@ void create_map (User *user) {
             (user -> visible)[0][i][j] = 1;
         }
     }
+    int treasure_num = room_num[3] - 1 - rand() % 3;
+    rooms[3][treasure_num] -> theme = 4;
+    user -> end_y = rooms[3][treasure_num] -> uly + rooms[3][treasure_num] -> height / 2;
+    user -> end_x = rooms[3][treasure_num] -> ulx + rooms[3][treasure_num] -> width / 2;
     user -> current_floor = 0;
     user -> current_y = start_room -> uly + start_room -> height / 2;
     user -> current_x = start_room -> ulx + start_room -> width / 2;
+
+    for (int f = 0; f < 4; f++) {
+        int enchant_num = room_num[f] - 1 - rand() % 3;
+        if (f == 3) {
+            while(rooms[f][enchant_num] -> theme == 4) {
+                enchant_num = room_num[f] - 1 - rand() % 3;
+            }
+        }
+        (user -> map_rooms)[f][enchant_num] -> theme = 3;
+    }
 
 }
 
