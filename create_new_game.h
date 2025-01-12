@@ -26,7 +26,15 @@ void create_new_game_func (User *user) {
                         attron(A_BLINK);
                     }
                 }
-                mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
+                if ((user -> map_screen_char)[user -> current_floor][i][j] == '-') {
+                    mvaddch(START + i, START + j, '_');
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == '!') {
+                    mvaddch(START + i, START + j, '|');
+                }
+                else {
+                    mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
+                }
                 if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
                     attroff(COLOR_PAIR(((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme));
                     if (((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme == 5) {
@@ -73,7 +81,7 @@ void create_new_game_func (User *user) {
         }
         else if (c == 'y') {
             //up left
-            if (user -> current_x > 0 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] != '_') {
+            if (user -> current_x > 0 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == '.') {
                 (user -> current_x)--;
                 (user -> current_y)--;
                 flag = 1;
@@ -81,7 +89,7 @@ void create_new_game_func (User *user) {
         }
         else if (c == 'u') {
             //up right
-            if (user -> current_x < 199 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] != '_') {
+            if (user -> current_x < 199 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == '.') {
                 (user -> current_x)++;
                 (user -> current_y)--;
                 flag = 1;
@@ -89,7 +97,7 @@ void create_new_game_func (User *user) {
         }
         else if (c == 'b') {
             //down left
-            if (user -> current_x > 0 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] != '_') {
+            if (user -> current_x > 0 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == '.') {
                 (user -> current_x)--;
                 (user -> current_y)++;
                 flag = 1;
@@ -97,7 +105,7 @@ void create_new_game_func (User *user) {
         }
         else if (c == 'n') {
             //down right
-            if (user -> current_x < 199 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] != '_') {
+            if (user -> current_x < 199 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] != '.') {
                 (user -> current_x)++;
                 (user -> current_y)++;
                 flag = 1;
@@ -177,7 +185,15 @@ void create_new_game_func (User *user) {
                                 attron(A_BLINK);
                             }
                         }
-                        mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
+                        if ((user -> map_screen_char)[user -> current_floor][i][j] == '-') {
+                            mvaddch(START + i, START + j, '_');
+                        }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == '!') {
+                            mvaddch(START + i, START + j, '|');
+                        }
+                        else {
+                            mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
+                        }
                         if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
                             attroff(COLOR_PAIR(((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme));
                             if (((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme == 5) {

@@ -6,6 +6,7 @@
 typedef struct {
     int x_coor;
     int y_coor;
+    int theme;
 } Door;
 
 typedef struct {

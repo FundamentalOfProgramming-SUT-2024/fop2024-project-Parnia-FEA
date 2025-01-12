@@ -105,6 +105,7 @@ void create_map (User *user) {
                     if (room2_center_x >= room1 -> ulx) {
                         if (screen_char[floor][room1 -> uly][room2_center_x] != '+') {
                             Door *door = (Door *) malloc(sizeof(Door));
+                            door -> theme = 0;
                             door -> x_coor = room2_center_x;
                             door -> y_coor = room1 -> uly;
                             (room1 -> doors)[room1 -> num_of_doors] = door;
@@ -113,6 +114,7 @@ void create_map (User *user) {
                         }
                         if (screen_char[floor][room2 -> uly + room2 -> height - 1][room2_center_x] != '+') {
                             Door *door = (Door *) malloc(sizeof(Door));
+                            door -> theme = 0;
                             door -> x_coor = room2_center_x;
                             door -> y_coor = room2 -> uly + room2 -> height - 1;
                             (room2 -> doors)[room2 -> num_of_doors] = door;
@@ -124,6 +126,7 @@ void create_map (User *user) {
                     else if (room1_center_y <= room2 -> uly + room2 -> height - 1) {
                         if (screen_char[floor][room1_center_y][room1 -> ulx] != '+') {
                             Door *door = (Door *) malloc(sizeof(Door));
+                            door -> theme = 0;
                             door -> x_coor = room1 -> ulx;
                             door -> y_coor = room1_center_y;
                             (room1 -> doors)[room1 -> num_of_doors] = door;
@@ -132,6 +135,7 @@ void create_map (User *user) {
                         }
                         if (screen_char[floor][room1_center_y][room2 -> ulx + room2 -> width - 1] != '+') {
                             Door *door = (Door *) malloc(sizeof(Door));
+                            door -> theme = 0;
                             door -> x_coor = room2 -> ulx + room2 -> width - 1;
                             door -> y_coor = room1_center_y;
                             (room2 -> doors)[room2 -> num_of_doors] = door;
@@ -143,6 +147,7 @@ void create_map (User *user) {
                     else {
                         if (screen_char[floor][room1_center_y][room1 -> ulx] != '+') {
                             Door *door = (Door *) malloc(sizeof(Door));
+                            door -> theme = 0;
                             door -> x_coor = room1 -> ulx;
                             door -> y_coor = room1_center_y;
                             (room1 -> doors)[room1 -> num_of_doors] = door;
@@ -151,6 +156,7 @@ void create_map (User *user) {
                         }
                         if (screen_char[floor][room2 -> uly + room2 -> height - 1][room2_center_x] != '+') {
                             Door *door = (Door *) malloc(sizeof(Door));
+                            door -> theme = 0;
                             door -> x_coor = room2_center_x;
                             door -> y_coor = room2 -> uly + room2 -> height - 1;
                             (room2 -> doors)[room2 -> num_of_doors] = door;
@@ -166,6 +172,7 @@ void create_map (User *user) {
                             Room *room3 = rooms[floor][room_number];
                             if (screen_char[floor][room1_center_y][room3 -> ulx + room3 -> width - 1] != '+') {
                                 Door *door = (Door *) malloc(sizeof(Door));
+                                door -> theme = 0;
                                 door -> x_coor = room3 -> ulx + room3 -> width - 1;
                                 door -> y_coor = room1_center_y;
                                 (rooms[floor][room_number] -> doors)[rooms[floor][room_number] -> num_of_doors] = door;
@@ -174,6 +181,7 @@ void create_map (User *user) {
                             }
                             if (screen_char[floor][room3 -> uly][room2_center_x] != '+') {
                                 Door *door = (Door *) malloc(sizeof(Door));
+                                door -> theme = 0;
                                 door -> x_coor = room2_center_x;
                                 door -> y_coor = room3 -> uly;
                                 (rooms[floor][room_number] -> doors)[rooms[floor][room_number] -> num_of_doors] = door;
@@ -189,6 +197,7 @@ void create_map (User *user) {
                     if (room2_center_x <= room1 -> ulx + room1 -> width - 1) {
                         if (screen_char[floor][room1 -> uly][room2_center_x] != '+') {
                             Door *door = (Door *) malloc(sizeof(Door));
+                            door -> theme = 0;
                             door -> x_coor = room2_center_x;
                             door -> y_coor = room1 -> uly;
                             (room1 -> doors)[room1 -> num_of_doors] = door;
@@ -197,6 +206,7 @@ void create_map (User *user) {
                         }
                         if (screen_char[floor][room2 -> uly + room2 -> height - 1][room2_center_x] != '+') {
                             Door *door = (Door *) malloc(sizeof(Door));
+                            door -> theme = 0;
                             door -> x_coor = room2_center_x;
                             door -> y_coor = room2 -> uly + room2 -> height - 1;
                             (room2 -> doors)[room2 -> num_of_doors] = door;
@@ -208,6 +218,7 @@ void create_map (User *user) {
                     else if (room1_center_y <= room2 -> uly + room2 -> height - 1) {
                         if (screen_char[floor][room1_center_y][room1 -> ulx + room1 -> width - 1] != '+') {
                             Door *door = (Door *) malloc(sizeof(Door));
+                            door -> theme = 0;
                             door -> x_coor = room1 -> ulx + room1 -> width - 1;
                             door -> y_coor = room1_center_y;
                             (room1 -> doors)[room1 -> num_of_doors] = door;
@@ -216,6 +227,7 @@ void create_map (User *user) {
                         }
                         if (screen_char[floor][room1_center_y][room2 -> ulx] != '+') {
                             Door *door = (Door *) malloc(sizeof(Door));
+                            door -> theme = 0;
                             door -> x_coor = room2 -> ulx;
                             door -> y_coor = room1_center_y;
                             (room2 -> doors)[room2 -> num_of_doors] = door;
@@ -227,6 +239,7 @@ void create_map (User *user) {
                     else {
                         if (screen_char[floor][room1_center_y][room1 -> ulx + room1 -> width - 1] != '+') {
                             Door *door = (Door *) malloc(sizeof(Door));
+                            door -> theme = 0;
                             door -> x_coor = room1 -> ulx + room1 -> width - 1;
                             door -> y_coor = room1_center_y;
                             (room1 -> doors)[room1 -> num_of_doors] = door;
@@ -235,6 +248,7 @@ void create_map (User *user) {
                         }
                         if (screen_char[floor][room2 -> uly + room2 -> height - 1][room2_center_x] != '+') {
                             Door *door = (Door *) malloc(sizeof(Door));
+                            door -> theme = 0;
                             door -> x_coor = room2_center_x;
                             door -> y_coor = room2 -> uly + room2 -> height - 1;
                             (room2 -> doors)[room2 -> num_of_doors] = door;
@@ -250,6 +264,7 @@ void create_map (User *user) {
                             Room *room3 = rooms[floor][room_number];
                             if (screen_char[floor][room1_center_y][room3 -> ulx] != '+') {
                                 Door *door = (Door *) malloc(sizeof(Door));
+                                door -> theme = 0;
                                 door -> x_coor = room3 -> ulx;
                                 door -> y_coor = room1_center_y;
                                 (room3 -> doors)[room3 -> num_of_doors] = door;
@@ -258,6 +273,7 @@ void create_map (User *user) {
                             }
                             if (screen_char[floor][room3 -> uly][room2_center_x] != '+') {
                                 Door *door = (Door *) malloc(sizeof(Door));
+                                door -> theme = 0;
                                 door -> x_coor = room2_center_x;
                                 door -> y_coor = room3 -> uly;
                                 (room3 -> doors)[room3 -> num_of_doors] = door;
@@ -272,6 +288,7 @@ void create_map (User *user) {
                 else {
                     if (screen_char[floor][room1 -> uly][room2_center_x] != '+') {
                         Door *door = (Door *) malloc(sizeof(Door));
+                        door -> theme = 0;
                         door -> x_coor = room2_center_x;
                         door -> y_coor = room1 -> uly;
                         (room1 -> doors)[room1 -> num_of_doors] = door;
@@ -280,6 +297,7 @@ void create_map (User *user) {
                     }
                     if (screen_char[floor][room2 -> uly + room2 -> height - 1][room2_center_x] != '+') {
                         Door *door = (Door *) malloc(sizeof(Door));
+                        door -> theme = 0;
                         door -> x_coor = room2_center_x;
                         door -> y_coor = room2 -> uly + room2 -> height - 1;
                         (room2 -> doors)[room2 -> num_of_doors] = door;
@@ -292,6 +310,7 @@ void create_map (User *user) {
             else {
                 if (screen_char[floor][room1_center_y][room1 -> uly] != '+') {
                     Door *door = (Door *) malloc(sizeof(Door));
+                    door -> theme = 0;
                     door -> x_coor = room1 -> uly;
                     door -> y_coor = room1_center_y;
                     (room1 -> doors)[room1 -> num_of_doors] = door;
@@ -300,6 +319,7 @@ void create_map (User *user) {
                 }
                 if (screen_char[floor][room2_center_y][room2 -> ulx + room2 -> width - 1] != '+') {
                     Door *door = (Door *) malloc(sizeof(Door));
+                    door -> theme = 0;
                     door -> x_coor = room2 -> ulx + room2 -> width - 1;
                     door -> y_coor = room2_center_y;
                     (room2 -> doors)[room2 -> num_of_doors] = door;
@@ -395,13 +415,33 @@ void create_map (User *user) {
     user -> current_x = start_room -> ulx + start_room -> width / 2;
 
     for (int f = 0; f < 4; f++) {
-        int enchant_num = room_num[f] - 1 - rand() % 3;
-        if (f == 3) {
-            while(rooms[f][enchant_num] -> theme == 4) {
-                enchant_num = room_num[f] - 1 - rand() % 3;
+        int enchant_num = 2;
+        for (int i = 3; i < room_num[f]; i++) {
+            if (rooms[f][i] -> theme != 4 && rooms[f][enchant_num] -> num_of_connected >= rooms[f][i] -> num_of_connected) {
+                enchant_num = i;
             }
         }
         (user -> map_rooms)[f][enchant_num] -> theme = 3;
+        for (int i = 0; i < ((user -> map_rooms)[f][enchant_num]) -> num_of_doors; i++) {
+            (((user -> map_rooms)[f][enchant_num]) -> doors)[i] -> theme = 1;
+            if ((((user -> map_rooms)[f][enchant_num]) -> doors)[i] -> y_coor == (user -> map_rooms)[f][enchant_num] -> uly || (((user -> map_rooms)[f][enchant_num]) -> doors)[i] -> y_coor == (user -> map_rooms)[f][enchant_num] -> uly + (user -> map_rooms)[f][enchant_num] -> height - 1) {
+                (user -> map_screen_char)[f][(((user -> map_rooms)[f][enchant_num]) -> doors)[i] -> y_coor][(((user -> map_rooms)[f][enchant_num]) -> doors)[i] -> x_coor] = '-';
+            }
+            else {
+                (user -> map_screen_char)[f][(((user -> map_rooms)[f][enchant_num]) -> doors)[i] -> y_coor][(((user -> map_rooms)[f][enchant_num]) -> doors)[i] -> x_coor] = '!';
+            }
+        }
+        for (int i = 0; i < ((user -> map_rooms)[f][enchant_num]) -> num_of_connected; i++) {
+            (((user -> map_rooms)[f][enchant_num]) -> connected)[i] -> theme = 1;
+            int yc = (((user -> map_rooms)[f][enchant_num]) -> connected)[i] -> y_coor;
+            int xc = (((user -> map_rooms)[f][enchant_num]) -> connected)[i] -> x_coor;
+            if (yc == (user -> map_rooms)[f][(user -> map_screen)[f][yc][xc]-1] -> uly || yc == (user -> map_rooms)[f][(user -> map_screen)[f][yc][xc]-1] -> uly + (user -> map_rooms)[f][(user -> map_screen)[f][yc][xc]-1] -> height - 1) {
+                (user -> map_screen_char)[f][yc][xc] = '-';
+            }
+            else {
+                (user -> map_screen_char)[f][yc][xc] = '!';
+            }
+        }
     }
 
 }
@@ -418,6 +458,7 @@ void build_corridor_up(int col, int start1_y, int start2_y, int floor, Room* roo
     int room_number = screen[floor][start1_y][col] - 1;
     if (screen_char[floor][start1_y][col] != '+') {
         Door *door = (Door *) malloc(sizeof(Door));
+        door -> theme = 0;
         door -> x_coor = col;
         door -> y_coor = start1_y;
         (rooms[floor][room_number] -> doors)[rooms[floor][room_number] -> num_of_doors] = door;
@@ -426,6 +467,7 @@ void build_corridor_up(int col, int start1_y, int start2_y, int floor, Room* roo
     }
     if (screen_char[floor][rooms[floor][room_number] -> uly][col] != '+') {
         Door *door = (Door *) malloc(sizeof(Door));
+        door -> theme = 0;
         door -> x_coor = col;
         door -> y_coor = rooms[floor][room_number] -> uly;
         (rooms[floor][room_number] -> doors)[rooms[floor][room_number] -> num_of_doors] = door;
@@ -447,6 +489,7 @@ void build_corridor_left(int row, int start1_x, int start2_x, int floor, Room* r
     int room_number = screen[floor][row][start1_x] - 1;
     if (screen_char[floor][row][start1_x] != '+') {
         Door *door = (Door *) malloc(sizeof(Door));
+        door -> theme = 0;
         door -> x_coor = start1_x;
         door -> y_coor = row;
         (rooms[floor][room_number] -> doors)[rooms[floor][room_number] -> num_of_doors] = door;
@@ -455,6 +498,7 @@ void build_corridor_left(int row, int start1_x, int start2_x, int floor, Room* r
     }
     if (screen_char[floor][row][rooms[floor][room_number] -> ulx] != '+') {
         Door *door = (Door *) malloc(sizeof(Door));
+        door -> theme = 0;
         door -> x_coor = rooms[floor][room_number] -> ulx;
         door -> y_coor = row;
         (rooms[floor][room_number] -> doors)[rooms[floor][room_number] -> num_of_doors] = door;
@@ -480,6 +524,7 @@ void connected_door(Room *room, char screen_char[4][60][200], int floor, int x, 
         (room -> connected)[room -> num_of_connected] = (Door *) malloc(sizeof(Door));
         (room -> connected)[room -> num_of_connected] -> x_coor = x;
         (room -> connected)[room -> num_of_connected] -> y_coor = y;
+        (room -> connected)[room -> num_of_connected] -> theme = 0;
         (room -> num_of_connected)++;
         return;
     }
