@@ -14,6 +14,8 @@
 void create_new_game_func (User *user) {
     create_map(user);
     curs_set(0);
+    user -> health = 100;
+    user -> gold = 0;
     char gamer = toupper((user -> username)[0]);
     int c;
     clear();
@@ -31,6 +33,9 @@ void create_new_game_func (User *user) {
                 }
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == '!') {
                     mvaddch(START + i, START + j, '|');
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 't') {
+                    mvaddch(START + i, START + j, '.');
                 }
                 else {
                     mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
@@ -50,18 +55,21 @@ void create_new_game_func (User *user) {
     refresh();
     while ((c = getch()) != KEY_F(1)) {
         int flag = 0;
+        int flag_stair = 0;
         //instruction
-        if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>' && c == 10) {
+        if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>' && c == '>') {
             (user -> current_floor)++;
             user -> current_x = (user -> in_staircase)[user -> current_floor] -> x;
             user -> current_y = (user -> in_staircase)[user -> current_floor] -> y;
             flag = 1;
+            flag_stair = 1;
         }
-        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '<' && c == 10) {
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '<' && c == '<') {
             (user -> current_floor)--;
             user -> current_x = (user -> out_staircase)[user -> current_floor] -> x;
             user -> current_y = (user -> out_staircase)[user -> current_floor] -> y;
             flag = 1;
+            flag_stair = 1;
         }
         else if (c == 'j') {
             //up
@@ -134,6 +142,10 @@ void create_new_game_func (User *user) {
         (user -> visible)[user -> current_floor][user -> current_y][user -> current_x] = 1;
         if (flag) {
             clear();
+            if (flag_stair) {
+                mvprintw(0, 0, "New Floor!");
+                refresh();
+            }
             for (int i = 0; i < 60; i++) {
                 for (int j = 0; j < 200; j++) {
                     int flag1 = 0;
@@ -203,6 +215,9 @@ void create_new_game_func (User *user) {
                         else if ((user -> map_screen_char)[user -> current_floor][i][j] == '!') {
                             mvaddch(START + i, START + j, '|');
                         }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 't') {
+                            mvaddch(START + i, START + j, '.');
+                        }
                         else {
                             mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
                         }
@@ -230,13 +245,17 @@ void create_new_game_func (User *user) {
             refresh();
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>') {
-            mvprintw(0, 0, "If you want to use staircase to go to the next floor, press enter!");
+            mvprintw(0, 0, "If you want to use staircase to go to the next floor, press '>'!");
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '<') {
-            mvprintw(0, 0, "If you want to use staircase to go to the previous floor, press enter!");
+            mvprintw(0, 0, "If you want to use staircase to go to the previous floor, press '<'!");
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '-' || (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '!') {
             (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '?';
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 't') {
+            (user -> health)--;
+            (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '^';
         }
     }
     

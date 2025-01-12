@@ -23,6 +23,8 @@ typedef struct {
     int current_floor;
     int current_x;
     int current_y;
+    int health;
+    int gold;
 } User;
 
 #endif

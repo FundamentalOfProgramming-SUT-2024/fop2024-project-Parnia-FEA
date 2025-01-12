@@ -410,6 +410,44 @@ void create_map (User *user) {
     rooms[3][treasure_num] -> theme = 4;
     user -> end_y = rooms[3][treasure_num] -> uly + rooms[3][treasure_num] -> height / 2;
     user -> end_x = rooms[3][treasure_num] -> ulx + rooms[3][treasure_num] -> width / 2;
+    if (rooms[3][treasure_num] -> width % 2 == 0) {
+        for (int i = rooms[3][treasure_num] -> uly + 1; i < rooms[3][treasure_num] -> uly + rooms[3][treasure_num] -> height - 1; i++) {
+            for (int j = rooms[3][treasure_num] -> ulx + 1; j < rooms[3][treasure_num] -> ulx + rooms[3][treasure_num] -> width - 1; j+=2) {
+                int trap = rand() % 2;
+                if (user -> end_y == i && user -> end_x == j + trap) {
+                    trap = 1 - trap;
+                }
+                (user -> map_screen_char)[3][i][j + trap] = 't';
+            }
+        }
+    }
+    else if (rooms[3][treasure_num] -> height % 2 == 0) {
+        for (int i = rooms[3][treasure_num] -> uly + 1; i < rooms[3][treasure_num] -> uly + rooms[3][treasure_num] -> height - 1; i+=2) {
+            for (int j = rooms[3][treasure_num] -> ulx + 1; j < rooms[3][treasure_num] -> ulx + rooms[3][treasure_num] -> width - 1; j++) {
+                int trap = rand() % 2;
+                if (user -> end_y == i && user -> end_x == j + trap) {
+                    trap = 1 - trap;
+                }
+                (user -> map_screen_char)[3][i][j + trap] = 't';
+            }
+        }
+    }
+    else {
+        for (int i = rooms[3][treasure_num] -> uly + 1; i < rooms[3][treasure_num] -> uly + rooms[3][treasure_num] -> height - 1; i++) {
+            for (int j = rooms[3][treasure_num] -> ulx + 1; j < rooms[3][treasure_num] -> ulx + rooms[3][treasure_num] -> width - 2; j+=2) {
+                int trap = rand() % 2;
+                if (user -> end_y == i && user -> end_x == j + trap) {
+                    trap = 1 - trap;
+                }
+                (user -> map_screen_char)[3][i][j + trap] = 't';
+            }
+        }
+        for (int i = rooms[3][treasure_num] -> uly + 1; i < rooms[3][treasure_num] -> uly + rooms[3][treasure_num] -> height - 1; i++) {
+            if (!(user -> end_y == i && user -> end_x == rooms[3][treasure_num] -> ulx + rooms[3][treasure_num] -> width - 2)) {
+                (user -> map_screen_char)[3][i][user -> end_x == rooms[3][treasure_num] -> ulx + rooms[3][treasure_num] -> width - 2] = 't';
+            }
+        }
+    }
     user -> current_floor = 0;
     user -> current_y = start_room -> uly + start_room -> height / 2;
     user -> current_x = start_room -> ulx + start_room -> width / 2;
@@ -457,6 +495,22 @@ void create_map (User *user) {
             (user -> in_staircase)[f] -> x = instair_x;
             (user -> in_staircase)[f] -> y = instair_y;
             (user -> map_screen_char)[f][instair_y][instair_x] = '<';
+        }
+    }
+    for (int f = 0; f < 4; f++) {
+        for (int i = 0; i < room_num[f]; i++) {
+            if (rooms[f][i] -> theme == 6) {
+                int trap = rand() % 2;
+                if (trap == 1) {
+                    int trap_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
+                    int trap_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
+                    while ((user -> map_screen_char)[f][trap_y][trap_x] != '.') {
+                        trap_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
+                        trap_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
+                    }
+                    (user -> map_screen_char)[f][trap_y][trap_x] = 't';
+                }
+            }
         }
     }
 
