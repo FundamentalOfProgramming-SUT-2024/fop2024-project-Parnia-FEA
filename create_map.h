@@ -10,7 +10,7 @@
 
 void build_corridor_up(int col, int start1_y, int start2_y, int floor, Room* rooms[4][10], int screen[4][60][200], char screen_char[4][60][200]);
 void build_corridor_left(int row, int start1_x, int start2_x, int floor, Room* rooms[4][10], int screen[4][60][200], char screen_char[4][60][200]);
-
+void connected_door(Room *room, char screen_char[4][60][200], int floor, int x, int y, int mark[60][200]);
 void create_map (User *user) {
     clear();
     refresh();
@@ -37,6 +37,8 @@ void create_map (User *user) {
             rooms[i][j] -> width = rand() % 3 + 6;
             rooms[i][j] -> floor = i + 1;
             rooms[i][j] -> room_number = j + 1;
+            rooms[i][j] -> num_of_doors = 0;
+            rooms[i][j] -> num_of_connected = 0;
             int x, y;
             while (TRUE) {
                 y = rand() % (61 - rooms[i][j] -> height);
@@ -328,6 +330,36 @@ void create_map (User *user) {
         clear();
     }
     */
+    for (int f = 0; f < 4; f++) {
+        for (int i = 0; i < room_num[f]; i++) {
+            for (int j = 0; j < (rooms[f][i] -> num_of_doors); j++) {
+                int mark[60][200];
+                for (int k = 0; k < 60; k++) {
+                    for (int l = 0; l < 200 ;l++) {
+                        mark[k][l] = 0;
+                    }
+                }
+                int k = (rooms[f][i] -> doors)[j] -> y_coor;
+                int l = (rooms[f][i] -> doors)[j] -> x_coor;
+                mark[k][l] = 1;
+                if (k > 0) { 
+                    connected_door(rooms[f][i], screen_char, f, l, k-1, mark);
+                }
+                if (k < 59) { 
+                    connected_door(rooms[f][i], screen_char, f, l, k+1, mark);
+                }
+                if (l < 199) { 
+                    connected_door(rooms[f][i], screen_char, f, l+1, k, mark);
+                }
+                if (l > 0) { 
+                    connected_door(rooms[f][i], screen_char, f, l-1, k, mark);
+                }
+            }
+        }
+    }
+
+
+
     for (int i = 0; i < 4; i++) {
         (user -> rooms_num)[i] = room_num[i];
     }
@@ -430,6 +462,39 @@ void build_corridor_left(int row, int start1_x, int start2_x, int floor, Room* r
         screen_char[floor][row][rooms[floor][room_number] -> ulx] = '+';
     }
     build_corridor_left(row, rooms[floor][room_number] -> ulx - 1, start2_x, floor, rooms, screen, screen_char);
+}
+
+
+void connected_door(Room *room, char screen_char[4][60][200], int floor, int x, int y, int mark[60][200]) {
+    if (mark[y][x])
+        return;
+    if (screen_char[floor][y][x] != '+' && screen_char[floor][y][x] != '#')
+        return;
+    mark[y][x] = 1;
+    if (screen_char[floor][y][x] == '+') {
+        for (int i = 0; i < room -> num_of_connected; i++) {
+            if ((room -> connected)[i] -> x_coor == x && (room -> connected)[i] -> y_coor == y) {
+                return;
+            }
+        }
+        (room -> connected)[room -> num_of_connected] = (Door *) malloc(sizeof(Door));
+        (room -> connected)[room -> num_of_connected] -> x_coor = x;
+        (room -> connected)[room -> num_of_connected] -> y_coor = y;
+        (room -> num_of_connected)++;
+        return;
+    }
+    if (y > 0 && (screen_char[floor][y-1][x] == '#' || screen_char[floor][y-1][x] == '+')) {
+        connected_door(room, screen_char, floor, x, y-1, mark);
+    }
+    if (y < 59 && (screen_char[floor][y+1][x] == '#' || screen_char[floor][y+1][x] == '+')) {
+        connected_door(room, screen_char, floor, x, y+1, mark);
+    }
+    if (x > 0 && (screen_char[floor][y][x-1] == '#' || screen_char[floor][y][x-1] == '+')) {
+        connected_door(room, screen_char, floor, x-1, y, mark);
+    }
+    if (x < 199 && (screen_char[floor][y][x+1] == '#' || screen_char[floor][y][x+1] == '+')) {
+        connected_door(room, screen_char, floor, x+1, y, mark);
+    }
 }
 
 #endif

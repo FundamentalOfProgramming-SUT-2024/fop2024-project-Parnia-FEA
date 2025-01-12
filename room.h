@@ -17,7 +17,9 @@ typedef struct {
     int room_number;
     int num_of_doors;
     int theme;
-    Door* doors[1000];
+    Door *doors[1000];
+    int num_of_connected;
+    Door *connected[MAX_SIZE];
 } Room;
 
 typedef struct {
