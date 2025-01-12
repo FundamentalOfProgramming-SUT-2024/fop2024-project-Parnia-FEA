@@ -5,6 +5,8 @@
 
 #define MAX_SIZE 50
 
+
+
 typedef struct {
     char username[MAX_SIZE];
     char password[MAX_SIZE];
@@ -13,6 +15,8 @@ typedef struct {
     Room *map_rooms[4][10];
     int map_screen[4][60][200];
     char map_screen_char[4][60][200];
+    Point *in_staircase[4];
+    Point *out_staircase[4];
     int visible[4][60][200];
     int end_x;
     int end_y;

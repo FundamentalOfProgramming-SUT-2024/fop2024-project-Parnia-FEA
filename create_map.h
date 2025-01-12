@@ -442,6 +442,22 @@ void create_map (User *user) {
                 (user -> map_screen_char)[f][yc][xc] = '!';
             }
         }
+        if(f < 3) {
+            int outstair_x = rand() % (rooms[f][enchant_num] -> width - 2) + rooms[f][enchant_num] -> ulx + 1;
+            int outstair_y = rand() % (rooms[f][enchant_num] -> height - 2) + rooms[f][enchant_num] -> uly + 1;
+            (user -> out_staircase)[f] = (Point *) malloc(sizeof(Point));
+            (user -> out_staircase)[f] -> x = outstair_x;
+            (user -> out_staircase)[f] -> y = outstair_y;
+            (user -> map_screen_char)[f][outstair_y][outstair_x] = '>';
+        }
+        if (f > 0) {
+            int instair_x = rand() % (rooms[f][0] -> width - 2) + rooms[f][0] -> ulx + 1;
+            int instair_y = rand() % (rooms[f][0] -> height - 2) + rooms[f][0] -> uly + 1;
+            (user -> in_staircase)[f] = (Point *) malloc(sizeof(Point));
+            (user -> in_staircase)[f] -> x = instair_x;
+            (user -> in_staircase)[f] -> y = instair_y;
+            (user -> map_screen_char)[f][instair_y][instair_x] = '<';
+        }
     }
 
 }

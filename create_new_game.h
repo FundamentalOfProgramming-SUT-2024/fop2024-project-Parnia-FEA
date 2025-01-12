@@ -51,7 +51,19 @@ void create_new_game_func (User *user) {
     while ((c = getch()) != KEY_F(1)) {
         int flag = 0;
         //instruction
-        if (c == 'j') {
+        if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>' && c == 10) {
+            (user -> current_floor)++;
+            user -> current_x = (user -> in_staircase)[user -> current_floor] -> x;
+            user -> current_y = (user -> in_staircase)[user -> current_floor] -> y;
+            flag = 1;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '<' && c == 10) {
+            (user -> current_floor)--;
+            user -> current_x = (user -> out_staircase)[user -> current_floor] -> x;
+            user -> current_y = (user -> out_staircase)[user -> current_floor] -> y;
+            flag = 1;
+        }
+        else if (c == 'j') {
             //up
             if (user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] != '_') {
                 (user -> current_y)--;
@@ -125,7 +137,7 @@ void create_new_game_func (User *user) {
             for (int i = 0; i < 60; i++) {
                 for (int j = 0; j < 200; j++) {
                     int flag1 = 0;
-                    if ((user -> map_screen)[user -> current_floor][i][j] < 0 || (user -> map_screen_char)[user -> current_floor][i][j] == '+') {
+                    if ((user -> map_screen)[user -> current_floor][i][j] < 0) {
                         if (user -> current_y == i) {
                             if (j > user -> current_x && j <= user -> current_x + 5) {
                                 int flag2 = 1;
@@ -216,6 +228,15 @@ void create_new_game_func (User *user) {
             mvprintw(29, 104, "YOU HAVE WON THE GAME!");
             attroff(COLOR_PAIR(2) | A_BLINK);
             refresh();
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>') {
+            mvprintw(0, 0, "If you want to use staircase to go to the next floor, press enter!");
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '<') {
+            mvprintw(0, 0, "If you want to use staircase to go to the previous floor, press enter!");
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '-' || (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '!') {
+            (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '?';
         }
     }
     

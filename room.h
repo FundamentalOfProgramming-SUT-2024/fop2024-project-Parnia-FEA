@@ -4,6 +4,11 @@
 #define MAX_SIZE 50
 
 typedef struct {
+    int x;
+    int y;
+} Point;
+
+typedef struct {
     int x_coor;
     int y_coor;
     int theme;
