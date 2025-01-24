@@ -68,6 +68,66 @@ void create_new_game_func (User *user) {
         int flag = 0;
         int flag_stair = 0;
         //instruction
+        if (c == 's') {
+            if ((user -> map_screen)[user -> current_floor][user -> current_y][user -> current_x] > 0) {
+                if (user -> current_y - 1 >= 0 && ((user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == '-' || (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == '!')) {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] = '?';
+                }
+                if (user -> current_y - 1 >= 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == 't') {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] = '^';
+                }
+
+                if (user -> current_y + 1 < 60 && ((user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == '-' || (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == '!')) {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] = '?';
+                }
+                if (user -> current_y + 1 < 60 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == 't') {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] = '^';
+                }
+
+                if (user -> current_x - 1 >= 0 && ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == '-' || (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == '!')) {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] = '?';
+                }
+                if (user -> current_x - 1 >= 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 't') {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] = '^';
+                }
+
+                if (user -> current_x + 1 < 200 && ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == '-' || (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == '!')) {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] = '?';
+                }
+                if (user -> current_x + 1 < 200 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == 't') {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] = '^';
+                }
+
+                if (user -> current_y - 1 >= 0 && user -> current_x - 1 >= 0 && ((user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == '-' || (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == '!')) {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] = '?';
+                }
+                if (user -> current_y - 1 >= 0 && user -> current_x - 1 >= 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == 't') {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] = '^';
+                }
+
+                if (user -> current_y - 1 >= 0 && user -> current_x + 1 < 200 && ((user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == '-' || (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == '!')) {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] = '?';
+                }
+                if (user -> current_y - 1 >= 0 && user -> current_x + 1 < 200 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == 't') {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] = '^';
+                }
+
+                if (user -> current_y + 1 < 60 && user -> current_x - 1 >= 0 && ((user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == '-' || (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == '!')) {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] = '?';
+                }
+                if (user -> current_y + 1 < 60 && user -> current_x - 1 >= 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == 't') {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] = '^';
+                }
+
+                if (user -> current_y + 1 < 60 && user -> current_x + 1 < 200 && ((user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == '-' || (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == '!')) {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] = '?';
+                }
+                if (user -> current_y + 1 < 60 && user -> current_x + 1 < 200 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == 't') {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] = '^';
+                }
+            }
+            c = getch();
+        }
         if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>' && c == '>') {
             (user -> current_floor)++;
             user -> current_x = (user -> in_staircase)[user -> current_floor] -> x;
