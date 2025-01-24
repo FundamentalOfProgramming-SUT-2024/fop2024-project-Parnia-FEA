@@ -511,6 +511,16 @@ void create_map (User *user) {
                     (user -> map_screen_char)[f][trap_y][trap_x] = 't';
                 }
             }
+            int pillar = rand() % 2;
+            if (pillar == 1) {
+                int pillar_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
+                int pillar_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
+                while ((user -> map_screen_char)[f][pillar_y][pillar_x] != '.') {
+                    pillar_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
+                    pillar_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
+                }
+                (user -> map_screen_char)[f][pillar_y][pillar_x] = 'O';
+            }
         }
     }
 

@@ -22,6 +22,7 @@ int main() {
     init_pair(4, COLOR_YELLOW, COLOR_BLACK);
     init_pair(5, COLOR_WHITE, COLOR_BLACK);
     init_pair(6, COLOR_WHITE, COLOR_BLACK);
+    init_pair(7, COLOR_GREEN, COLOR_GREEN);
 
     welcome_menu();
     endwin();

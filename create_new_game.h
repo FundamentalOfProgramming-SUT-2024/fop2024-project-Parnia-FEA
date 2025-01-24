@@ -52,6 +52,12 @@ void create_new_game_func (User *user) {
     attron(COLOR_PAIR(2) | A_BLINK);
     mvaddch(user -> current_y + START, user -> current_x + START, gamer);
     attroff(COLOR_PAIR(2) | A_BLINK);
+    mvprintw(2, 0, "health");
+    for (int i = 0; i < (user -> health); i++) {
+        attron(COLOR_PAIR(7));
+        mvprintw(2, i + 7, " ");
+        attroff(COLOR_PAIR(7));
+    }
     refresh();
     while ((c = getch()) != KEY_F(1)) {
         int flag = 0;
@@ -73,35 +79,35 @@ void create_new_game_func (User *user) {
         }
         else if (c == 'j') {
             //up
-            if (user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] != '_') {
+            if (user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] != '_' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] != 'O') {
                 (user -> current_y)--;
                 flag = 1;
             }
         }
         else if (c == 'k') {
             //down
-            if (user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] != '_') {
+            if (user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] != '_' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] != 'O') {
                 (user -> current_y)++;
                 flag = 1;
             }
         }
         else if (c == 'h') {
             //left
-            if (user -> current_x > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] != '_') {
+            if (user -> current_x > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] != '_' && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] != 'O') {
                 (user -> current_x)--;
                 flag = 1;
             }
         }
         else if (c == 'l') {
             //right
-            if (user -> current_x < 199 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] != '_') {
+            if (user -> current_x < 199 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] != '_' && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] != 'O') {
                 (user -> current_x)++;
                 flag = 1;
             }
         }
         else if (c == 'y') {
             //up left
-            if (user -> current_x > 0 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == '.') {
+            if (user -> current_x > 0 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] != '_' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] != 'O' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] != '#' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] != '-' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] != '!') {
                 (user -> current_x)--;
                 (user -> current_y)--;
                 flag = 1;
@@ -109,7 +115,7 @@ void create_new_game_func (User *user) {
         }
         else if (c == 'u') {
             //up right
-            if (user -> current_x < 199 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == '.') {
+            if (user -> current_x < 199 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] != '_' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] != 'O' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] != '#' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] != '-' && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] != '!') {
                 (user -> current_x)++;
                 (user -> current_y)--;
                 flag = 1;
@@ -117,7 +123,7 @@ void create_new_game_func (User *user) {
         }
         else if (c == 'b') {
             //down left
-            if (user -> current_x > 0 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == '.') {
+            if (user -> current_x > 0 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] != '_' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] != 'O' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] != '#' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] != '-' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] != '!') {
                 (user -> current_x)--;
                 (user -> current_y)++;
                 flag = 1;
@@ -125,7 +131,7 @@ void create_new_game_func (User *user) {
         }
         else if (c == 'n') {
             //down right
-            if (user -> current_x < 199 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] != '.') {
+            if (user -> current_x < 199 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] != '_' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] != 'O' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] != '#' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] != '-' && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] != '!') {
                 (user -> current_x)++;
                 (user -> current_y)++;
                 flag = 1;
@@ -233,6 +239,12 @@ void create_new_game_func (User *user) {
             attron(COLOR_PAIR(2) | A_BLINK);
             mvaddch(user -> current_y + START, user -> current_x + START, gamer);
             attroff(COLOR_PAIR(2) | A_BLINK);
+            mvprintw(2, 0, "health");
+            for (int i = 0; i < (user -> health); i++) {
+                attron(COLOR_PAIR(7));
+                mvprintw(2, i + 7, " ");
+                attroff(COLOR_PAIR(7));
+    }
             refresh();
         }
         if (user -> current_x == user -> end_x && user -> current_y == user -> end_y) {
@@ -256,6 +268,9 @@ void create_new_game_func (User *user) {
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 't') {
             (user -> health)--;
             (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '^';
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '^') {
+            (user -> health)--;
         }
     }
     
