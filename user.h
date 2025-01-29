@@ -25,6 +25,7 @@ typedef struct {
     int current_y;
     int health;
     int gold;
+    int visible_mode;
 } User;
 
 #endif

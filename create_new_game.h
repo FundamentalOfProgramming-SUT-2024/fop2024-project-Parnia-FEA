@@ -19,6 +19,7 @@ void print_screen(User *, int, char);
 void create_new_game_func (User *user) {
     create_map(user);
     curs_set(0);
+    user -> visible_mode = 0;
     user -> health = 100;
     user -> gold = 0;
     char gamer = toupper((user -> username)[0]);
@@ -128,7 +129,11 @@ void create_new_game_func (User *user) {
             }
             c = getch();
         }
-        if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>' && c == '>') {
+        if (c == 'm') {
+            user -> visible_mode = 1 - (user -> visible_mode);
+            flag = 1;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>' && c == '>') {
             (user -> current_floor)++;
             user -> current_x = (user -> in_staircase)[user -> current_floor] -> x;
             user -> current_y = (user -> in_staircase)[user -> current_floor] -> y;
@@ -304,7 +309,7 @@ void create_new_game_func (User *user) {
                     if ((user -> visible)[user -> current_floor][i][j]) {
                         flag1 = 1;
                     }
-                    if (flag1) {
+                    if (flag1 || user -> visible_mode) {
                         if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
                             attron(COLOR_PAIR(((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme));
                             if (((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme == 5) {
@@ -471,7 +476,7 @@ void print_screen(User *user, int flag_stair, char gamer) {
             if ((user -> visible)[user -> current_floor][i][j]) {
                 flag1 = 1;
             }
-            if (flag1) {
+            if (flag1 || user -> visible_mode) {
                 if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
                     attron(COLOR_PAIR(((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme));
                     if (((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme == 5) {
