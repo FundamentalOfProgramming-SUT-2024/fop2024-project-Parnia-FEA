@@ -60,9 +60,19 @@ void create_new_game_func (User *user) {
     attroff(COLOR_PAIR(2) | A_BLINK);
     mvprintw(2, 0, "health");
     for (int i = 0; i < (user -> health); i++) {
-        attron(COLOR_PAIR(7));
+        if (user -> health < 20) {
+            attron(COLOR_PAIR(8));
+        }
+        else {
+            attron(COLOR_PAIR(7));
+        }
         mvprintw(2, i + 7, " ");
-        attroff(COLOR_PAIR(7));
+        if (user -> health < 20) {
+            attroff(COLOR_PAIR(8));
+        }
+        else {
+            attroff(COLOR_PAIR(7));
+        }
     }
     refresh();
     while ((c = getch()) != KEY_F(1)) {
@@ -342,10 +352,20 @@ void create_new_game_func (User *user) {
             attroff(COLOR_PAIR(2) | A_BLINK);
             mvprintw(2, 0, "health");
             for (int i = 0; i < (user -> health); i++) {
-                attron(COLOR_PAIR(7));
+                if (user -> health < 20) {
+                    attron(COLOR_PAIR(8));
+                }
+                else {
+                    attron(COLOR_PAIR(7));
+                }
                 mvprintw(2, i + 7, " ");
-                attroff(COLOR_PAIR(7));
-            }
+                if (user -> health < 20) {
+                    attroff(COLOR_PAIR(8));
+                }
+                else {
+                    attroff(COLOR_PAIR(7));
+                }
+                    }
             refresh();
         }
         if (user -> current_x == user -> end_x && user -> current_y == user -> end_y) {
@@ -372,6 +392,30 @@ void create_new_game_func (User *user) {
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '^') {
             (user -> health)--;
+        }
+        for (int i = 0; i < (user -> rooms_num)[user -> current_floor]; i++) {
+            if ((user -> map_rooms)[user -> current_floor][i] -> theme == 6) {
+                /*
+                for (int y = ((user -> map_rooms)[user -> current_floor][i] -> uly) + 1; y < ((user -> map_rooms)[user -> current_floor][i] -> uly) + ((user -> map_rooms)[user -> current_floor][i] -> height) - 1; y++) {
+                    for (int x = ((user -> map_rooms)[user -> current_floor][i] -> ulx) + 1; x < ((user -> map_rooms)[user -> current_floor][i] -> ulx) + ((user -> map_rooms)[user -> current_floor][i] -> width) - 1; x++) {
+                        if ((user -> map_screen_char)[user -> current_floor][y][x] == 'B') {
+                            (user -> map_screen_char)[user -> current_floor][y][x] = '.';
+                        }
+                    }
+                }
+                */
+                int food = rand() % 100;
+                if (food == 0) {
+                    int food_x = ((user -> map_rooms)[user -> current_floor][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[user -> current_floor][i] -> width - 2);
+                    int food_y = ((user -> map_rooms)[user -> current_floor][i] -> uly) + 1 + rand() % ((user -> map_rooms)[user -> current_floor][i] -> height - 2);
+                    
+                    while ((user -> map_screen_char)[user -> current_floor][food_y][food_x] != '.') {
+                        food_x = ((user -> map_rooms)[user -> current_floor][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[user -> current_floor][i] -> width - 2);
+                        food_y = ((user -> map_rooms)[user -> current_floor][i] -> uly) + 1 + rand() % ((user -> map_rooms)[user -> current_floor][i] -> height - 2);
+                    }
+                    (user -> map_screen_char)[user -> current_floor][food_y][food_x] = 'B';
+                }
+            }
         }
     }
     
@@ -509,9 +553,19 @@ void print_screen(User *user, int flag_stair, char gamer) {
     attroff(COLOR_PAIR(2) | A_BLINK);
     mvprintw(2, 0, "health");
     for (int i = 0; i < (user -> health); i++) {
-        attron(COLOR_PAIR(7));
+        if (user -> health < 20) {
+            attron(COLOR_PAIR(8));
+        }
+        else {
+            attron(COLOR_PAIR(7));
+        }
         mvprintw(2, i + 7, " ");
-        attroff(COLOR_PAIR(7));
+        if (user -> health < 20) {
+            attroff(COLOR_PAIR(8));
+        }
+        else {
+            attroff(COLOR_PAIR(7));
+        }
     }
     refresh();
     usleep(20000);
