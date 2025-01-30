@@ -25,7 +25,10 @@ typedef struct {
     int current_y;
     int health;
     int gold;
+    int food;
+    int food_menu[5];
     int visible_mode;
+    int hunger;
 } User;
 
 #endif

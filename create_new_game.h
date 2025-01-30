@@ -2,26 +2,47 @@
 #define CREATE_NEW_GAME_H
 #include <curses.h>
 #include <time.h>
+#include <pthread.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
 #include "user.h"
+#include "food_menu.h"
 #include "room.h"
 #include "create_map.h"
 #define START 6
 
 #define MAX_SIZE 50
 
+struct thread_args {
+    int *health;
+    int *hunger;
+    int *end;
+};
+
 int move_directly(User *, int, int, int);
 int move_indirectly(User *, int, int, int);
 void print_screen(User *, int, char);
+void *hunger_rate(void *);
+void *health_rate(void *);
 
 void create_new_game_func (User *user) {
     create_map(user);
     curs_set(0);
     user -> visible_mode = 0;
+    user -> food = 0;
     user -> health = 100;
+    user -> hunger = 20;
     user -> gold = 0;
+    int end = 0;
+    pthread_t thread_hunger;
+    pthread_t thread_health;
+    struct thread_args args;
+    args.health = &(user -> health);
+    args.hunger = &(user -> hunger);
+    args.end = &(end);
+    pthread_create(&thread_hunger, NULL, hunger_rate, (void *)(&args));
+    pthread_create(&thread_health, NULL, health_rate, (void *)(&args));
     char gamer = toupper((user -> username)[0]);
     int c;
     clear();
@@ -141,6 +162,10 @@ void create_new_game_func (User *user) {
         }
         if (c == 'm') {
             user -> visible_mode = 1 - (user -> visible_mode);
+            flag = 1;
+        }
+        if (c == 'e') {
+            food_menu_func(user);
             flag = 1;
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>' && c == '>') {
@@ -376,6 +401,7 @@ void create_new_game_func (User *user) {
             mvprintw(29, 104, "YOU HAVE WON THE GAME!");
             attroff(COLOR_PAIR(2) | A_BLINK);
             refresh();
+            end = 1;
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>') {
             mvprintw(0, 0, "If you want to use staircase to go to the next floor, press '>'!");
@@ -392,6 +418,13 @@ void create_new_game_func (User *user) {
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '^') {
             (user -> health)--;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 'B') {
+            if (user -> food < 5) {
+                (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
+                (user -> food_menu)[0]++;
+                (user -> food)++;
+            }
         }
         for (int i = 0; i < (user -> rooms_num)[user -> current_floor]; i++) {
             if ((user -> map_rooms)[user -> current_floor][i] -> theme == 6) {
@@ -418,7 +451,8 @@ void create_new_game_func (User *user) {
             }
         }
     }
-    
+    pthread_join(thread_hunger, NULL);
+    pthread_join(thread_health, NULL);
 }
 
 int move_directly(User *user, int x, int y, int type) {
@@ -569,6 +603,26 @@ void print_screen(User *user, int flag_stair, char gamer) {
     }
     refresh();
     usleep(20000);
+}
+
+void *hunger_rate(void *arguments) {
+    struct thread_args *args = (struct thread_args *) arguments;
+    while (!(*(args -> end))) {
+        sleep(60);
+        (*(args -> hunger))--;
+    }
+    return NULL;
+}
+
+void *health_rate(void *arguments) {
+    struct thread_args *args = (struct thread_args *) arguments;
+    while (!(*(args -> end))) {
+        sleep(20);
+        if ((*(args -> hunger)) <= 5) {
+            (*(args -> health))--;
+        }
+    }
+    return NULL;
 }
 
 #endif

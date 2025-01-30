@@ -41,11 +41,13 @@ void welcome_menu() {
         switch(c) {	
             case KEY_DOWN:
 				menu_driver(my_menu, REQ_DOWN_ITEM);
-				flag ++;
+				if (flag % 2 == 0)
+					flag ++;
 				break;
 			case KEY_UP:
 				menu_driver(my_menu, REQ_UP_ITEM);
-				flag ++;
+				if (flag % 2 == 1)
+					flag ++;
 				break;
 			case 10:
 			{	
