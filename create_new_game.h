@@ -99,6 +99,7 @@ void create_new_game_func (User *user) {
     while ((c = getch()) != KEY_F(1)) {
         int flag = 0;
         int flag_stair = 0;
+        int flag_g = 0;
         //instruction
         if (c == 's') {
             if ((user -> map_screen)[user -> current_floor][user -> current_y][user -> current_x] > 0) {
@@ -160,11 +161,15 @@ void create_new_game_func (User *user) {
             }
             c = getch();
         }
+        if (c == 'g') {
+            flag_g = 1;
+            c = getch();
+        }
         if (c == 'm') {
             user -> visible_mode = 1 - (user -> visible_mode);
             flag = 1;
         }
-        if (c == 'e') {
+        else if (c == 'e') {
             food_menu_func(user);
             flag = 1;
         }
@@ -419,7 +424,7 @@ void create_new_game_func (User *user) {
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '^') {
             (user -> health)--;
         }
-        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 'B') {
+        else if (flag_g == 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 'B') {
             if (user -> food < 5) {
                 (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
                 (user -> food_menu)[0]++;
