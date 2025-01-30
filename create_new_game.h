@@ -65,7 +65,19 @@ void create_new_game_func (User *user) {
                     mvaddch(START + i, START + j, '.');
                 }
                 else {
+                    if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
+                        attron(COLOR_PAIR(4));
+                    }
+                    else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
+                        attron(COLOR_PAIR(2));
+                    }
                     mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
+                    if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
+                        attroff(COLOR_PAIR(4));
+                    }
+                    else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
+                        attroff(COLOR_PAIR(2));
+                    }
                 }
                 if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
                     attroff(COLOR_PAIR(((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme));
@@ -95,6 +107,9 @@ void create_new_game_func (User *user) {
             attroff(COLOR_PAIR(7));
         }
     }
+    attron(COLOR_PAIR(4));
+    mvprintw(3, 0, "gold %d", user -> gold);
+    attroff(COLOR_PAIR(4));
     refresh();
     while ((c = getch()) != KEY_F(1)) {
         int flag = 0;
@@ -366,7 +381,19 @@ void create_new_game_func (User *user) {
                             mvaddch(START + i, START + j, '.');
                         }
                         else {
+                            if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
+                                attron(COLOR_PAIR(4));
+                            }
+                            else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
+                                attron(COLOR_PAIR(2));
+                            }
                             mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
+                            if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
+                                attroff(COLOR_PAIR(4));
+                            }
+                            else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
+                                attroff(COLOR_PAIR(2));
+                            }
                         }
                         if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
                             attroff(COLOR_PAIR(((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme));
@@ -395,7 +422,10 @@ void create_new_game_func (User *user) {
                 else {
                     attroff(COLOR_PAIR(7));
                 }
-                    }
+            }
+            attron(COLOR_PAIR(4));
+            mvprintw(3, 0, "gold %d", user -> gold);
+            attroff(COLOR_PAIR(4));
             refresh();
         }
         if (user -> current_x == user -> end_x && user -> current_y == user -> end_y) {
@@ -430,6 +460,18 @@ void create_new_game_func (User *user) {
                 (user -> food_menu)[0]++;
                 (user -> food)++;
             }
+        }
+        else if (flag_g == 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '$') {
+            (user -> gold) += 5;
+            (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
+            mvprintw(0, 0, "5 Golds Collected");
+            refresh();
+        }
+        else if (flag_g == 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 'G') {
+            (user -> gold) += 20;
+            (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
+            mvprintw(0, 0, "20 Golds Collected");
+            refresh();
         }
         for (int i = 0; i < (user -> rooms_num)[user -> current_floor]; i++) {
             if ((user -> map_rooms)[user -> current_floor][i] -> theme == 6) {
@@ -576,7 +618,19 @@ void print_screen(User *user, int flag_stair, char gamer) {
                     mvaddch(START + i, START + j, '.');
                 }
                 else {
+                    if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
+                        attron(COLOR_PAIR(4));
+                    }
+                    else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
+                        attron(COLOR_PAIR(2));
+                    }
                     mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
+                    if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
+                        attroff(COLOR_PAIR(4));
+                    }
+                    else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
+                        attroff(COLOR_PAIR(2));
+                    }
                 }
                 if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
                     attroff(COLOR_PAIR(((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme));
@@ -606,6 +660,9 @@ void print_screen(User *user, int flag_stair, char gamer) {
             attroff(COLOR_PAIR(7));
         }
     }
+    attron(COLOR_PAIR(4));
+    mvprintw(3, 0, "gold %d", user -> gold);
+    attroff(COLOR_PAIR(4));
     refresh();
     usleep(20000);
 }

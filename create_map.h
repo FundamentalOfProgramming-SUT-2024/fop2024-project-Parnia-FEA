@@ -451,7 +451,7 @@ void create_map (User *user) {
     user -> current_floor = 0;
     user -> current_y = start_room -> uly + start_room -> height / 2;
     user -> current_x = start_room -> ulx + start_room -> width / 2;
-
+    (user -> map_screen_char)[0][user -> current_y][user -> current_x] = 's';
     for (int f = 0; f < 4; f++) {
         int enchant_num = 2;
         for (int i = 3; i < room_num[f]; i++) {
@@ -521,9 +521,31 @@ void create_map (User *user) {
                 }
                 (user -> map_screen_char)[f][pillar_y][pillar_x] = 'O';
             }
+            int gold = rand() % 3;
+            int black = rand() % 100;
+            while (gold > 0) {
+                int gold_x = rooms[f][i] -> ulx + 2 + rand() % (rooms[f][i] -> width - 4);
+                int gold_y = rooms[f][i] -> uly + 2 + rand() % (rooms[f][i] -> height - 4);
+                while ((user -> map_screen_char)[f][gold_y][gold_x] != '.') {
+                    gold_x = rooms[f][i] -> ulx + 2 + rand() % (rooms[f][i] -> width - 4);
+                    gold_y = rooms[f][i] -> uly + 2 + rand() % (rooms[f][i] -> height - 4);
+                }
+                (user -> map_screen_char)[f][gold_y][gold_x] = '$';
+                if (black == 0 && gold == 1) {
+                    (user -> map_screen_char)[f][gold_y][gold_x] = 'G';
+                }
+                gold--;
+            }
         }
     }
-
+    for (int i = (user -> map_rooms)[3][treasure_num] -> uly + 1; i < (user -> map_rooms)[3][treasure_num] -> uly + (user -> map_rooms)[3][treasure_num] -> height - 1; i++) {
+        for (int j = (user -> map_rooms)[3][treasure_num] -> ulx + 1; j < (user -> map_rooms)[3][treasure_num] -> ulx + (user -> map_rooms)[3][treasure_num] -> width - 1; j++) {
+            if ((user -> map_screen_char)[3][i][j] == '.') {
+                (user -> map_screen_char)[3][i][j] = 'G';
+            }
+        }
+    }
+    (user -> map_screen_char)[0][user -> current_y][user -> current_x] = '.';
 }
 
 void build_corridor_up(int col, int start1_y, int start2_y, int floor, Room* rooms[4][10], int screen[4][60][200], char screen_char[4][60][200]) {
