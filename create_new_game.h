@@ -561,8 +561,9 @@ void create_new_game_func (User *user) {
                         food_y = ((user -> map_rooms)[user -> current_floor][i] -> uly) + 1 + rand() % ((user -> map_rooms)[user -> current_floor][i] -> height - 2);
                         steps --;
                     }
-                    if (steps > 0)
+                    if (steps > 0) {
                         (user -> map_screen_char)[user -> current_floor][food_y][food_x] = 'B';
+                    }
                 }
             }
         }
