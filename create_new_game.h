@@ -64,7 +64,13 @@ void create_new_game_func (User *user) {
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 't') {
                     mvaddch(START + i, START + j, '.');
                 }
-                else {
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && user -> current_y == i && user -> current_x == j + 1) {
+                    mvaddch(START + i, START + j, '.');
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && (user -> current_y != i || user -> current_x != j)) {
+                    mvprintw(START + i, START + j, "%s", "\U0001F354");
+                }
+                else if (j == 0 || (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B'){
                     if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
                         attron(COLOR_PAIR(4));
                     }
@@ -380,7 +386,13 @@ void create_new_game_func (User *user) {
                         else if ((user -> map_screen_char)[user -> current_floor][i][j] == 't') {
                             mvaddch(START + i, START + j, '.');
                         }
-                        else {
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && user -> current_y == i && user -> current_x == j + 1) {
+                            mvaddch(START + i, START + j, '.');
+                        }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && (user -> current_y != i || user -> current_x != j)) {
+                            mvprintw(START + i, START + j, "%s", "\U0001F354");
+                        }
+                        else if (j == 0 || (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B'){
                             if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
                                 attron(COLOR_PAIR(4));
                             }
@@ -457,6 +469,21 @@ void create_new_game_func (User *user) {
         else if (flag_g == 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 'B') {
             if (user -> food < 5) {
                 (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
+                attron(COLOR_PAIR(2) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x + START, gamer);
+                attroff(COLOR_PAIR(2) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x + 1 + START, '.');
+                (user -> food_menu)[0]++;
+                (user -> food)++;
+            }
+        }
+        else if (flag_g == 0 && user -> current_x > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'B') {
+            if (user -> food < 5) {
+                (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] = '.';
+                attron(COLOR_PAIR(2) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x + START, gamer);
+                attroff(COLOR_PAIR(2) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x - 1 + START, '.');
                 (user -> food_menu)[0]++;
                 (user -> food)++;
             }
@@ -488,12 +515,14 @@ void create_new_game_func (User *user) {
                 if (food == 0) {
                     int food_x = ((user -> map_rooms)[user -> current_floor][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[user -> current_floor][i] -> width - 2);
                     int food_y = ((user -> map_rooms)[user -> current_floor][i] -> uly) + 1 + rand() % ((user -> map_rooms)[user -> current_floor][i] -> height - 2);
-                    
-                    while ((user -> map_screen_char)[user -> current_floor][food_y][food_x] != '.') {
+                    int steps = 100;
+                    while (steps > 0 && ((user -> map_screen_char)[user -> current_floor][food_y][food_x] != '.' || (user -> map_screen_char)[user -> current_floor][food_y][food_x+1] != '.')) {
                         food_x = ((user -> map_rooms)[user -> current_floor][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[user -> current_floor][i] -> width - 2);
                         food_y = ((user -> map_rooms)[user -> current_floor][i] -> uly) + 1 + rand() % ((user -> map_rooms)[user -> current_floor][i] -> height - 2);
+                        steps --;
                     }
-                    (user -> map_screen_char)[user -> current_floor][food_y][food_x] = 'B';
+                    if (steps > 0)
+                        (user -> map_screen_char)[user -> current_floor][food_y][food_x] = 'B';
                 }
             }
         }
@@ -617,7 +646,13 @@ void print_screen(User *user, int flag_stair, char gamer) {
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 't') {
                     mvaddch(START + i, START + j, '.');
                 }
-                else {
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && user -> current_y == i && user -> current_x == j + 1) {
+                    mvaddch(START + i, START + j, '.');
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && (user -> current_y != i || user -> current_x != j)) {
+                    mvprintw(START + i, START + j, "%s", "\U0001F354");
+                }
+                else if (j == 0 || (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B'){
                     if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
                         attron(COLOR_PAIR(4));
                     }

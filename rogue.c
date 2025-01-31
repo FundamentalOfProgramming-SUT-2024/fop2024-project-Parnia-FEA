@@ -1,6 +1,7 @@
 #include <curses.h>
 #include <form.h>
 #include <menu.h>
+#include <locale.h>
 #include <string.h>
 #include <ctype.h>
 #include "welcome.h"
@@ -10,6 +11,7 @@
 #define WIDTH 66
 
 int main() {
+    setlocale(LC_ALL, "");
     initscr();
     cbreak();
 	noecho();
