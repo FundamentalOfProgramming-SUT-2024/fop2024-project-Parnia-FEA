@@ -70,20 +70,18 @@ void create_new_game_func (User *user) {
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && (user -> current_y != i || user -> current_x != j)) {
                     mvprintw(START + i, START + j, "%s", "\U0001F354");
                 }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
+                    attron(COLOR_PAIR(4));
+                    mvprintw(START + i, START + j, "%s", "\U00002735");
+                    attroff(COLOR_PAIR(4));
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
+                    attron(COLOR_PAIR(2));
+                    mvprintw(START + i, START + j, "%s", "\U00002742");
+                    attron(COLOR_PAIR(2));
+                }
                 else if (j == 0 || (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B'){
-                    if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
-                        attron(COLOR_PAIR(4));
-                    }
-                    else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
-                        attron(COLOR_PAIR(2));
-                    }
                     mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
-                    if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
-                        attroff(COLOR_PAIR(4));
-                    }
-                    else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
-                        attroff(COLOR_PAIR(2));
-                    }
                 }
                 if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
                     attroff(COLOR_PAIR(((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme));
@@ -392,20 +390,18 @@ void create_new_game_func (User *user) {
                         else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && (user -> current_y != i || user -> current_x != j)) {
                             mvprintw(START + i, START + j, "%s", "\U0001F354");
                         }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
+                            attron(COLOR_PAIR(4));
+                            mvprintw(START + i, START + j, "%s", "\U00002735");
+                            attroff(COLOR_PAIR(4));
+                        }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
+                            attron(COLOR_PAIR(2));
+                            mvprintw(START + i, START + j, "%s", "\U00002742");
+                            attron(COLOR_PAIR(2));
+                        }
                         else if (j == 0 || (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B'){
-                            if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
-                                attron(COLOR_PAIR(4));
-                            }
-                            else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
-                                attron(COLOR_PAIR(2));
-                            }
                             mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
-                            if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
-                                attroff(COLOR_PAIR(4));
-                            }
-                            else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
-                                attroff(COLOR_PAIR(2));
-                            }
                         }
                         if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
                             attroff(COLOR_PAIR(((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme));
@@ -475,6 +471,7 @@ void create_new_game_func (User *user) {
                 mvaddch(user -> current_y + START, user -> current_x + 1 + START, '.');
                 (user -> food_menu)[0]++;
                 (user -> food)++;
+                refresh();
             }
         }
         else if (flag_g == 0 && user -> current_x > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'B') {
@@ -486,6 +483,7 @@ void create_new_game_func (User *user) {
                 mvaddch(user -> current_y + START, user -> current_x - 1 + START, '.');
                 (user -> food_menu)[0]++;
                 (user -> food)++;
+                refresh();
             }
         }
         else if (flag_g == 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '$') {
@@ -652,20 +650,18 @@ void print_screen(User *user, int flag_stair, char gamer) {
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && (user -> current_y != i || user -> current_x != j)) {
                     mvprintw(START + i, START + j, "%s", "\U0001F354");
                 }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
+                    attron(COLOR_PAIR(4));
+                    mvprintw(START + i, START + j, "%s", "\U00002735");
+                    attroff(COLOR_PAIR(4));
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
+                    attron(COLOR_PAIR(2));
+                    mvprintw(START + i, START + j, "%s", "\U00002742");
+                    attron(COLOR_PAIR(2));
+                }
                 else if (j == 0 || (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B'){
-                    if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
-                        attron(COLOR_PAIR(4));
-                    }
-                    else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
-                        attron(COLOR_PAIR(2));
-                    }
                     mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
-                    if ((user -> map_screen_char)[user -> current_floor][i][j] == '$') {
-                        attroff(COLOR_PAIR(4));
-                    }
-                    else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'G') {
-                        attroff(COLOR_PAIR(2));
-                    }
                 }
                 if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
                     attroff(COLOR_PAIR(((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme));

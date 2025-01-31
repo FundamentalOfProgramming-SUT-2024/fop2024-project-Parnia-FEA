@@ -524,11 +524,11 @@ void create_map (User *user) {
             int gold = rand() % 3;
             int black = rand() % 100;
             while (gold > 0) {
-                int gold_x = rooms[f][i] -> ulx + 2 + rand() % (rooms[f][i] -> width - 4);
-                int gold_y = rooms[f][i] -> uly + 2 + rand() % (rooms[f][i] -> height - 4);
-                while ((user -> map_screen_char)[f][gold_y][gold_x] != '.') {
-                    gold_x = rooms[f][i] -> ulx + 2 + rand() % (rooms[f][i] -> width - 4);
-                    gold_y = rooms[f][i] -> uly + 2 + rand() % (rooms[f][i] -> height - 4);
+                int gold_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
+                int gold_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
+                while ((user -> map_screen_char)[f][gold_y][gold_x] != '.' || (user -> map_screen_char)[f][gold_y][gold_x+1] != '.') {
+                    gold_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
+                    gold_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
                 }
                 (user -> map_screen_char)[f][gold_y][gold_x] = '$';
                 if (black == 0 && gold == 1) {
