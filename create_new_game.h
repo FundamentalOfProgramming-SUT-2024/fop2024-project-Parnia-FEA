@@ -11,6 +11,7 @@
 #include "enchant_menu.h"
 #include "room.h"
 #include "create_map.h"
+#include "weapon_menu.h"
 #define START 6
 
 #define MAX_SIZE 50
@@ -38,6 +39,11 @@ void create_new_game_func (User *user) {
     (user -> enchant_menu)[0] = 0; //Health
     (user -> enchant_menu)[1] = 0; //Speed
     (user -> enchant_menu)[2] = 0; //Damage
+    (user -> weapon_menu)[0] = 1; //Hammer
+    (user -> weapon_menu)[1] = 0; //Dagger
+    (user -> weapon_menu)[2] = 0; //Wand
+    (user -> weapon_menu)[3] = 0; //Normal Arrow
+    (user -> weapon_menu)[4] = 0; //Hocho
     int end = 0;
     pthread_t thread_hunger;
     pthread_t thread_health;
@@ -196,8 +202,12 @@ void create_new_game_func (User *user) {
             food_menu_func(user);
             flag = 1;
         }
-        else if (c == 'i') {
+        else if (c == 'a') {
             enchant_menu_func(user);
+            flag = 1;
+        }
+        else if (c == 'i') {
+            weapon_menu_func(user);
             flag = 1;
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>' && c == '>') {

@@ -27,6 +27,7 @@ typedef struct {
     int food;
     int food_menu[5];
     int enchant_menu[3];
+    int weapon_menu[5];
     int visible_mode;
     int hunger;
 } User;
