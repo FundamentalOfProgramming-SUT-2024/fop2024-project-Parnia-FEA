@@ -33,8 +33,8 @@ void create_new_game_func (User *user) {
     curs_set(0);
     user -> visible_mode = 0;
     user -> food = 0;
-    user -> health = 100;
-    user -> hunger = 20;
+    user -> health = 50 + (3 - user -> difficulty) * 25;
+    user -> hunger = 14 + (3 - user -> difficulty) * 3;
     user -> gold = 0;
     (user -> enchant_menu)[0] = 0; //Health
     (user -> enchant_menu)[1] = 0; //Speed
@@ -124,9 +124,9 @@ void create_new_game_func (User *user) {
             }
         }
     }
-    attron(COLOR_PAIR(2) | A_BLINK);
+    attron(COLOR_PAIR(user -> color) | A_BLINK);
     mvaddch(user -> current_y + START, user -> current_x + START, gamer);
-    attroff(COLOR_PAIR(2) | A_BLINK);
+    attroff(COLOR_PAIR(user -> color) | A_BLINK);
     mvprintw(2, 0, "health");
     for (int i = 0; i < (user -> health); i++) {
         if (user -> health < 20) {
@@ -474,9 +474,9 @@ void create_new_game_func (User *user) {
                     }
                 }
             }
-            attron(COLOR_PAIR(2) | A_BLINK);
+            attron(COLOR_PAIR(user -> color) | A_BLINK);
             mvaddch(user -> current_y + START, user -> current_x + START, gamer);
-            attroff(COLOR_PAIR(2) | A_BLINK);
+            attroff(COLOR_PAIR(user -> color) | A_BLINK);
             mvprintw(2, 0, "health");
             for (int i = 0; i < (user -> health); i++) {
                 if (user -> health < 20) {
@@ -527,9 +527,9 @@ void create_new_game_func (User *user) {
         else if (flag_g == 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 'B') {
             if (user -> food < 5) {
                 (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
-                attron(COLOR_PAIR(2) | A_BLINK);
+                attron(COLOR_PAIR(user -> color) | A_BLINK);
                 mvaddch(user -> current_y + START, user -> current_x + START, gamer);
-                attroff(COLOR_PAIR(2) | A_BLINK);
+                attroff(COLOR_PAIR(user -> color) | A_BLINK);
                 mvaddch(user -> current_y + START, user -> current_x + 1 + START, '.');
                 (user -> food_menu)[0]++;
                 (user -> food)++;
@@ -539,9 +539,9 @@ void create_new_game_func (User *user) {
         else if (flag_g == 0 && user -> current_x > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'B') {
             if (user -> food < 5) {
                 (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] = '.';
-                attron(COLOR_PAIR(2) | A_BLINK);
+                attron(COLOR_PAIR(user -> color) | A_BLINK);
                 mvaddch(user -> current_y + START, user -> current_x + START, gamer);
-                attroff(COLOR_PAIR(2) | A_BLINK);
+                attroff(COLOR_PAIR(user -> color) | A_BLINK);
                 mvaddch(user -> current_y + START, user -> current_x - 1 + START, '.');
                 (user -> food_menu)[0]++;
                 (user -> food)++;
@@ -549,9 +549,9 @@ void create_new_game_func (User *user) {
             }
         }
         else if (flag_g == 0 && isdigit((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x])) {
-            attron(COLOR_PAIR(2) | A_BLINK);
+            attron(COLOR_PAIR(user -> color) | A_BLINK);
             mvaddch(user -> current_y + START, user -> current_x + START, gamer);
-            attroff(COLOR_PAIR(2) | A_BLINK);
+            attroff(COLOR_PAIR(user -> color) | A_BLINK);
             mvprintw(0, 0, "WEAPON COLLECTED!");
             mvaddch(user -> current_y + START, user -> current_x + 1 + START, '.');
             (user -> weapon_menu)[(user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] - '0']++;
@@ -560,9 +560,9 @@ void create_new_game_func (User *user) {
             refresh();
         }
         else if (flag_g == 0 && user -> current_x > 0 && isdigit((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1])) {
-            attron(COLOR_PAIR(2) | A_BLINK);
+            attron(COLOR_PAIR(user -> color) | A_BLINK);
             mvaddch(user -> current_y + START, user -> current_x + START, gamer);
-            attroff(COLOR_PAIR(2) | A_BLINK);
+            attroff(COLOR_PAIR(user -> color) | A_BLINK);
             mvprintw(0, 0, "WEAPON COLLECTED!");
             mvaddch(user -> current_y + START, user -> current_x - 1 + START, '.');
             (user -> weapon_menu)[(user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] - '0']++;
@@ -634,6 +634,7 @@ void create_new_game_func (User *user) {
             }
         }
     }
+    end = 1;
     pthread_join(thread_hunger, NULL);
     pthread_join(thread_health, NULL);
 }
@@ -803,9 +804,9 @@ void print_screen(User *user, int flag_stair, char gamer) {
             }
         }
     }
-    attron(COLOR_PAIR(2) | A_BLINK);
+    attron(COLOR_PAIR(user -> color) | A_BLINK);
     mvaddch(user -> current_y + START, user -> current_x + START, gamer);
-    attroff(COLOR_PAIR(2) | A_BLINK);
+    attroff(COLOR_PAIR(user -> color) | A_BLINK);
     mvprintw(2, 0, "health");
     for (int i = 0; i < (user -> health); i++) {
         if (user -> health < 20) {
