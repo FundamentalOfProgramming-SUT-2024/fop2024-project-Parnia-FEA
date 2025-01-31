@@ -425,10 +425,10 @@ void create_map (User *user) {
         for (int i = rooms[3][treasure_num] -> uly + 1; i < rooms[3][treasure_num] -> uly + rooms[3][treasure_num] -> height - 1; i+=2) {
             for (int j = rooms[3][treasure_num] -> ulx + 1; j < rooms[3][treasure_num] -> ulx + rooms[3][treasure_num] -> width - 1; j++) {
                 int trap = rand() % 2;
-                if (user -> end_y == i && user -> end_x == j + trap) {
+                if (user -> end_y == i + trap && user -> end_x == j) {
                     trap = 1 - trap;
                 }
-                (user -> map_screen_char)[3][i][j + trap] = 't';
+                (user -> map_screen_char)[3][i + trap][j] = 't';
             }
         }
     }
@@ -444,7 +444,7 @@ void create_map (User *user) {
         }
         for (int i = rooms[3][treasure_num] -> uly + 1; i < rooms[3][treasure_num] -> uly + rooms[3][treasure_num] -> height - 1; i++) {
             if (!(user -> end_y == i && user -> end_x == rooms[3][treasure_num] -> ulx + rooms[3][treasure_num] -> width - 2)) {
-                (user -> map_screen_char)[3][i][user -> end_x == rooms[3][treasure_num] -> ulx + rooms[3][treasure_num] -> width - 2] = 't';
+                (user -> map_screen_char)[3][i][rooms[3][treasure_num] -> ulx + rooms[3][treasure_num] -> width - 2] = 't';
             }
         }
     }
@@ -497,6 +497,7 @@ void create_map (User *user) {
             (user -> map_screen_char)[f][instair_y][instair_x] = '<';
         }
     }
+    char *enchants = "HSD";
     for (int f = 0; f < 4; f++) {
         for (int i = 0; i < room_num[f]; i++) {
             if (rooms[f][i] -> theme == 6) {
@@ -509,6 +510,59 @@ void create_map (User *user) {
                         trap_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
                     }
                     (user -> map_screen_char)[f][trap_y][trap_x] = 't';
+                }
+                int enchant = rand() % 5;
+                if (enchant == 0) {
+                    int enchant_theme = rand() % 3;
+                    int enchant_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
+                    int enchant_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
+                    while ((user -> map_screen_char)[f][enchant_y][enchant_x] != '.') {
+                        enchant_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
+                        enchant_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
+                    }
+                    (user -> map_screen_char)[f][enchant_y][enchant_x] = enchants[enchant_theme];
+                }
+            }
+            
+            if (rooms[f][i] -> theme == 3) {
+                if (rooms[f][i] -> width % 2 == 0) {
+                    for (int y = rooms[f][i] -> uly + 1; y < rooms[f][i] -> uly + rooms[f][i] -> height - 1; y++) {
+                        for (int x = rooms[f][i] -> ulx + 1; x < rooms[f][i] -> ulx + rooms[f][i] -> width - 1; x+=2) {
+                            int enchant = rand() % 2;
+                            int enchant_theme = rand() % 3;
+                            if ((user -> map_screen_char)[f][y][x + enchant] == '.') {
+                                (user -> map_screen_char)[f][y][x + enchant] = enchants[enchant_theme];
+                            }
+                        }
+                    }
+                }
+                else if (rooms[f][i] -> height % 2 == 0) {
+                    for (int y = rooms[f][i] -> uly + 1; y < rooms[f][i] -> uly + rooms[f][i] -> height - 1; y+=2) {
+                        for (int x = rooms[f][i] -> ulx + 1; x < rooms[f][i] -> ulx + rooms[f][i] -> width - 1; x++) {
+                            int enchant = rand() % 2;
+                            int enchant_theme = rand() % 3;
+                            if ((user -> map_screen_char)[f][y + enchant][x] == '.') {
+                                (user -> map_screen_char)[f][y + enchant][x] = enchants[enchant_theme];
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (int y = rooms[f][i] -> uly + 1; y < rooms[f][i] -> uly + rooms[f][i] -> height - 1; y++) {
+                        for (int x = rooms[f][i] -> ulx + 1; x < rooms[f][i] -> ulx + rooms[f][i] -> width - 2; x+=2) {
+                            int enchant = rand() % 2;
+                            int enchant_theme = rand() % 3;
+                            if ((user -> map_screen_char)[f][y][x + enchant] == '.') {
+                                (user -> map_screen_char)[f][y][x + enchant] = enchants[enchant_theme];
+                            }
+                        }
+                    }
+                    for (int y = rooms[f][i] -> uly + 1; y < rooms[f][i] -> uly + rooms[f][i] -> height - 1; y++) {
+                        if ((user -> map_screen_char)[f][y][rooms[f][i] -> ulx + rooms[f][i] -> width - 2] == '.') {
+                            int enchant_theme = rand() % 3;
+                            (user -> map_screen_char)[f][y][rooms[f][i] -> ulx + rooms[f][i] -> width - 2] = enchants[enchant_theme];
+                        }
+                    }
                 }
             }
             int pillar = rand() % 2;
