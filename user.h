@@ -6,7 +6,6 @@
 #define MAX_SIZE 50
 
 
-
 typedef struct {
     char username[MAX_SIZE];
     char password[MAX_SIZE];
@@ -27,6 +26,7 @@ typedef struct {
     int gold;
     int food;
     int food_menu[5];
+    int enchant_menu[3];
     int visible_mode;
     int hunger;
 } User;

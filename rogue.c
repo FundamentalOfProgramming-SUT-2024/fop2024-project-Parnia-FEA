@@ -3,6 +3,7 @@
 #include <menu.h>
 #include <locale.h>
 #include <string.h>
+#include <unistd.h>
 #include <ctype.h>
 #include "welcome.h"
 
@@ -26,6 +27,11 @@ int main() {
     init_pair(6, COLOR_WHITE, COLOR_BLACK);
     init_pair(7, COLOR_GREEN, COLOR_GREEN);
     init_pair(8, COLOR_RED, COLOR_RED);
+    /*
+    printw("%s","\U0001f375");
+    refresh();
+    sleep(10);
+    */
     welcome_menu();
     endwin();
     return 0;

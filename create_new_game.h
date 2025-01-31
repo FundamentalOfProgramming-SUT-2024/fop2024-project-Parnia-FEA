@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "user.h"
 #include "food_menu.h"
+#include "enchant_menu.h"
 #include "room.h"
 #include "create_map.h"
 #define START 6
@@ -34,6 +35,9 @@ void create_new_game_func (User *user) {
     user -> health = 100;
     user -> hunger = 20;
     user -> gold = 0;
+    (user -> enchant_menu)[0] = 0; //Health
+    (user -> enchant_menu)[1] = 0; //Speed
+    (user -> enchant_menu)[2] = 0; //Damage
     int end = 0;
     pthread_t thread_hunger;
     pthread_t thread_health;
@@ -190,6 +194,10 @@ void create_new_game_func (User *user) {
         }
         else if (c == 'e') {
             food_menu_func(user);
+            flag = 1;
+        }
+        else if (c == 'i') {
+            enchant_menu_func(user);
             flag = 1;
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>' && c == '>') {
@@ -496,6 +504,30 @@ void create_new_game_func (User *user) {
             (user -> gold) += 20;
             (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
             mvprintw(0, 0, "20 Golds Collected");
+            refresh();
+        }
+        else if (flag_g == 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 'H') {
+            (user -> enchant_menu)[0]++;
+            (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
+            attron(COLOR_PAIR(3));
+            mvprintw(0, 0, "HEALTH ENCHANT COLLECTED!");
+            attroff(COLOR_PAIR(3));
+            refresh();
+        }
+        else if (flag_g == 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 'S') {
+            (user -> enchant_menu)[1]++;
+            (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
+            attron(COLOR_PAIR(3));
+            mvprintw(0, 0, "SPEED ENCHANT COLLECTED!");
+            attroff(COLOR_PAIR(3));
+            refresh();
+        }
+        else if (flag_g == 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 'D') {
+            (user -> enchant_menu)[2]++;
+            (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
+            attron(COLOR_PAIR(3));
+            mvprintw(0, 0, "HEALTH ENCHANT COLLECTED!");
+            attroff(COLOR_PAIR(3));
             refresh();
         }
         for (int i = 0; i < (user -> rooms_num)[user -> current_floor]; i++) {

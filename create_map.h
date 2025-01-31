@@ -503,24 +503,32 @@ void create_map (User *user) {
             if (rooms[f][i] -> theme == 6) {
                 int trap = rand() % 2;
                 if (trap == 1) {
+                    int steps = 100;
                     int trap_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
                     int trap_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
-                    while ((user -> map_screen_char)[f][trap_y][trap_x] != '.') {
+                    while ((user -> map_screen_char)[f][trap_y][trap_x] != '.' && steps > 0) {
                         trap_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
                         trap_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
+                        steps--;
                     }
-                    (user -> map_screen_char)[f][trap_y][trap_x] = 't';
+                    if (steps > 0) {
+                        (user -> map_screen_char)[f][trap_y][trap_x] = 't';
+                    }
                 }
                 int enchant = rand() % 5;
                 if (enchant == 0) {
+                    int steps = 100;
                     int enchant_theme = rand() % 3;
                     int enchant_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
                     int enchant_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
-                    while ((user -> map_screen_char)[f][enchant_y][enchant_x] != '.') {
+                    while (steps > 0 && (user -> map_screen_char)[f][enchant_y][enchant_x] != '.') {
                         enchant_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
                         enchant_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
+                        steps--;
                     }
-                    (user -> map_screen_char)[f][enchant_y][enchant_x] = enchants[enchant_theme];
+                    if (steps > 0) {
+                        (user -> map_screen_char)[f][enchant_y][enchant_x] = enchants[enchant_theme];
+                    }
                 }
             }
             
@@ -567,26 +575,34 @@ void create_map (User *user) {
             }
             int pillar = rand() % 2;
             if (pillar == 1) {
+                int steps = 100;
                 int pillar_x = rooms[f][i] -> ulx + 2 + rand() % (rooms[f][i] -> width - 4);
                 int pillar_y = rooms[f][i] -> uly + 2 + rand() % (rooms[f][i] -> height - 4);
-                while ((user -> map_screen_char)[f][pillar_y][pillar_x] != '.') {
+                while (steps > 0 && (user -> map_screen_char)[f][pillar_y][pillar_x] != '.') {
                     pillar_x = rooms[f][i] -> ulx + 2 + rand() % (rooms[f][i] -> width - 4);
                     pillar_y = rooms[f][i] -> uly + 2 + rand() % (rooms[f][i] -> height - 4);
+                    steps--;
                 }
-                (user -> map_screen_char)[f][pillar_y][pillar_x] = 'O';
+                if (steps > 0) {
+                    (user -> map_screen_char)[f][pillar_y][pillar_x] = 'O';
+                }
             }
             int gold = rand() % 3;
             int black = rand() % 100;
             while (gold > 0) {
+                int steps = 100;
                 int gold_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
                 int gold_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
-                while ((user -> map_screen_char)[f][gold_y][gold_x] != '.' || (user -> map_screen_char)[f][gold_y][gold_x+1] != '.') {
+                while (steps > 0 && (user -> map_screen_char)[f][gold_y][gold_x] != '.' || (user -> map_screen_char)[f][gold_y][gold_x+1] != '.') {
                     gold_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
                     gold_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
+                    steps--;
                 }
-                (user -> map_screen_char)[f][gold_y][gold_x] = '$';
-                if (black == 0 && gold == 1) {
-                    (user -> map_screen_char)[f][gold_y][gold_x] = 'G';
+                if (steps > 0) {
+                    (user -> map_screen_char)[f][gold_y][gold_x] = '$';
+                    if (black == 0 && gold == 1) {
+                        (user -> map_screen_char)[f][gold_y][gold_x] = 'G';
+                    }
                 }
                 gold--;
             }
