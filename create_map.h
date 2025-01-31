@@ -530,13 +530,13 @@ void create_map (User *user) {
                         (user -> map_screen_char)[f][enchant_y][enchant_x] = enchants[enchant_theme];
                     }
                 }
-                int weapon = rand() % 8;
+                int weapon = rand() % 7;
                 if (weapon == 0) {
                     int steps = 100;
                     int weapon_theme = rand() % 5;
                     int weapon_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                     int weapon_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
-                    while (steps > 0 && ((user -> map_screen_char)[f][weapon_y][weapon_x] != '.' || (user -> map_screen_char)[f][weapon_y][weapon_x+1] != '.')) {
+                    while (steps > 0 && ((user -> map_screen_char)[f][weapon_y][weapon_x] != '.' || (user -> map_screen_char)[f][weapon_y][weapon_x+1] != '.' || (user -> map_screen_char)[f][weapon_y][weapon_x-1] != '.')) {
                         weapon_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                         weapon_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
                         steps --;
