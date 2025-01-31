@@ -6,7 +6,7 @@
 #include "user.h"
 #include "room.h"
 
-#define MAX_SIZE 50
+#define MAX_SIZE 1000
 
 void build_corridor_up(int col, int start1_y, int start2_y, int floor, Room* rooms[4][10], int screen[4][60][200], char screen_char[4][60][200]);
 void build_corridor_left(int row, int start1_x, int start2_x, int floor, Room* rooms[4][10], int screen[4][60][200], char screen_char[4][60][200]);

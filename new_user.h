@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include <unistd.h>
 
-#define MAX_SIZE 50
+#define MAX_SIZE2 50
 
 void create_account_menu(int, int, int, int);
 void add_char(char *, int);
@@ -19,9 +19,9 @@ void create_account_menu(int is_username, int length_password, int is_password, 
     clear();
     FIELD *field[4];
     FORM  *new_account;
-    field[0] = new_field(1, MAX_SIZE-1, 32, 106, 0, 0);
-	field[1] = new_field(1, MAX_SIZE-1, 33, 106, 0, 0);
-    field[2] = new_field(1, MAX_SIZE-1, 34, 111, 0, 0);
+    field[0] = new_field(1, MAX_SIZE2-1, 32, 106, 0, 0);
+	field[1] = new_field(1, MAX_SIZE2-1, 33, 106, 0, 0);
+    field[2] = new_field(1, MAX_SIZE2-1, 34, 111, 0, 0);
 	field[3] = NULL; 
 	field_opts_off(field[0], O_AUTOSKIP);  	
 	field_opts_off(field[1], O_AUTOSKIP);
@@ -59,7 +59,7 @@ void create_account_menu(int is_username, int length_password, int is_password, 
     mvprintw(32, 105, " ");
     refresh();
     int ch;
-    char entered_username[MAX_SIZE], entered_password[MAX_SIZE], entered_email[MAX_SIZE];
+    char entered_username[MAX_SIZE2], entered_password[MAX_SIZE2], entered_email[MAX_SIZE2];
     entered_username[0] = '\0';
     entered_password[0] = '\0';
     entered_email[0] = '\0';
@@ -108,13 +108,14 @@ void create_account_menu(int is_username, int length_password, int is_password, 
         create_account_menu(is_username, length_password, is_password, is_email);
     }
     else {
+        clear();
         attron(COLOR_PAIR(2) | A_BLINK);
         mvprintw(33, 85,"Sign Up was successful. Now you Can Log in to the game.");
         attroff(COLOR_PAIR(2) | A_BLINK);
         refresh();
         FILE *users;
         users = fopen("users.txt", "a");
-        fprintf(users, "{\n%s\n%s\n%s\n}\n", entered_username, entered_password, entered_email);
+        fprintf(users, "{\n%s\n%s\n%s\n100\n0\n1\n2\n0\n0\n0\n}\n", entered_username, entered_password, entered_email);
         fclose(users);
         sleep(5);
         return;
@@ -129,10 +130,10 @@ void add_char(char *array, int ch) {
 int check_username(char *array) {
     FILE *users;
     users = fopen("users.txt", "r");
-    char line[MAX_SIZE];
-    while (fgets(line, MAX_SIZE, users)) {
+    char line[MAX_SIZE2];
+    while (fgets(line, MAX_SIZE2, users)) {
         if (strcmp(line, "{\n") == 0) {
-            fgets(line, MAX_SIZE, users);
+            fgets(line, MAX_SIZE2, users);
             line[strlen(line)-1] = '\0';
             if (strcmp(array, line) == 0) {
                 fclose(users);

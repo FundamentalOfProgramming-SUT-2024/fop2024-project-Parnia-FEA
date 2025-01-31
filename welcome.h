@@ -6,7 +6,7 @@
 #include "new_user.h"
 #include "login.h"
 
-#define MAX_SIZE 50
+#define MAX_SIZE 1000
 
 void welcome_menu();
 

@@ -1,7 +1,7 @@
 #ifndef ROOM_H
 #define ROOM_H
 
-#define MAX_SIZE 50
+#define MAX_SIZE 1000
 
 typedef struct {
     int x;

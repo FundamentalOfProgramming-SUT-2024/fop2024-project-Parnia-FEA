@@ -14,7 +14,7 @@
 #include "weapon_menu.h"
 #define START 6
 
-#define MAX_SIZE 50
+#define MAX_SIZE 1000
 
 struct thread_args {
     int *health;
@@ -27,8 +27,11 @@ int move_indirectly(User *, int, int, int);
 void print_screen(User *, int, char);
 void *hunger_rate(void *);
 void *health_rate(void *);
+void change_info(User *);
+void copy_info();
 
 void create_new_game_func (User *user) {
+    (user -> games)++;
     create_map(user);
     curs_set(0);
     user -> visible_mode = 0;
@@ -499,14 +502,30 @@ void create_new_game_func (User *user) {
             refresh();
         }
         if (user -> current_x == user -> end_x && user -> current_y == user -> end_y) {
-            sleep(2);
+            end = 1;
+            pthread_join(thread_hunger, NULL);
+            pthread_join(thread_health, NULL);
+            sleep(1);
             clear();
             refresh();
             attron(COLOR_PAIR(2) | A_BLINK);
             mvprintw(29, 104, "YOU HAVE WON THE GAME!");
+            mvprintw(30, 107, "golds        %d", user -> gold);
+            mvprintw(31, 107, "total golds  %d", user -> total_gold);
+            mvprintw(33, 107, "score        %d", user -> score);
+            //prints
             attroff(COLOR_PAIR(2) | A_BLINK);
             refresh();
-            end = 1;
+            sleep(5);
+            //changes
+            (user -> complete_games)++;
+            (user -> total_gold) += (user -> gold);
+            (user -> total_gold) += ((user -> difficulty) * 50);
+            (user -> resume) = 0;
+            (user -> score) += (user -> gold);
+            change_info(user);
+            copy_info();
+            return;
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>') {
             mvprintw(0, 0, "If you want to use staircase to go to the next floor, press '>'!");
@@ -634,9 +653,26 @@ void create_new_game_func (User *user) {
             }
         }
     }
+    clear();
+    mvprintw(29, 104, "LOADING...");
+    refresh();
     end = 1;
     pthread_join(thread_hunger, NULL);
     pthread_join(thread_health, NULL);
+    clear();
+    mvprintw(29, 104, "Do You want to save the game?(y/n)");
+    refresh();
+    c = getch();
+    if (c == 'y') {
+        user -> resume = 1;
+    }
+    else {
+        user -> resume = 0;
+    }
+    change_info(user);
+    copy_info();
+    return;
+    
 }
 
 int move_directly(User *user, int x, int y, int type) {
@@ -848,6 +884,185 @@ void *health_rate(void *arguments) {
         }
     }
     return NULL;
+}
+
+void change_info(User *user) {
+    FILE *users;
+    users = fopen("users.txt", "r");
+    FILE *users_copy;
+    users_copy = fopen("users_copy.txt", "w");
+    fclose(users_copy);
+    users_copy = fopen("users_copy.txt", "a");
+    char line[MAX_SIZE];
+    while (fgets(line, MAX_SIZE, users)) {
+        if (strcmp(line, "{\n") == 0) {
+            fgets(line, MAX_SIZE, users);
+            line[strlen(line)-1] = '\0';
+            fprintf(users_copy, "{\n%s\n", line);
+            if (strcmp(user -> username, line) == 0) {
+                fgets(line, MAX_SIZE, users); //password
+                fprintf(users_copy, "%s", line);
+                fgets(line, MAX_SIZE, users); // email
+                fprintf(users_copy, "%s", line);
+                fgets(line, MAX_SIZE, users); //total gold
+                fprintf(users_copy, "%d\n", user -> total_gold);
+                fgets(line, MAX_SIZE, users); //score
+                fprintf(users_copy, "%d\n", user -> score);
+                fgets(line, MAX_SIZE, users); //difficulty
+                fprintf(users_copy, "%d\n", user -> difficulty);
+                fgets(line, MAX_SIZE, users); //color
+                fprintf(users_copy, "%d\n", user -> color);
+                fgets(line, MAX_SIZE, users); //games
+                fprintf(users_copy, "%d\n", user -> games);
+                fgets(line, MAX_SIZE, users); //complete games
+                fprintf(users_copy, "%d\n", user -> complete_games);
+                fgets(line, MAX_SIZE, users); //resume game
+                fprintf(users_copy, "%d\n", user -> resume);
+                if (user -> resume) {
+                    int i = 0;
+                    for (i = 0; i < 4; i++) {
+                        fprintf(users_copy, "%d ", (user -> rooms_num)[i]);
+                    }
+                    fprintf(users_copy, "\n");
+
+                    //map_rooms
+                    for (int f = 0; f < 4; f++) {
+                        for (i = 0; i < (user -> rooms_num)[f]; i++) {
+                            (user -> map_rooms)[f][i] = (Room *) malloc(sizeof(Room));
+                            //ulx
+                            fprintf(users_copy, "%d\n", (user -> map_rooms)[f][i] -> ulx);
+                            //uly
+                            fprintf(users_copy, "%d\n", (user -> map_rooms)[f][i] -> uly);
+                            //height
+                            fprintf(users_copy, "%d\n", (user -> map_rooms)[f][i] -> height);
+                            //width
+                            fprintf(users_copy, "%d\n", (user -> map_rooms)[f][i] -> width);
+                            //theme
+                            fprintf(users_copy, "%d\n", (user -> map_rooms)[f][i] -> theme);
+                            free((user -> map_rooms)[f][i]);
+                        }
+                    }
+
+                    //map_screen
+                    for (int f = 0; f < 4; f++) {
+                        for (i = 0; i < 60; i++) {
+                            for (int j = 0; j < 200; j++) {
+                                fprintf(users_copy, "%d ", (user -> map_screen)[f][i][j]);
+                            }
+                            fprintf(users_copy, "\n");
+                        }
+                    }
+
+                    //map_screen_char
+                    for (int f = 0; f < 4; f++) {
+                        for (i = 0; i < 60; i++) {
+                            for (int j = 0; j < 200; j++) {
+                                fprintf(users_copy, "%c", (user -> map_screen_char)[f][i][j]);
+                            }
+                        }
+                    }
+
+                    //in_staircase 1 2 3
+                    for (i = 1; i < 4; i++) {
+                        fprintf(users_copy, "%d %d ", (user -> in_staircase)[i] -> x, (user -> in_staircase)[i] -> y);
+                        free((user -> in_staircase)[i]);
+                    }
+                    fprintf(users_copy, "\n");
+                    //out_staircases 0 1 2
+                    for (i = 0; i < 3; i++) {
+                        fprintf(users_copy, "%d %d ", (user -> out_staircase)[i] -> x, (user -> out_staircase)[i] -> y);
+                        free((user -> out_staircase)[i]);
+                    }
+                    fprintf(users_copy, "\n");
+
+                    //visible
+                    for (int f = 0; f < 4; f++) {
+                        for (i = 0; i < 60; i++) {
+                            for (int j = 0; j < 200; j++) {
+                                fprintf(users_copy, "%d ", (user -> visible)[f][i][j]);
+                            }
+                            fprintf(users_copy, "\n");
+                        }
+                    }
+
+                    //end_x
+                    fprintf(users_copy, "%d\n", user -> end_x);
+
+                    //end_y
+                    fprintf(users_copy, "%d\n", user -> end_y);
+
+                    //current_floor
+                    fprintf(users_copy, "%d\n", user -> current_floor);
+
+                    //current_x
+                    fprintf(users_copy, "%d\n", user -> current_x);
+
+                    //current_y
+                    fprintf(users_copy, "%d\n", user -> current_y);
+
+                    //health
+                    fprintf(users_copy, "%d\n", user -> health);
+
+                    //gold
+                    fprintf(users_copy, "%d\n", user -> gold);
+
+                    //food
+                    fprintf(users_copy, "%d\n", user -> food);
+
+                    //food_menu
+                    for (i = 0; i < (user -> food); i++) {
+                        fprintf(users_copy, "%d ", (user -> food_menu)[i]);
+                    }
+                    fprintf(users_copy, "\n");
+
+                    //enchant menu
+                    for (i = 0; i < 3; i++) {
+                        fprintf(users_copy, "%d ", (user -> enchant_menu)[i]);
+                    }
+                    fprintf(users_copy, "\n");
+                    //weapon menu
+                    for (i = 0; i < 5; i++) {
+                        fprintf(users_copy, "%d ", (user -> weapon_menu)[i]);
+                    }
+                    fprintf(users_copy, "\n");
+
+                    //visible mode
+                    fprintf(users_copy, "%d\n", user -> visible_mode);
+
+                    //hunger
+                    fprintf(users_copy, "%d\n", user -> hunger);
+
+
+                }
+                fprintf(users_copy, "}\n");
+            }
+            else {
+                while (fgets(line, MAX_SIZE, users)) {
+                    fprintf(users_copy, "%s", line);
+                    if (strcmp(line, "}\n") == 0) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    fclose(users);
+    fclose(users_copy);
+}
+
+void copy_info() {
+    FILE *users_copy;
+    FILE *users;
+    users = fopen("users.txt", "w");
+    fclose(users);
+    users_copy = fopen("users_copy.txt", "r");
+    users = fopen("users.txt", "a");
+    char line[MAX_SIZE];
+    while (fgets(line, MAX_SIZE, users_copy)) {
+        fprintf(users, "%s", line);
+    }
+    fclose(users_copy);
+    fclose(users);
 }
 
 #endif

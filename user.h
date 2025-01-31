@@ -3,7 +3,7 @@
 
 #include "room.h"
 
-#define MAX_SIZE 50
+#define MAX_SIZE 1000
 
 
 typedef struct {
@@ -23,8 +23,8 @@ typedef struct {
     int current_x;
     int current_y;
     int health;
-    long long total_gold;
-    long long gold;
+    int total_gold;
+    int gold;
     int food;
     int food_menu[5];
     int enchant_menu[3];
@@ -33,9 +33,10 @@ typedef struct {
     int hunger;
     int difficulty;
     int color;
-    long long score;
+    int score;
     int games;
     int complete_games;
+    int resume;
 } User;
 
 #endif

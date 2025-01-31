@@ -10,7 +10,7 @@
 #include "setting.h"
 #include "user.h"
 
-#define MAX_SIZE 50
+#define MAX_SIZE 1000
 
 void hammer(User *);
 void dagger(User *);

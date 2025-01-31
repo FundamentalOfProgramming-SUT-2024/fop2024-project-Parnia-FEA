@@ -7,7 +7,8 @@
 #include <ctype.h>
 #include "welcome.h"
 
-#define MAX_SIZE 50
+#define MAX_SIZE 1000
+#define MAX_SIZE2 50
 #define LENGTH 214
 #define WIDTH 66
 

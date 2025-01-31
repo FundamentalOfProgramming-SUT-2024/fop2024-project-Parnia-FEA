@@ -10,7 +10,7 @@
 #include "setting.h"
 #include "user.h"
 
-#define MAX_SIZE 50
+#define MAX_SIZE 1000
 
 void game_menu_func(User *user) {
 	clear();
@@ -62,6 +62,7 @@ void game_menu_func(User *user) {
 				free_menu(my_menu);
 				wrefresh(menu_win);
 				(*p)(user);
+				game_menu_func(user);
 				return;
 			}
 		}
