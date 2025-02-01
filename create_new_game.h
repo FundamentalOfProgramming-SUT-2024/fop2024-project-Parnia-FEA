@@ -102,6 +102,23 @@ void game_func (User *user) {
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && (user -> current_y != i || user -> current_x != j)) {
                     mvprintw(START + i, START + j, "%s", "\U0001F354");
                 }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'x') {
+                    mvprintw(START + i, START + j, "%s", "\U0001F921");
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'w') {
+                    mvprintw(START + i, START + j, "%s", "\U0001F608");
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'q') {
+                    mvprintw(START + i, START + j, "%s", "\U00002603");
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'z') {
+                    attron(COLOR_PAIR(3));
+                    mvprintw(START + i, START + j, "%s", "\U000020B0");
+                    attroff(COLOR_PAIR(3));
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'u') {
+                    mvprintw(START + i, START + j, "%s", "\U00002620");
+                }
                 else if (isdigit((user -> map_screen_char)[user -> current_floor][i][j]) && user -> current_y == i && user -> current_x == j + 1) {
                     mvaddch(START + i, START + j, '.');
                 }
@@ -134,7 +151,7 @@ void game_func (User *user) {
                     mvprintw(START + i, START + j, "%s", "\U00002742");
                     attron(COLOR_PAIR(2));
                 }
-                else if (j == 0 || ((user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B' && isdigit((user -> map_screen_char)[user -> current_floor][i][j - 1]) == 0)){
+                else if (j == 0 || ((user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'x' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'w' && isdigit((user -> map_screen_char)[user -> current_floor][i][j - 1]) == 0)){
                     mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
                 }
                 if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
@@ -369,7 +386,6 @@ void game_func (User *user) {
                 }
             }
         }
-        refresh();
         (user -> visible)[user -> current_floor][user -> current_y][user -> current_x] = 1;
         if (flag) {
             clear();
@@ -455,6 +471,23 @@ void game_func (User *user) {
                         else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && (user -> current_y != i || user -> current_x != j)) {
                             mvprintw(START + i, START + j, "%s", "\U0001F354");
                         }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'x') {
+                            mvprintw(START + i, START + j, "%s", "\U0001F921");
+                        }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'w') {
+                            mvprintw(START + i, START + j, "%s", "\U0001F608");
+                        }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'q') {
+                            mvprintw(START + i, START + j, "%s", "\U00002603");
+                        }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'z') {
+                            attron(COLOR_PAIR(3));
+                            mvprintw(START + i, START + j, "%s", "\U000020B0");
+                            attroff(COLOR_PAIR(3));
+                        }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'u') {
+                            mvprintw(START + i, START + j, "%s", "\U00002620");
+                        }
                         else if (isdigit((user -> map_screen_char)[user -> current_floor][i][j]) && user -> current_y == i && user -> current_x == j + 1) {
                             mvaddch(START + i, START + j, '.');
                         }
@@ -487,7 +520,7 @@ void game_func (User *user) {
                             mvprintw(START + i, START + j, "%s", "\U00002742");
                             attron(COLOR_PAIR(2));
                         }
-                        else if (j == 0 || ((user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B' && isdigit((user -> map_screen_char)[user -> current_floor][i][j - 1]) == 0)){
+                        else if (j == 0 || ((user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'x' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'w' && isdigit((user -> map_screen_char)[user -> current_floor][i][j - 1]) == 0)){
                             mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
                         }
                         if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
@@ -822,6 +855,23 @@ void print_screen(User *user, int flag_stair, char gamer) {
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && (user -> current_y != i || user -> current_x != j)) {
                     mvprintw(START + i, START + j, "%s", "\U0001F354");
                 }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'x') {
+                    mvprintw(START + i, START + j, "%s", "\U0001F921");
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'w') {
+                    mvprintw(START + i, START + j, "%s", "\U0001F608");
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'q') {
+                    mvprintw(START + i, START + j, "%s", "\U00002603");
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'z') {
+                    attron(COLOR_PAIR(3));
+                    mvprintw(START + i, START + j, "%s", "\U000020B0");
+                    attroff(COLOR_PAIR(3));
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'u') {
+                    mvprintw(START + i, START + j, "%s", "\U00002620");
+                }
                 else if (isdigit((user -> map_screen_char)[user -> current_floor][i][j]) && user -> current_y == i && user -> current_x == j + 1) {
                     mvaddch(START + i, START + j, '.');
                 }
@@ -854,7 +904,7 @@ void print_screen(User *user, int flag_stair, char gamer) {
                     mvprintw(START + i, START + j, "%s", "\U00002742");
                     attron(COLOR_PAIR(2));
                 }
-                else if (j == 0 || ((user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B' && isdigit((user -> map_screen_char)[user -> current_floor][i][j - 1]) == 0)){
+                else if (j == 0 || ((user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'x' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'w' && isdigit((user -> map_screen_char)[user -> current_floor][i][j - 1]) == 0)){
                     mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
                 }
                 if ((user -> map_screen)[user -> current_floor][i][j] > 0) {

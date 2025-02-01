@@ -545,6 +545,77 @@ void create_map (User *user) {
                         (user -> map_screen_char)[f][weapon_y][weapon_x] = '0' + weapon_theme;
                     }
                 }
+                int enemy = rand() % 3;
+                if (enemy == 0) {
+                    int enemy_theme = rand() % 10;
+                    int steps = 100;
+                    if (0 <= enemy_theme < 3) {
+                        //deamon x
+                        int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
+                        int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
+                        while (steps > 0 && ((user -> map_screen_char)[f][enemy_y][enemy_x] != '.' || (user -> map_screen_char)[f][enemy_y][enemy_x+1] != '.' || (user -> map_screen_char)[f][enemy_y][enemy_x-1] != '.')) {
+                            enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
+                            enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
+                            steps --;
+                        }
+                        if (steps > 0) {
+                            (user -> map_screen_char)[f][enemy_y][enemy_x] = 'x';
+                        }
+
+                    }
+                    else if (3 <= enemy_theme < 6) {
+                        //fire w
+                        int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
+                        int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
+                        while (steps > 0 && ((user -> map_screen_char)[f][enemy_y][enemy_x] != '.' || (user -> map_screen_char)[f][enemy_y][enemy_x+1] != '.' || (user -> map_screen_char)[f][enemy_y][enemy_x-1] != '.')) {
+                            enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
+                            enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
+                            steps --;
+                        }
+                        if (steps > 0) {
+                            (user -> map_screen_char)[f][enemy_y][enemy_x] = 'w';
+                        }
+                    }
+                    else if (6 <= enemy_theme < 8) {
+                        //giant q
+                        int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
+                        int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
+                        while (steps > 0 && (user -> map_screen_char)[f][enemy_y][enemy_x] != '.' ) {
+                            enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
+                            enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
+                            steps --;
+                        }
+                        if (steps > 0) {
+                            (user -> map_screen_char)[f][enemy_y][enemy_x] = 'q';
+                        }
+                    }
+                    else if (enemy_theme == 8) {
+                        //snake z
+                        int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
+                        int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
+                        while (steps > 0 && (user -> map_screen_char)[f][enemy_y][enemy_x] != '.' ) {
+                            enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
+                            enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
+                            steps --;
+                        }
+                        if (steps > 0) {
+                            (user -> map_screen_char)[f][enemy_y][enemy_x] = 'z';
+                        }
+                    }
+                    else {
+                        //undeed u
+                        int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
+                        int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
+                        while (steps > 0 && (user -> map_screen_char)[f][enemy_y][enemy_x] != '.' ) {
+                            enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
+                            enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
+                            steps --;
+                        }
+                        if (steps > 0) {
+                            (user -> map_screen_char)[f][enemy_y][enemy_x] = 'u';
+                        }
+                    }
+                }
             }
             
             if (rooms[f][i] -> theme == 3) {
