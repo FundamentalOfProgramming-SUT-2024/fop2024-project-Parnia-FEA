@@ -26,7 +26,7 @@ void weapon_menu_func(User *user) {
 	mvprintw(39, 73, "Wand            m           %d                10               15", (user -> weapon_menu)[2]);
 	mvprintw(40, 73, "Arrow           a           %d                5                5", (user -> weapon_menu)[3]);
 	refresh();
-	char c;
+	int c;
 	while ((c = getch()) != KEY_F(1)) {
 		if (c == (int)'h') {
 			if (user -> current_weapon != -1) {

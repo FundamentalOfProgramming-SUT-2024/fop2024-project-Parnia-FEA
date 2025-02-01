@@ -549,7 +549,7 @@ void create_map (User *user) {
                 if (enemy == 0) {
                     int enemy_theme = rand() % 10;
                     int steps = 100;
-                    if (0 <= enemy_theme < 3) {
+                    if (0 <= enemy_theme && enemy_theme < 3) {
                         //deamon x
                         int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                         int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
@@ -563,7 +563,7 @@ void create_map (User *user) {
                         }
 
                     }
-                    else if (3 <= enemy_theme < 6) {
+                    else if (3 <= enemy_theme && enemy_theme < 6) {
                         //fire w
                         int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                         int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
@@ -576,7 +576,7 @@ void create_map (User *user) {
                             (user -> map_screen_char)[f][enemy_y][enemy_x] = 'w';
                         }
                     }
-                    else if (6 <= enemy_theme < 8) {
+                    else if (6 <= enemy_theme && enemy_theme < 8) {
                         //giant q
                         int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                         int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);

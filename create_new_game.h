@@ -262,7 +262,7 @@ void game_func (User *user) {
             flag_g = 1;
             c = getch();
         }
-        if (c == 'm') {
+         if (c == 'm') {
             user -> visible_mode = 1 - (user -> visible_mode);
             flag = 1;
         }
@@ -770,12 +770,30 @@ void game_func (User *user) {
 }
 
 int move_directly(User *user, int x, int y, int type) {
-    if (type == 0 && user -> current_y + y >= 0 && user -> current_y + y < 60 && user -> current_x + x >= 0 && user -> current_x + x < 200 && (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '_' && (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'O') {
+    if (type == 0 && 
+        user -> current_y + y >= 0 && user -> current_y + y < 60 && 
+        user -> current_x + x >= 0 && user -> current_x + x < 200 && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != ' ' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '|' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '_' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'O' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'x' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'w' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'q' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'z' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'u' &&
+        (user -> current_x + x == 0 || (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x - 1] != 'x') &&
+        (user -> current_x + x == 0 || (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x - 1] != 'w')) {
         (user -> current_y) += y;
         (user -> current_x) += x;
         return 1;
     }
-    if (type == 1 && user -> current_y + y >= 0 && user -> current_y + y < 60 && user -> current_x + x >= 0 && user -> current_x + x < 200 && ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == '.' || (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == '#')) {
+    if (type == 1 && 
+        user -> current_y + y >= 0 && user -> current_y + y < 60 && 
+        user -> current_x + x >= 0 && user -> current_x + x < 200 &&
+        (user -> current_x + x == 0 || (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x - 1] != 'x') &&
+        (user -> current_x + x == 0 || (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x - 1] != 'w') &&
+        ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == '.' || (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == '#')) {
         (user -> current_y) += y;
         (user -> current_x) += x;
         return 1;
@@ -784,12 +802,33 @@ int move_directly(User *user, int x, int y, int type) {
 }
 
 int move_indirectly(User *user, int x, int y, int type) {
-    if (type == 0 && user -> current_y + y >= 0 && user -> current_y + y < 60 && user -> current_x + x >= 0 && user -> current_x + x < 200 && (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != ' ' && (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '|' && (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '_' && (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'O' && (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '#' && (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '-' && (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '!') {
+    if (type == 0 && 
+        user -> current_y + y >= 0 && user -> current_y + y < 60 && 
+        user -> current_x + x >= 0 && user -> current_x + x < 200 && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != ' ' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '|' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '_' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'O' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '#' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '-' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != '!' &&
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'x' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'w' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'q' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'z' && 
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] != 'u' &&
+        (user -> current_x + x == 0 || (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x - 1] != 'x') &&
+        (user -> current_x + x == 0 || (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x - 1] != 'w')) {
         (user -> current_y) += y;
         (user -> current_x) += x;
         return 1;
     }
-    if (type == 1 && user -> current_y + y >= 0 && user -> current_y + y < 60 && user -> current_x + x >= 0 && user -> current_x + x < 200 && (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == '.') {
+    if (type == 1 && 
+        user -> current_y + y >= 0 && user -> current_y + y < 60 && 
+        user -> current_x + x >= 0 && user -> current_x + x < 200 && 
+        (user -> current_x + x == 0 || (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x - 1] != 'x') &&
+        (user -> current_x + x == 0 || (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x - 1] != 'w') &&
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == '.') {
         (user -> current_y) += y;
         (user -> current_x) += x;
         return 1;
