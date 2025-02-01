@@ -48,6 +48,7 @@ void create_new_game_func (User *user) {
     (user -> weapon_menu)[2] = 0; //Wand
     (user -> weapon_menu)[3] = 0; //Normal Arrow
     (user -> weapon_menu)[4] = 0; //Hocho
+    (user -> current_weapon) = 0;
     game_func(user);
 }
 
@@ -191,6 +192,12 @@ void game_func (User *user) {
         int flag_stair = 0;
         int flag_g = 0;
         //instruction
+        if (c == 'w') {
+            user -> current_weapon = -1;
+            mvprintw(0, 0, "Now, You Have No Weapons In Hand!");
+            refresh();
+            c = getch();
+        }
         if (c == 's') {
             if ((user -> map_screen)[user -> current_floor][user -> current_y][user -> current_x] > 0) {
                 if (user -> current_y - 1 >= 0 && ((user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == '-' || (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == '!')) {
@@ -630,7 +637,21 @@ void game_func (User *user) {
             attroff(COLOR_PAIR(user -> color) | A_BLINK);
             mvprintw(0, 0, "WEAPON COLLECTED!");
             mvaddch(user -> current_y + START, user -> current_x + 1 + START, '.');
-            (user -> weapon_menu)[(user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] - '0']++;
+            int weapon_theme = (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] - '0';
+            if (weapon_theme == 1) {
+                (user -> weapon_menu)[weapon_theme] += 10;
+            }
+            else if (weapon_theme == 2) {
+                (user -> weapon_menu)[weapon_theme] += 8;
+            }
+            else if (weapon_theme == 3) {
+                (user -> weapon_menu)[weapon_theme] += 20;
+            }
+            else if (weapon_theme == 4) {
+                if ((user -> weapon_menu)[weapon_theme] == 0) {
+                    (user -> weapon_menu)[weapon_theme] = 1;
+                }
+            }
             (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
             //mvprintw(0, 0, "%c", (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x]);
             refresh();
@@ -641,7 +662,21 @@ void game_func (User *user) {
             attroff(COLOR_PAIR(user -> color) | A_BLINK);
             mvprintw(0, 0, "WEAPON COLLECTED!");
             mvaddch(user -> current_y + START, user -> current_x - 1 + START, '.');
-            (user -> weapon_menu)[(user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] - '0']++;
+            int weapon_theme = (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] - '0';
+            if (weapon_theme == 1) {
+                (user -> weapon_menu)[weapon_theme] += 10;
+            }
+            else if (weapon_theme == 2) {
+                (user -> weapon_menu)[weapon_theme] += 8;
+            }
+            else if (weapon_theme == 3) {
+                (user -> weapon_menu)[weapon_theme] += 20;
+            }
+            else if (weapon_theme == 4) {
+                if ((user -> weapon_menu)[weapon_theme] == 0) {
+                    (user -> weapon_menu)[weapon_theme] = 1;
+                }
+            }
             (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] = '.';
             //mvprintw(0, 0, "%c", (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1]);
             refresh();

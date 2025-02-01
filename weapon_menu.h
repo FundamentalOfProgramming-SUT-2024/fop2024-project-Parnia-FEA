@@ -1,109 +1,173 @@
 #ifndef WEAPON_MENU_H
 #define WEAPON_MENU_H
 #include <curses.h>
-#include <menu.h>
-#include <string.h>
-#include <stdlib.h>
-#include "create_new_game.h"
-#include "scoreboard.h"
-#include "setting.h"
 #include "user.h"
 
 #define MAX_SIZE 1000
 
-void hammer(User *);
-void dagger(User *);
-void wand(User *);
-void arrow(User *);
-void hocho(User *);
-
 void weapon_menu_func(User *user) {
 	clear();
-    int weapon = (user -> weapon_menu)[0] +(user -> weapon_menu)[1] + (user -> weapon_menu)[2] + (user -> weapon_menu)[3] + (user -> weapon_menu)[4];
-    if (weapon  == 0) {
-        attron(COLOR_PAIR(2) | A_BLINK);
-        mvprintw(32, 100, "NO WEAPONS!!!");
-        attroff(COLOR_PAIR(2) | A_BLINK);
-        sleep(3);
-        return;
-    }
-    ITEM **items;			
-	MENU *my_menu;
-	WINDOW *menu_win;
-    int c;
-    char choices[5][100];
-    char *choices_numbers[5] = {"Hammer", "Dagger", "Wand", "Arrow", "Hocho"};
-    void (*func[5]) (User *) = {hammer, dagger, wand, arrow, hocho};
-    sprintf(choices[0], "%d", (user -> weapon_menu)[0]);
-    sprintf(choices[1], "%d", (user -> weapon_menu)[1]);
-    sprintf(choices[2], "%d", (user -> weapon_menu)[2]);
-    sprintf(choices[3], "%d", (user -> weapon_menu)[3]);
-    sprintf(choices[4], "%d", (user -> weapon_menu)[4]);
-    items = (ITEM **)calloc(6, sizeof(ITEM *));
-    for(int i = 0; i < 5; i++) {       
-        items[i] = new_item(choices_numbers[i], choices[i]);
-        set_item_userptr(items[i], func[i]);
-	}
-	items[5] = (ITEM *)NULL;
-	my_menu = new_menu((ITEM **)items);
-	menu_win = newwin(5, 40, 32, 100);
-	keypad(menu_win, TRUE);
-	set_menu_win(my_menu, menu_win);
-	set_menu_sub(my_menu, derwin(menu_win, 5, 40, 0, 0));
-	mvprintw(LINES - 2, 0, "Press <ENTER> to select the weapon");
+	attron(COLOR_PAIR(2));
+	mvprintw(25, 104, "WEAPONS");
+	attroff(COLOR_PAIR(2));
+
+	attron(COLOR_PAIR(3));
+	mvprintw(27, 102, "Short Range");
+	mvprintw(29, 83, "weapon      character      number          power");
+	attroff(COLOR_PAIR(3));
+	mvprintw(31, 83, "Hammer          h           1                5");
+	mvprintw(32, 83, "Sword           s           %d               10", (user -> weapon_menu)[4]);
+
+	attron(COLOR_PAIR(3));
+	mvprintw(34, 103, "Long Range");
+	mvprintw(36, 73, "weapon      character      number          distance          power");
+	attroff(COLOR_PAIR(3));
+	mvprintw(38, 73, "Dagger          d           %d                5                12", (user -> weapon_menu)[1]);
+	mvprintw(39, 73, "Wand            m           %d                10               15", (user -> weapon_menu)[2]);
+	mvprintw(40, 73, "Arrow           a           %d                5                5", (user -> weapon_menu)[3]);
 	refresh();
-	post_menu(my_menu);
-	wrefresh(menu_win);
-	while((c = wgetch(menu_win)) != KEY_F(1)) {       
-        switch(c) {	
-            case KEY_DOWN:
-				menu_driver(my_menu, REQ_DOWN_ITEM);
-				break;
-			case KEY_UP:
-				menu_driver(my_menu, REQ_UP_ITEM);
-				break;
-			case 10:
-			{
-                
-                ITEM *cur_item;
-				void (*p)(User *);
-				cur_item = current_item(my_menu);
-				p = (void (*) (User *)) item_userptr(cur_item);
-				pos_menu_cursor(my_menu);
-				unpost_menu(my_menu);
-				for(int i = 0; i < 5; ++i)
-					free_item(items[i]);
-				free_menu(my_menu);
-				wrefresh(menu_win);
-				(*p)(user);
+	char c;
+	while ((c = getch()) != KEY_F(1)) {
+		if (c == (int)'h') {
+			if (user -> current_weapon != -1) {
+				clear();
+				attron(COLOR_PAIR(1));
+				mvprintw(31, 77, "First, You Have To Put Your Current Weapon In The BackPack.");
+				attroff(COLOR_PAIR(1));
+				user -> current_weapon = 0;
+				refresh();
+				sleep(2);
+				return;
+			}
+			if ((user -> weapon_menu)[0] > 0) {
+				clear();
+				attron(COLOR_PAIR(2));
+				mvprintw(31, 88, "Now, Your Current Weapon Is A Hammer!");
+				attroff(COLOR_PAIR(2));
+				user -> current_weapon = 0;
+				refresh();
+				sleep(2);
 				return;
 			}
 		}
-	}	
-	unpost_menu(my_menu);
-	for(int i = 0; i < 5; i++)
-		free_item(items[i]);
-	free_menu(my_menu);
-}
-
-void hammer(User *user) {
-
-}
-
-void dagger(User *user) {
-
-}
-
-void wand(User *user) {
-
-}
-
-void arrow(User *user) {
-
-}
-
-void hocho(User *user) {
-
+		else if (c == (int)'d') {
+			if (user -> current_weapon != -1) {
+				clear();
+				attron(COLOR_PAIR(1));
+				mvprintw(31, 77, "First, You Have To Put Your Current Weapon In The BackPack.");
+				attroff(COLOR_PAIR(1));
+				user -> current_weapon = 1;
+				refresh();
+				sleep(2);
+				return;
+			}
+			if ((user -> weapon_menu)[1] > 0) {
+				clear();
+				attron(COLOR_PAIR(2));
+				mvprintw(31, 88, "Now, Your Current Weapon Is A Dagger!");
+				attroff(COLOR_PAIR(2));
+				user -> current_weapon = 1;
+				refresh();
+				sleep(2);
+				return;
+			}
+			clear();
+			attron(COLOR_PAIR(1));
+			mvprintw(31, 89, "There Are No Daggers In Backpack!");
+			attroff(COLOR_PAIR(1));
+			refresh();
+			sleep(2);
+			weapon_menu_func(user);
+			return;
+		}
+		else if (c == (int)'m') {
+			if (user -> current_weapon != -1) {
+				clear();
+				attron(COLOR_PAIR(1));
+				mvprintw(31, 77, "First, You Have To Put Your Current Weapon In The BackPack.");
+				attroff(COLOR_PAIR(1));
+				refresh();
+				user -> current_weapon = 2;
+				sleep(2);
+				return;
+			}
+			if ((user -> weapon_menu)[2] > 0) {
+				clear();
+				attron(COLOR_PAIR(2));
+				mvprintw(31, 88, "Now, Your Current Weapon Is A Wand!");
+				attroff(COLOR_PAIR(2));
+				refresh();
+				user -> current_weapon = 2;
+				sleep(2);
+				return;
+			}
+			clear();
+			attron(COLOR_PAIR(1));
+			mvprintw(31, 89, "There Are No Wands In Backpack!");
+			attroff(COLOR_PAIR(1));
+			refresh();
+			sleep(2);
+			weapon_menu_func(user);
+		}
+		else if (c == (int)'a') {
+			if (user -> current_weapon != -1) {
+				clear();
+				attron(COLOR_PAIR(1));
+				mvprintw(31, 77, "First, You Have To Put Your Current Weapon In The BackPack.");
+				attroff(COLOR_PAIR(1));
+				user -> current_weapon = 3;
+				refresh();
+				sleep(2);
+				return;
+			}
+			if ((user -> weapon_menu)[3] > 0) {
+				clear();
+				attron(COLOR_PAIR(2));
+				mvprintw(31, 88, "Now, Your Current Weapon Is An Arrow!");
+				attroff(COLOR_PAIR(2));
+				user -> current_weapon = 3;
+				refresh();
+				sleep(2);
+				return;
+			}
+			clear();
+			attron(COLOR_PAIR(1));
+			mvprintw(31, 89, "There Are No Arrows In Backpack!");
+			attroff(COLOR_PAIR(1));
+			refresh();
+			sleep(2);
+			weapon_menu_func(user);
+		}
+		else if (c == (int)'s') {
+			if (user -> current_weapon != -1) {
+				clear();
+				attron(COLOR_PAIR(1));
+				mvprintw(31, 77, "First, You Have To Put Your Current Weapon In The BackPack.");
+				attroff(COLOR_PAIR(1));
+				user -> current_weapon = 4;
+				refresh();
+				sleep(2);
+				return;
+			}
+			if ((user -> weapon_menu)[4] > 0) {
+				clear();
+				attron(COLOR_PAIR(2));
+				mvprintw(31, 88, "Now, Your Current Weapon Is A Sword!");
+				attroff(COLOR_PAIR(2));
+				user -> current_weapon = 4;
+				refresh();
+				sleep(2);
+				return;
+			}
+			clear();
+			attron(COLOR_PAIR(1));
+			mvprintw(31, 89, "There Are No Swords In Backpack!");
+			attroff(COLOR_PAIR(1));
+			refresh();
+			sleep(2);
+			weapon_menu_func(user);
+		}
+	}
 }
 
 #endif
