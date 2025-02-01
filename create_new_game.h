@@ -169,7 +169,7 @@ void game_func (User *user) {
     mvprintw(3, 0, "gold %d", user -> gold);
     attroff(COLOR_PAIR(4));
     refresh();
-    while ((c = getch()) != KEY_F(1)) {
+    while (user -> health > 0 && (c = getch()) != KEY_F(1)) {
         int flag = 0;
         int flag_stair = 0;
         int flag_g = 0;
