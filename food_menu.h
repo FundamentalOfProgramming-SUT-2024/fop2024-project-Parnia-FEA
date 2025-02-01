@@ -37,6 +37,7 @@ void food_menu_func(User *user) {
         attron(COLOR_PAIR(2) | A_BLINK);
         mvprintw(32, 100, "NO FOOD!");
         attroff(COLOR_PAIR(2) | A_BLINK);
+        refresh();
         sleep(3);
         return;
     }
@@ -165,7 +166,16 @@ void regular_food(User *user, int i) {
         (user -> food_menu)[j] = (user -> food_menu)[j+1];
     }
     (user -> food)--;
-    if (user -> health < 99) {
+    if (user -> health < 96) {
+        (user -> health) += 5;
+    }
+    else if (user -> health == 96){
+        (user -> health) += 4;
+    }
+    else if (user -> health == 97){
+        (user -> health) += 3;
+    }
+    else if (user -> health == 98){
         (user -> health) += 2;
     }
     else if (user -> health == 99){

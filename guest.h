@@ -18,7 +18,7 @@ void guest_user() {
     user.resume = 0;
     user.total_gold = 100;
     user.difficulty = 1;
-    user.score = 0;
+    user.total_score = 0;
     user.color = 2;
     user.games = 0;
     user.complete_games = 0;

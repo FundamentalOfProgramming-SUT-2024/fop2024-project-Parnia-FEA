@@ -17,8 +17,11 @@ typedef struct {
     Point *in_staircase[4];
     Point *out_staircase[4];
     int visible[4][60][200];
+    int enemy_health[4][60][200];
+    int enemy_move[4][60][200];
     int end_x;
     int end_y;
+    int end;
     int current_floor;
     int current_x;
     int current_y;
@@ -34,6 +37,7 @@ typedef struct {
     int difficulty;
     int color;
     int score;
+    int total_score;
     int games;
     int complete_games;
     int resume;

@@ -38,7 +38,7 @@ void show_score_board (User *user) {
             fgets(line, MAX_SIZE, users); //password
             fgets(line, MAX_SIZE, users); // email
             fgets(line, MAX_SIZE, users); //total gold ++
-            fgets(line, MAX_SIZE, users); //score ++
+            fgets(line, MAX_SIZE, users); //total score ++
             line[strlen(line)-1] = '\0';
             sscanf(line, "%d", &(users_board[i] -> score));
             i++;

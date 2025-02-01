@@ -27,6 +27,8 @@ void create_map (User *user) {
             for (int j = 0; j < 200; j++) {
                 screen[f][i][j] = 0;
                 screen_char[f][i][j] = ' ';
+                (user -> enemy_health)[f][i][j] = 0;
+                (user -> enemy_move)[f][i][j] = 0;
             }
         }
     }
@@ -547,9 +549,9 @@ void create_map (User *user) {
                 }
                 int enemy = rand() % 3;
                 if (enemy == 0) {
-                    int enemy_theme = rand() % 10;
+                    int enemy_theme = rand() % 5;
                     int steps = 100;
-                    if (0 <= enemy_theme && enemy_theme < 3) {
+                    if (enemy_theme == 0) {
                         //deamon x
                         int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                         int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
@@ -560,10 +562,12 @@ void create_map (User *user) {
                         }
                         if (steps > 0) {
                             (user -> map_screen_char)[f][enemy_y][enemy_x] = 'x';
+                            (user -> enemy_health)[f][enemy_y][enemy_x] = 5;
+                            (user -> enemy_move)[f][enemy_y][enemy_x] = 0;
                         }
 
                     }
-                    else if (3 <= enemy_theme && enemy_theme < 6) {
+                    else if (enemy_theme == 1) {
                         //fire w
                         int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                         int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
@@ -574,9 +578,11 @@ void create_map (User *user) {
                         }
                         if (steps > 0) {
                             (user -> map_screen_char)[f][enemy_y][enemy_x] = 'w';
+                            (user -> enemy_health)[f][enemy_y][enemy_x] = 10;
+                            (user -> enemy_move)[f][enemy_y][enemy_x] = 0;
                         }
                     }
-                    else if (6 <= enemy_theme && enemy_theme < 8) {
+                    else if (enemy_theme == 2) {
                         //giant q
                         int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                         int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
@@ -587,9 +593,11 @@ void create_map (User *user) {
                         }
                         if (steps > 0) {
                             (user -> map_screen_char)[f][enemy_y][enemy_x] = 'q';
+                            (user -> enemy_health)[f][enemy_y][enemy_x] = 15;
+                            (user -> enemy_move)[f][enemy_y][enemy_x] = 5;
                         }
                     }
-                    else if (enemy_theme == 8) {
+                    else if (enemy_theme == 3) {
                         //snake z
                         int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                         int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
@@ -600,6 +608,8 @@ void create_map (User *user) {
                         }
                         if (steps > 0) {
                             (user -> map_screen_char)[f][enemy_y][enemy_x] = 'z';
+                            (user -> enemy_health)[f][enemy_y][enemy_x] = 20;
+                            (user -> enemy_move)[f][enemy_y][enemy_x] = 100;
                         }
                     }
                     else {
@@ -613,6 +623,8 @@ void create_map (User *user) {
                         }
                         if (steps > 0) {
                             (user -> map_screen_char)[f][enemy_y][enemy_x] = 'u';
+                            (user -> enemy_health)[f][enemy_y][enemy_x] = 30;
+                            (user -> enemy_move)[f][enemy_y][enemy_x] = 5;
                         }
                     }
                 }

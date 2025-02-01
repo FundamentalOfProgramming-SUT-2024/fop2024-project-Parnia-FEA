@@ -21,6 +21,7 @@ struct thread_args {
     int *hunger;
     int *end;
     int *difficulty;
+    User *user;
 };
 
 void game_func(User *);
@@ -29,6 +30,8 @@ int move_indirectly(User *, int, int, int);
 void print_screen(User *, int, char);
 void *hunger_rate(void *);
 void *health_rate(void *);
+void *add_health(void *);
+int enemy_damage(User *);
 void change_info(User *);
 void copy_info();
 
@@ -40,6 +43,7 @@ void create_new_game_func (User *user) {
     user -> health = 50 + (3 - user -> difficulty) * 25;
     user -> hunger = 14 + (3 - user -> difficulty) * 3;
     user -> gold = 0;
+    user -> score = 0;
     (user -> enchant_menu)[0] = 0; //Health
     (user -> enchant_menu)[1] = 0; //Speed
     (user -> enchant_menu)[2] = 0; //Damage
@@ -67,8 +71,11 @@ void continue_game_func (User *user) {
 void game_func (User *user) {
     curs_set(0);
     int end = 0;
+    user -> end = 0;
     pthread_t thread_hunger;
     pthread_t thread_health;
+    pthread_t thread_add_health;
+    //pthread_t thread_enemy_damage;
     struct thread_args args;
     args.health = &(user -> health);
     args.hunger = &(user -> hunger);
@@ -76,6 +83,8 @@ void game_func (User *user) {
     args.difficulty = &(user -> difficulty);
     pthread_create(&thread_hunger, NULL, hunger_rate, (void *)(&args));
     pthread_create(&thread_health, NULL, health_rate, (void *)(&args));
+    pthread_create(&thread_add_health, NULL, add_health, (void *)(&args));
+    //pthread_create(&thread_enemy_damage, NULL, enemy_damage, (void *)(user));
     char gamer = toupper((user -> username)[0]);
     int c;
     clear();
@@ -565,8 +574,11 @@ void game_func (User *user) {
         }
         if (user -> current_x == user -> end_x && user -> current_y == user -> end_y) {
             end = 1;
+            user -> end = 1;
             pthread_join(thread_hunger, NULL);
             pthread_join(thread_health, NULL);
+            pthread_join(thread_add_health, NULL);
+            //pthread_join(thread_enemy_damage, NULL);
             sleep(1);
             clear();
             refresh();
@@ -584,7 +596,8 @@ void game_func (User *user) {
             (user -> total_gold) += (user -> gold);
             (user -> total_gold) += ((user -> difficulty) * 50);
             (user -> resume) = 0;
-            (user -> score) += (user -> gold);
+            (user -> total_score) += (user -> gold);
+            (user -> total_score) += (user -> score);
             if (user -> is_guest == 0) {
                 change_info(user);
                 copy_info();
@@ -717,6 +730,14 @@ void game_func (User *user) {
             attroff(COLOR_PAIR(3));
             refresh();
         }
+        int damage = enemy_damage(user);
+        if (damage > 0) {
+            print_screen(user, 0, gamer);
+            attron(COLOR_PAIR(1));
+            mvprintw(0, 0, "%d damage from enemy!", damage);
+            attroff(COLOR_PAIR(1));
+            refresh();
+        }
         for (int i = 0; i < (user -> rooms_num)[user -> current_floor]; i++) {
             if ((user -> map_rooms)[user -> current_floor][i] -> theme == 6) {
                 /*
@@ -744,25 +765,34 @@ void game_func (User *user) {
                 }
             }
         }
+    
     }
     clear();
-    mvprintw(29, 104, "LOADING...");
-    refresh();
-    end = 1;
-    pthread_join(thread_hunger, NULL);
-    pthread_join(thread_health, NULL);
-    clear();
-    if (user -> is_guest == 0) {
-        mvprintw(29, 98, "Do You want to save the game?(y/n)");
-        c = getch();
-        if (c == 'y') {
-            user -> resume = 1;
+    if (user -> health <= 0) {
+        mvprintw(29, 104, "YOU LOST");
+    }
+    else {
+        mvprintw(29, 104, "LOADING...");
+        refresh();
+        end = 1;
+        user -> end = 1;
+        pthread_join(thread_hunger, NULL);
+        pthread_join(thread_health, NULL);
+        pthread_join(thread_add_health, NULL);
+        //pthread_join(thread_enemy_damage, NULL);
+        clear();
+        if (user -> is_guest == 0) {
+            mvprintw(29, 98, "Do You want to save the game?(y/n)");
+            c = getch();
+            if (c == 'y') {
+                user -> resume = 1;
+            }
+            else {
+                user -> resume = 0;
+            }
+            change_info(user);
+            copy_info();
         }
-        else {
-            user -> resume = 0;
-        }
-        change_info(user);
-        copy_info();
     }
     refresh();
     return;
@@ -1019,7 +1049,7 @@ void print_screen(User *user, int flag_stair, char gamer) {
 void *hunger_rate(void *arguments) {
     struct thread_args *args = (struct thread_args *) arguments;
     while (!(*(args -> end))) {
-        for (int i = 0; i < 50 + (*(args -> difficulty)) * 5; i++) {
+        for (int i = 0; i < 30 + (3 - *(args -> difficulty)) * 5; i++) {
             if (*(args -> end)) {
                 return NULL;
             }
@@ -1030,10 +1060,212 @@ void *hunger_rate(void *arguments) {
     return NULL;
 }
 
+int enemy_damage(User *user) {
+    int damage = 0;
+    if (user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == 'x') {
+        (user -> health) -= 2;
+        damage += 2;
+    }
+    if (user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == 'x') {
+        (user -> health) -= 2;
+        damage += 2;
+    }
+    if (user -> current_x < 199 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == 'x') {
+        (user -> health) -= 2;
+        damage += 2;
+    }
+    if (user -> current_x > 1 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 2] == 'x') {
+        (user -> health) -= 2;
+        damage += 2;
+    }
+    if (user -> current_x < 199 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == 'x') {
+        (user -> health) -= 2;
+        damage += 2;
+    }
+    if (user -> current_x < 199 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == 'x') {
+        (user -> health) -= 2;
+        damage += 2;
+    }
+    if (user -> current_x > 0 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == 'x') {
+        (user -> health) -= 2;
+        damage += 2;
+    }
+    if (user -> current_x > 0 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == 'x') {
+        (user -> health) -= 2;
+        damage += 2;
+    }
+    if (user -> current_x > 1 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 2] == 'x') {
+        (user -> health) -= 2;
+        damage += 2;
+    }
+    if (user -> current_x > 1 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 2] == 'x') {
+        (user -> health) -= 2;
+        damage += 2;
+    }
+
+
+    if (user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == 'w') {
+        (user -> health) -= 4;
+        damage += 4;
+    }
+    if (user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == 'w') {
+        (user -> health) -= 4;
+        damage += 4;
+    }
+    if (user -> current_x < 199 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == 'w') {
+        (user -> health) -= 4;
+        damage += 4;
+    }
+    if (user -> current_x > 1 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 2] == 'w') {
+        (user -> health) -= 4;
+        damage += 4;
+    }
+    if (user -> current_x < 199 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == 'w') {
+        (user -> health) -= 4;
+        damage += 4;
+    }
+    if (user -> current_x < 199 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == 'w') {
+        (user -> health) -= 4;
+        damage += 4;
+    }
+    if (user -> current_x > 0 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == 'w') {
+        (user -> health) -= 4;
+        damage += 4;
+    }
+    if (user -> current_x > 0 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == 'w') {
+        (user -> health) -= 4;
+        damage += 4;
+    }
+    if (user -> current_x > 1 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 2] == 'w') {
+        (user -> health) -= 4;
+        damage += 4;
+    }
+    if (user -> current_x > 1 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 2] == 'w') {
+        (user -> health) -= 4;
+        damage += 4;
+    }
+
+    if (user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == 'q') {
+        (user -> health) -= 6;
+        damage += 6;
+    }
+    if (user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == 'q') {
+        (user -> health) -= 6;
+        damage += 6;
+    }
+    if (user -> current_x < 199 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == 'q') {
+        (user -> health) -= 6;
+        damage += 6;
+    }
+    if (user -> current_x > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'q') {
+        (user -> health) -= 6;
+        damage += 6;
+    }
+    if (user -> current_x > 0 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == 'q') {
+        (user -> health) -= 6;
+        damage += 6;
+    }
+    if (user -> current_x > 0 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == 'q') {
+        (user -> health) -= 6;
+        damage += 6;
+    }
+    if (user -> current_x < 199 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == 'q') {
+        (user -> health) -= 6;
+        damage += 6;
+    }
+    if (user -> current_x > 199 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == 'q') {
+        (user -> health) -= 6;
+        damage += 6;
+    }
+
+
+    if (user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == 'z') {
+        (user -> health) -= 8;
+        damage += 8;
+    }
+    if (user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == 'z') {
+        (user -> health) -= 8;
+        damage += 8;
+    }
+    if (user -> current_x < 199 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == 'z') {
+        (user -> health) -= 8;
+        damage += 8;
+    }
+    if (user -> current_x > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'z') {
+        (user -> health) -= 8;
+        damage += 8;
+    }
+    if (user -> current_x > 0 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == 'z') {
+        (user -> health) -= 8;
+        damage += 8;
+    }
+    if (user -> current_x > 0 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == 'z') {
+        (user -> health) -= 8;
+        damage += 8;
+    }
+    if (user -> current_x < 199 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == 'z') {
+        (user -> health) -= 8;
+        damage += 8;
+    }
+    if (user -> current_x > 199 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == 'z') {
+        (user -> health) -= 8;
+        damage += 8;
+    }
+
+
+    if (user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == 'u') {
+        (user -> health) -= 12;
+        damage += 12;
+    }
+    if (user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == 'u') {
+        (user -> health) -= 12;
+        damage += 12;
+    }
+    if (user -> current_x < 199 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == 'u') {
+        (user -> health) -= 12;
+        damage += 12;
+    }
+    if (user -> current_x > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'u') {
+        (user -> health) -= 12;
+        damage += 12;
+    }
+    if (user -> current_x > 0 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == 'u') {
+        (user -> health) -= 12;
+        damage += 12;
+    }
+    if (user -> current_x > 0 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == 'u') {
+        (user -> health) -= 12;
+        damage += 12;
+    }
+    if (user -> current_x < 199 && user -> current_y > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == 'u') {
+        (user -> health) -= 12;
+        damage += 12;
+    }
+    if (user -> current_x > 199 && user -> current_y < 59 && (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == 'u') {
+        (user -> health) -= 12;
+        damage += 12;
+    }
+    return damage;
+}
+
+void *add_health(void *arguments) {
+    struct thread_args *args = (struct thread_args *) arguments;
+    while (!(*(args -> end))) {
+        for (int i = 0; i < 40 + (*(args -> difficulty)) * 5; i++) {
+            if (*(args -> end)) {
+                return NULL;
+            }
+            sleep(1);
+        }
+        (*(args -> health))++;
+    }
+    return NULL;
+}
+
 void *health_rate(void *arguments) {
     struct thread_args *args = (struct thread_args *) arguments;
     while (!(*(args -> end))) {
-        for (int i = 0; i < 18 + (*(args -> difficulty)); i++) {
+        for (int i = 0; i < 15 + (3 - *(args -> difficulty)); i++) {
             if (*(args -> end)) {
                 return NULL;
             }
@@ -1066,8 +1298,8 @@ void change_info(User *user) {
                 fprintf(users_copy, "%s", line);
                 fgets(line, MAX_SIZE, users); //total gold
                 fprintf(users_copy, "%d\n", user -> total_gold);
-                fgets(line, MAX_SIZE, users); //score
-                fprintf(users_copy, "%d\n", user -> score);
+                fgets(line, MAX_SIZE, users); //total score
+                fprintf(users_copy, "%d\n", user -> total_score);
                 fgets(line, MAX_SIZE, users); //difficulty
                 fprintf(users_copy, "%d\n", user -> difficulty);
                 fgets(line, MAX_SIZE, users); //color
@@ -1165,6 +1397,29 @@ void change_info(User *user) {
 
                     //gold
                     fprintf(users_copy, "%d\n", user -> gold);
+
+                    //score
+                    fprintf(users_copy, "%d\n", user -> score);
+
+                    //enemy health
+                    for (int f = 0; f < 4; f++) {
+                        for (i = 0; i < 60; i++) {
+                            for (int j = 0; j < 200; j++) {
+                                fprintf(users_copy, "%d ", (user -> enemy_health)[f][i][j]);
+                            }
+                            fprintf(users_copy, "\n");
+                        }
+                    }
+
+                    //enemy move
+                    for (int f = 0; f < 4; f++) {
+                        for (i = 0; i < 60; i++) {
+                            for (int j = 0; j < 200; j++) {
+                                fprintf(users_copy, "%d ", (user -> enemy_move)[f][i][j]);
+                            }
+                            fprintf(users_copy, "\n");
+                        }
+                    }
 
                     //food
                     fprintf(users_copy, "%d\n", user -> food);

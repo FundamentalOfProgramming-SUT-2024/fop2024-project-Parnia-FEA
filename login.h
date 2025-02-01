@@ -165,9 +165,9 @@ void build_user(User *user) {
                 fgets(line, MAX_SIZE, users); //total gold
                 line[strlen(line)-1] = '\0';
                 sscanf(line, "%d", &(user -> total_gold));
-                fgets(line, MAX_SIZE, users); //score
+                fgets(line, MAX_SIZE, users); //total_score
                 line[strlen(line)-1] = '\0';
-                sscanf(line, "%d", &(user -> score));
+                sscanf(line, "%d", &(user -> total_score));
                 fgets(line, MAX_SIZE, users); //difficulty
                 line[strlen(line)-1] = '\0';
                 sscanf(line, "%d", &(user -> difficulty));
@@ -309,6 +309,40 @@ void build_user(User *user) {
                     fgets(line, MAX_SIZE, users); //gold
                     line[strlen(line)-1] = '\0';
                     sscanf(line, "%d", &(user -> gold));
+
+                    fgets(line, MAX_SIZE, users); //score
+                    line[strlen(line)-1] = '\0';
+                    sscanf(line, "%d", &(user -> score));
+
+                    fgets(line, MAX_SIZE, users); //current weapon
+                    line[strlen(line)-1] = '\0';
+                    sscanf(line, "%d", &(user -> current_weapon));
+
+                    //enemy health
+                    for (int f = 0; f < 4; f++) {
+                        for (i = 0; i < 60; i++) {
+                            fgets(line, MAX_SIZE, users);
+                            line[strlen(line)-1] = '\0';
+                            ptr = strtok(line, " ");
+                            for (int j = 0; j < 200; j++) {
+                                sscanf(ptr, "%d", &((user -> enemy_health)[f][i][j]));
+                                ptr = strtok(NULL, " ");
+                            }
+                        }
+                    }
+
+                    //enemy move
+                    for (int f = 0; f < 4; f++) {
+                        for (i = 0; i < 60; i++) {
+                            fgets(line, MAX_SIZE, users);
+                            line[strlen(line)-1] = '\0';
+                            ptr = strtok(line, " ");
+                            for (int j = 0; j < 200; j++) {
+                                sscanf(ptr, "%d", &((user -> enemy_move)[f][i][j]));
+                                ptr = strtok(NULL, " ");
+                            }
+                        }
+                    }
 
                     fgets(line, MAX_SIZE, users); //food
                     line[strlen(line)-1] = '\0';
