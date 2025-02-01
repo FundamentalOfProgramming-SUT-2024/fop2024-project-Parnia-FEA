@@ -20,8 +20,10 @@ struct thread_args {
     int *health;
     int *hunger;
     int *end;
+    int *difficulty;
 };
 
+void game_func(User *);
 int move_directly(User *, int, int, int);
 int move_indirectly(User *, int, int, int);
 void print_screen(User *, int, char);
@@ -29,7 +31,6 @@ void *hunger_rate(void *);
 void *health_rate(void *);
 void change_info(User *);
 void copy_info();
-void game_func(User *);
 
 void create_new_game_func (User *user) {
     (user -> games)++;
@@ -71,6 +72,7 @@ void game_func (User *user) {
     args.health = &(user -> health);
     args.hunger = &(user -> hunger);
     args.end = &(end);
+    args.difficulty = &(user -> difficulty);
     pthread_create(&thread_hunger, NULL, hunger_rate, (void *)(&args));
     pthread_create(&thread_health, NULL, health_rate, (void *)(&args));
     char gamer = toupper((user -> username)[0]);
@@ -567,7 +569,7 @@ void game_func (User *user) {
                 mvaddch(user -> current_y + START, user -> current_x + START, gamer);
                 attroff(COLOR_PAIR(user -> color) | A_BLINK);
                 mvaddch(user -> current_y + START, user -> current_x + 1 + START, '.');
-                (user -> food_menu)[0]++;
+                (user -> food_menu)[user -> food] = 0;
                 (user -> food)++;
                 refresh();
             }
@@ -579,7 +581,7 @@ void game_func (User *user) {
                 mvaddch(user -> current_y + START, user -> current_x + START, gamer);
                 attroff(COLOR_PAIR(user -> color) | A_BLINK);
                 mvaddch(user -> current_y + START, user -> current_x - 1 + START, '.');
-                (user -> food_menu)[0]++;
+                (user -> food_menu)[user -> food] = 0;
                 (user -> food)++;
                 refresh();
             }
@@ -886,7 +888,12 @@ void print_screen(User *user, int flag_stair, char gamer) {
 void *hunger_rate(void *arguments) {
     struct thread_args *args = (struct thread_args *) arguments;
     while (!(*(args -> end))) {
-        sleep(60);
+        for (int i = 0; i < 50 + (*(args -> difficulty)) * 5; i++) {
+            if (*(args -> end)) {
+                return NULL;
+            }
+            sleep(1);
+        }
         (*(args -> hunger))--;
     }
     return NULL;
@@ -895,7 +902,12 @@ void *hunger_rate(void *arguments) {
 void *health_rate(void *arguments) {
     struct thread_args *args = (struct thread_args *) arguments;
     while (!(*(args -> end))) {
-        sleep(20);
+        for (int i = 0; i < 18 + (*(args -> difficulty)); i++) {
+            if (*(args -> end)) {
+                return NULL;
+            }
+            sleep(1);
+        }
         if ((*(args -> hunger)) <= 5) {
             (*(args -> health))--;
         }
@@ -976,6 +988,7 @@ void change_info(User *user) {
                             for (int j = 0; j < 200; j++) {
                                 fprintf(users_copy, "%c", (user -> map_screen_char)[f][i][j]);
                             }
+                            fprintf(users_copy, "\n");
                         }
                     }
 

@@ -130,6 +130,13 @@ void food_menu_func(User *user) {
 				wrefresh(menu_win);
 				//(*p)(user, index);
                 regular_food(user, index);
+                for (int i = 0; i < (user -> food); i++) {
+                    free(choices[i]);
+                    free(choices_numbers[i]);
+                }
+                free(choices);
+                free(choices_numbers);
+                free(func);
 				return;
 			}
 		}
@@ -138,6 +145,13 @@ void food_menu_func(User *user) {
 	for(int i = 0; i < (user -> food); i++)
 		free_item(items[i]);
 	free_menu(my_menu);
+    for (int i = 0; i < (user -> food); i++) {
+        free(choices[i]);
+        free(choices_numbers[i]);
+    }
+    free(choices);
+    free(choices_numbers);
+    free(func);
 }
 
 void regular_food(User *user, int i) {

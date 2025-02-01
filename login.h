@@ -19,6 +19,7 @@ int check_password_correct(char *, char *);
 void build_user(User *);
 
 void login_menu(int is_username, int is_password) {
+    cur_set(1);
     clear();
     FIELD *field[3];
     FORM  *login;
@@ -182,7 +183,6 @@ void build_user(User *user) {
                 line[strlen(line)-1] = '\0';
                 sscanf(line, "%d", &(user -> resume));
                 if (user -> resume) {
-
                     fgets(line, MAX_SIZE, users); //rooms_num
                     line[strlen(line)-1] = '\0';
                     char *ptr = strtok(line, " ");
@@ -192,7 +192,6 @@ void build_user(User *user) {
                         i++;
                         ptr = strtok(NULL, " ");
                     }
-
                     //map_rooms
                     for (int f = 0; f < 4; f++) {
                         for (i = 0; i < (user -> rooms_num)[f]; i++) {
@@ -216,6 +215,7 @@ void build_user(User *user) {
                             sscanf(line, "%d", &((user -> map_rooms)[f][i] -> theme));
                         }
                     }
+                    
 
                     //map_screen
                     for (int f = 0; f < 4; f++) {
@@ -229,6 +229,7 @@ void build_user(User *user) {
                             }
                         }
                     }
+                    
 
                     //map_screen_char
                     for (int f = 0; f < 4; f++) {
@@ -239,6 +240,7 @@ void build_user(User *user) {
                             }
                         }
                     }
+                    
 
                     //in_staircase 1 2 3
                     fgets(line, MAX_SIZE, users);
@@ -251,6 +253,7 @@ void build_user(User *user) {
                         sscanf(ptr, "%d", &((user -> in_staircase)[i] -> y));
                         ptr = strtok(NULL, " ");
                     }
+                    
                     //out_staircases 0 1 2
                     fgets(line, MAX_SIZE, users);
                     line[strlen(line)-1] = '\0';
@@ -262,6 +265,7 @@ void build_user(User *user) {
                         sscanf(ptr, "%d", &((user -> out_staircase)[i] -> y));
                         ptr = strtok(NULL, " ");
                     }
+                    
 
                     //visible
                     for (int f = 0; f < 4; f++) {
@@ -275,6 +279,7 @@ void build_user(User *user) {
                             }
                         }
                     }
+            
 
                     fgets(line, MAX_SIZE, users); //end_x
                     line[strlen(line)-1] = '\0';
