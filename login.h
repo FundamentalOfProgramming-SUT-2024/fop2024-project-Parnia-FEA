@@ -19,7 +19,7 @@ int check_password_correct(char *, char *);
 void build_user(User *);
 
 void login_menu(int is_username, int is_password) {
-    cur_set(1);
+    curs_set(1);
     clear();
     FIELD *field[3];
     FORM  *login;

@@ -28,6 +28,7 @@ int main() {
     init_pair(6, COLOR_WHITE, COLOR_BLACK);
     init_pair(7, COLOR_GREEN, COLOR_GREEN);
     init_pair(8, COLOR_RED, COLOR_RED);
+    init_pair(9, COLOR_MAGENTA, COLOR_BLACK);
     /*
     printw("%s","\U0001f375");
     refresh();

@@ -1,23 +1,28 @@
-#ifndef SETTING_H
-#define SETTING_H
+#ifndef DIFFICULTY_H
+#define DIFFICULTY_H
 #include <curses.h>
 #include <menu.h>
 #include <string.h>
 #include <stdlib.h>
 #include "user.h"
-#include "difficulty.h"
-#include "color.h"
-#include "music.h"
 
-void show_settings(User *user) {
+void easy(User *);
+void medium(User *);
+void hard(User *);
+
+void change_difficulty(User *user) {
 	clear();
     ITEM **items;			
 	MENU *my_menu;
 	WINDOW *menu_win;
     int c, i;
-    char *choices[] = {"Difficulty", "Color", "Music"};
-    char *choices_numbers[] = {" ", " ", " "};
-    void (*func[3]) (User *) = {change_difficulty, change_color, change_music};
+    char *choices[] = {"Easy", "Medium", "Hard"};
+    char choices_numbers[3][2];
+    strcpy(choices_numbers[0], " ");
+    strcpy(choices_numbers[1], " ");
+    strcpy(choices_numbers[2], " ");
+    choices_numbers[user -> difficulty - 1][0] = '*';
+    void (*func[3]) (User *) = {easy, medium, hard};
     items = (ITEM **)calloc(4, sizeof(ITEM *));
     for(i = 0; i < 3; ++i) {       
         items[i] = new_item(choices_numbers[i], choices[i]);
@@ -29,15 +34,14 @@ void show_settings(User *user) {
 	keypad(menu_win, TRUE);
 	set_menu_win(my_menu, menu_win);
 	set_menu_sub(my_menu, derwin(menu_win, 3, 40, 0, 0));
-	mvprintw(LINES - 3, 0, "Press <ENTER> to see the option selected");
+	mvprintw(LINES - 3, 0, "Press <ENTER> to choose the level of difficulty");
 	mvprintw(LINES - 2, 0, "Up and Down arrow keys to navigate (F1 to Log Out)");
 	attron(COLOR_PAIR(2) | A_BLINK);
-	mvprintw(29, 104, "SETTINGS!");
+	mvprintw(29, 95, "LEVEL OF DIFFICULTY");
 	attroff(COLOR_PAIR(2) | A_BLINK);
 	refresh();
 	post_menu(my_menu);
 	wrefresh(menu_win);
-
 	while((c = wgetch(menu_win)) != KEY_F(1)) {       
         switch(c) {	
             case KEY_DOWN:
@@ -59,8 +63,7 @@ void show_settings(User *user) {
 				free_menu(my_menu);
 				wrefresh(menu_win);
 				(*p)(user);
-                show_settings(user);
-                return;
+				return;
 			}
 		}
 	}	
@@ -68,6 +71,17 @@ void show_settings(User *user) {
 	for(i = 0; i < 3; ++i)
 		free_item(items[i]);
 	free_menu(my_menu);
+}
+
+void easy(User *user) {
+    user -> difficulty = 1;
+}
+
+void medium(User *user) {
+    user -> difficulty = 2;
+}
+void hard(User *user) {
+    user -> difficulty = 3;
 }
 
 #endif
