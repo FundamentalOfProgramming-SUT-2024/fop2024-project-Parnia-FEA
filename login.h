@@ -314,6 +314,10 @@ void build_user(User *user) {
                     line[strlen(line)-1] = '\0';
                     sscanf(line, "%d", &(user -> score));
 
+                    fgets(line, MAX_SIZE, users); //power
+                    line[strlen(line)-1] = '\0';
+                    sscanf(line, "%d", &(user -> power));
+
                     fgets(line, MAX_SIZE, users); //current weapon
                     line[strlen(line)-1] = '\0';
                     sscanf(line, "%d", &(user -> current_weapon));

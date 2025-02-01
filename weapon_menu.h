@@ -15,16 +15,16 @@ void weapon_menu_func(User *user) {
 	mvprintw(27, 102, "Short Range");
 	mvprintw(29, 83, "weapon      character      number          power");
 	attroff(COLOR_PAIR(3));
-	mvprintw(31, 83, "Hammer          h           1                5");
-	mvprintw(32, 83, "Sword           s           %d               10", (user -> weapon_menu)[4]);
+	mvprintw(31, 83, "Hammer          h           1                %d", 5 * (user -> power));
+	mvprintw(32, 83, "Sword           s           %d               %d", (user -> weapon_menu)[4], 5 * (user -> power));
 
 	attron(COLOR_PAIR(3));
 	mvprintw(34, 103, "Long Range");
 	mvprintw(36, 73, "weapon      character      number          distance          power");
 	attroff(COLOR_PAIR(3));
-	mvprintw(38, 73, "Dagger          d           %d                5                12", (user -> weapon_menu)[1]);
-	mvprintw(39, 73, "Wand            m           %d                10               15", (user -> weapon_menu)[2]);
-	mvprintw(40, 73, "Arrow           a           %d                5                5", (user -> weapon_menu)[3]);
+	mvprintw(38, 73, "Dagger          d           %d                5                %d", (user -> weapon_menu)[1], 12 * (user -> power));
+	mvprintw(39, 73, "Wand            m           %d                10               %d", (user -> weapon_menu)[2], 15 * (user -> power));
+	mvprintw(40, 73, "Arrow           a           %d                5                %d", (user -> weapon_menu)[3], 5 * (user -> power));
 	refresh();
 	int c;
 	while ((c = getch()) != KEY_F(1)) {

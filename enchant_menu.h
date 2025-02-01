@@ -83,15 +83,15 @@ void enchant_menu_func(User *user) {
 }
 
 void health_enchant(User * user) {
-
+	(user -> enchant_menu)[0]--;
 }
 
 void speed_enchant(User *user) {
-
+	(user -> enchant_menu)[1]--;
 }
 
 void damage_enchant(User *user) {
-
+	(user -> enchant_menu)[2]--;
 }
 
 #endif

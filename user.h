@@ -43,6 +43,7 @@ typedef struct {
     int resume;
     int is_guest;
     int current_weapon;
+    int power;
 } User;
 
 #endif
