@@ -80,7 +80,7 @@ void game_func (User *user) {
     clear();
     for (int i = 0; i < 60; i++) {
         for (int j = 0; j < 200; j++) {
-            if ((user -> visible)[user -> current_floor][i][j]) {
+            if ((user -> visible)[user -> current_floor][i][j] || user -> visible_mode) {
                 if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
                     attron(COLOR_PAIR(((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme));
                     if (((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme == 5) {
@@ -359,14 +359,17 @@ void game_func (User *user) {
             //down right
             flag = move_indirectly(user, 1, 1, 0);
         }
+        //mvprintw(0, 0, "%d", (user -> map_screen)[user -> current_floor][user -> current_y][user -> current_x]);
         if ((user -> map_screen)[user -> current_floor][user -> current_y][user -> current_x] > 0) {
             Room *current_room = (user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][user -> current_y][user -> current_x] - 1];
+            //mvprintw(0, 10, "%d %d %d %d", current_room -> uly, current_room -> ulx, current_room -> height, current_room -> width);
             for (int i = current_room -> uly; i < current_room -> uly + current_room -> height; i++) {
                 for (int j = current_room -> ulx; j < current_room -> ulx + current_room -> width; j++) {
                     (user -> visible)[user -> current_floor][i][j] = 1;
                 }
             }
         }
+        refresh();
         (user -> visible)[user -> current_floor][user -> current_y][user -> current_x] = 1;
         if (flag) {
             clear();
@@ -957,7 +960,6 @@ void change_info(User *user) {
                     //map_rooms
                     for (int f = 0; f < 4; f++) {
                         for (i = 0; i < (user -> rooms_num)[f]; i++) {
-                            (user -> map_rooms)[f][i] = (Room *) malloc(sizeof(Room));
                             //ulx
                             fprintf(users_copy, "%d\n", (user -> map_rooms)[f][i] -> ulx);
                             //uly
