@@ -109,6 +109,7 @@ void login_menu(int is_username, int is_password) {
             strcpy(user_ptr->password, entered_password);
             strcpy(user_ptr->email, file_email);
             build_user(user_ptr);
+            user_ptr -> is_guest = 0;
             game_menu_func(user_ptr);
             login_menu(0, 0);
         }

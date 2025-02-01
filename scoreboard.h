@@ -90,7 +90,7 @@ void show_page(User *user, User_Board **users_board, int page, int num) {
                 fgets(line, MAX_SIZE, users);
                 line[strlen(line)-1] = '\0';
                 if (strcmp(users_board[i] -> username, line) == 0) {
-                    if (strcmp(line, user -> username) == 0) {
+                    if (user -> is_guest == 0 && strcmp(line, user -> username) == 0) {
                         attron(COLOR_PAIR(user -> color) | A_BOLD);
                     }
                     if (i == 0) {
@@ -131,7 +131,7 @@ void show_page(User *user, User_Board **users_board, int page, int num) {
                     mvprintw(i + 4 - ((page - 1) * 50), 94, "%s", total_gold);
                     mvprintw(i + 4 - ((page - 1) * 50), 124, "%s", games);
                     mvprintw(i + 4 - ((page - 1) * 50), 154, "%s", experience);
-                    if (strcmp(users_board[i] -> username, user -> username) == 0) {
+                    if (user -> is_guest == 0 && strcmp(users_board[i] -> username, user -> username) == 0) {
                         attroff(COLOR_PAIR(user -> color) | A_BOLD);
                     }
                     if (i == 0) {

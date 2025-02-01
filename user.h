@@ -37,6 +37,7 @@ typedef struct {
     int games;
     int complete_games;
     int resume;
+    int is_guest;
 } User;
 
 #endif

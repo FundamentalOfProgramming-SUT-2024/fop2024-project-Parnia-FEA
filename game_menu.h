@@ -70,6 +70,10 @@ void game_menu_func(User *user) {
 	for(i = 0; i < 4; ++i)
 		free_item(items[i]);
 	free_menu(my_menu);
+	if (user -> is_guest == 0) {
+		change_info(user);
+		copy_info(user);
+	}
 }
 
 #endif

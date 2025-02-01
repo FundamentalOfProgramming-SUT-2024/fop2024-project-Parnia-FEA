@@ -545,8 +545,10 @@ void game_func (User *user) {
             (user -> total_gold) += ((user -> difficulty) * 50);
             (user -> resume) = 0;
             (user -> score) += (user -> gold);
-            change_info(user);
-            copy_info();
+            if (user -> is_guest == 0) {
+                change_info(user);
+                copy_info();
+            }
             return;
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == '>') {
@@ -682,17 +684,19 @@ void game_func (User *user) {
     pthread_join(thread_hunger, NULL);
     pthread_join(thread_health, NULL);
     clear();
-    mvprintw(29, 98, "Do You want to save the game?(y/n)");
+    if (user -> is_guest == 0) {
+        mvprintw(29, 98, "Do You want to save the game?(y/n)");
+        c = getch();
+        if (c == 'y') {
+            user -> resume = 1;
+        }
+        else {
+            user -> resume = 0;
+        }
+        change_info(user);
+        copy_info();
+    }
     refresh();
-    c = getch();
-    if (c == 'y') {
-        user -> resume = 1;
-    }
-    else {
-        user -> resume = 0;
-    }
-    change_info(user);
-    copy_info();
     return;
     
 }
