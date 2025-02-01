@@ -5,7 +5,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "create_new_game.h"
-#include "continue_game.h"
 #include "scoreboard.h"
 #include "setting.h"
 #include "user.h"

@@ -29,11 +29,11 @@ void *hunger_rate(void *);
 void *health_rate(void *);
 void change_info(User *);
 void copy_info();
+void game_func(User *);
 
 void create_new_game_func (User *user) {
     (user -> games)++;
     create_map(user);
-    curs_set(0);
     user -> visible_mode = 0;
     user -> food = 0;
     user -> health = 50 + (3 - user -> difficulty) * 25;
@@ -47,6 +47,23 @@ void create_new_game_func (User *user) {
     (user -> weapon_menu)[2] = 0; //Wand
     (user -> weapon_menu)[3] = 0; //Normal Arrow
     (user -> weapon_menu)[4] = 0; //Hocho
+    game_func(user);
+}
+
+void continue_game_func (User *user) {
+    if (user -> resume == 0) {
+        attron(COLOR_PAIR(1));
+        mvprintw(29, 98, "No Incomplete Game. Start A New Game");
+        attroff(COLOR_PAIR(1));
+        refresh();
+        sleep(2);
+        return;
+    }
+    game_func(user);
+}
+
+void game_func (User *user) {
+    curs_set(0);
     int end = 0;
     pthread_t thread_hunger;
     pthread_t thread_health;
@@ -509,10 +526,10 @@ void create_new_game_func (User *user) {
             clear();
             refresh();
             attron(COLOR_PAIR(2) | A_BLINK);
-            mvprintw(29, 104, "YOU HAVE WON THE GAME!");
-            mvprintw(30, 107, "golds        %d", user -> gold);
-            mvprintw(31, 107, "total golds  %d", user -> total_gold);
-            mvprintw(33, 107, "score        %d", user -> score);
+            mvprintw(29, 100, "YOU HAVE WON THE GAME!");
+            mvprintw(30, 103, "golds        %d", user -> gold);
+            mvprintw(31, 103, "total golds  %d", user -> total_gold);
+            mvprintw(33, 103, "score        %d", user -> score);
             //prints
             attroff(COLOR_PAIR(2) | A_BLINK);
             refresh();
@@ -660,7 +677,7 @@ void create_new_game_func (User *user) {
     pthread_join(thread_hunger, NULL);
     pthread_join(thread_health, NULL);
     clear();
-    mvprintw(29, 104, "Do You want to save the game?(y/n)");
+    mvprintw(29, 98, "Do You want to save the game?(y/n)");
     refresh();
     c = getch();
     if (c == 'y') {
