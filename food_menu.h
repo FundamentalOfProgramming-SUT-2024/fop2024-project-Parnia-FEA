@@ -156,30 +156,17 @@ void food_menu_func(User *user) {
 }
 
 void regular_food(User *user, int i) {
-    if (user -> hunger < 19) {
-        (user -> hunger) += 2;
-    }
-    else if (user -> hunger == 19) {
-        (user -> hunger) = 20;
+    user -> hunger += 2;
+    if (user -> hunger > 14 + (3 - user -> difficulty) * 3) {
+        user -> hunger = 14 + (3 - user -> difficulty) * 3;
     }
     for (int j = i; j < (user -> food) - 1; j++) {
         (user -> food_menu)[j] = (user -> food_menu)[j+1];
     }
     (user -> food)--;
-    if (user -> health < 96) {
-        (user -> health) += 5;
-    }
-    else if (user -> health == 96){
-        (user -> health) += 4;
-    }
-    else if (user -> health == 97){
-        (user -> health) += 3;
-    }
-    else if (user -> health == 98){
-        (user -> health) += 2;
-    }
-    else if (user -> health == 99){
-        (user -> health) += 1;
+    user -> health += 5;
+    if (user -> health > 50 + (3 - user -> difficulty) * 25) {
+        user -> health = 50 + (3 - user -> difficulty) * 25;
     }
 }
 void premium_food(User *user, int i) {

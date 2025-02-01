@@ -1056,6 +1056,9 @@ void *hunger_rate(void *arguments) {
             sleep(1);
         }
         (*(args -> hunger))--;
+        if ((*(args -> hunger)) < 0) {
+            (*(args -> hunger)) = 0;
+        }
     }
     return NULL;
 }
@@ -1257,7 +1260,12 @@ void *add_health(void *arguments) {
             }
             sleep(1);
         }
-        (*(args -> health))++;
+        if ((*(args -> hunger)) == 14 + (3 - (*(args -> difficulty))) * 3) {
+            (*(args -> health))++;
+            if ((*(args -> health)) > 50 + (3 - (*(args -> difficulty))) * 25) {
+                (*(args -> health)) = 50 + (3 - (*(args -> difficulty))) * 25;
+            }
+        }
     }
     return NULL;
 }
