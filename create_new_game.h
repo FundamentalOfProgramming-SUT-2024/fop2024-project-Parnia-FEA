@@ -69,6 +69,7 @@ void game_func (User *user) {
     int end = 0;
     user -> end = 0;
     user -> rate = 1;
+    user -> speed = 1;
     pthread_t thread_hunger;
     pthread_t thread_health;
     pthread_t thread_add_health;
@@ -437,35 +438,67 @@ void game_func (User *user) {
         }
         else if (c == 'j') {
             //up
-            flag = move_directly(user, 0, -1, 0);
+            for (int i = 0; i < user -> speed; i++) {
+                if (move_directly(user, 0, -1, 0)) {
+                    flag = 1;
+                }
+            }
         }
         else if (c == 'k') {
             //down
-            flag = move_directly(user, 0, 1, 0);
+            for (int i = 0; i < user -> speed; i++) {
+                if (move_directly(user, 0, 1, 0)) {
+                    flag = 1;
+                }
+            }
         }
         else if (c == 'h') {
             //left
-            flag = move_directly(user, -1, 0, 0);
+            for (int i = 0; i < user -> speed; i++) {
+                if (move_directly(user, -1, 0, 0)) {
+                    flag = 1;
+                }
+            }
         }
         else if (c == 'l') {
             //right
-            flag = move_directly(user, 1, 0, 0);
+            for (int i = 0; i < user -> speed; i++) {
+                if (move_directly(user, 1, 0, 0)) {
+                    flag = 1;
+                }
+            }
         }
         else if (c == 'y') {
             //up left
-            flag = move_indirectly(user, -1, -1, 0);
+            for (int i = 0; i < user -> speed; i++) {
+                if (move_indirectly(user, -1, -1, 0)) {
+                    flag = 1;
+                }
+            }
         }
         else if (c == 'u') {
             //up right
-            flag = move_indirectly(user, 1, -1, 0);
+            for (int i = 0; i < user -> speed; i++) {
+                if (move_indirectly(user, 1, -1, 0)) {
+                    flag = 1;
+                }
+            }
         }
         else if (c == 'b') {
             //down left
-            flag = move_indirectly(user, -1, 1, 0);
+            for (int i = 0; i < user -> speed; i++) {
+                if (move_indirectly(user, -1, 1, 0)) {
+                    flag = 1;
+                }
+            }
         }
         else if (c == 'n') {
             //down right
-            flag = move_indirectly(user, 1, 1, 0);
+            for (int i = 0; i < user -> speed; i++) {
+                if (move_indirectly(user, 1, 1, 0)) {
+                    flag = 1;
+                }
+            }
         }
         //mvprintw(0, 0, "%d", (user -> map_screen)[user -> current_floor][user -> current_y][user -> current_x]);
         if ((user -> map_screen)[user -> current_floor][user -> current_y][user -> current_x] > 0) {

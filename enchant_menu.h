@@ -15,6 +15,7 @@ void health_enchant(User *, int);
 void speed_enchant(User *, int);
 void damage_enchant(User *, int);
 void *thread_damage_func(void *);
+void *thread_speed_func(void *);
 void *thread_health_enchant_func(void *);
 
 void enchant_menu_func(User *user) {
@@ -95,6 +96,9 @@ void health_enchant(User * user, int type) {
 void speed_enchant(User *user, int type) {
 	if (type)
 		(user -> enchant_menu)[1]--;
+	(user -> speed) *= 2;
+	pthread_t thread_speed;
+	pthread_create(&thread_speed, NULL, thread_speed_func, (void *)(user));
 }
 
 void damage_enchant(User *user, int type) {
@@ -109,6 +113,13 @@ void *thread_damage_func(void *arg) {
 	User *user = (User *)arg;
 	sleep(10);
 	(user -> power) /= 2;
+	return NULL;
+}
+
+void *thread_speed_func(void *arg) {
+	User *user = (User *)arg;
+	sleep(10);
+	(user -> speed) /= 2;
 	return NULL;
 }
 

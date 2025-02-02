@@ -23,6 +23,7 @@ typedef struct {
     int end_y;
     int end;
     int rate;
+    int speed;
     int current_floor;
     int current_x;
     int current_y;
