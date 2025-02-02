@@ -4,9 +4,7 @@
 #include <menu.h>
 #include <string.h>
 #include <stdlib.h>
-#include "create_new_game.h"
-#include "scoreboard.h"
-#include "setting.h"
+#include "enchant_menu.h"
 #include "user.h"
 
 #define MAX_SIZE 1000
@@ -118,11 +116,12 @@ void food_menu_func(User *user) {
 				break;
 			case 10:
 			{
-                
+                /*
                 ITEM *cur_item;
 				void (*p)(User *, int);
 				cur_item = current_item(my_menu);
 				p = (void (*) (User *, int)) item_userptr(cur_item);
+                */
 				pos_menu_cursor(my_menu);
 				unpost_menu(my_menu);
 				for(int i = 0; i < (user -> food); ++i)
@@ -130,7 +129,19 @@ void food_menu_func(User *user) {
 				free_menu(my_menu);
 				wrefresh(menu_win);
 				//(*p)(user, index);
-                regular_food(user, index);
+                if ((user -> food_menu)[index] == 0) {
+                    regular_food(user, index);
+                }
+                else if ((user -> food_menu)[index] == 1) {
+                    premium_food(user, index);
+                }
+                else if ((user -> food_menu)[index] == 2) {
+                    magical_food(user, index);
+                }
+                else if ((user -> food_menu)[index] == 3) {
+                    rotten_food(user, index);
+                }
+                //regular_food(user, index);
                 for (int i = 0; i < (user -> food); i++) {
                     free(choices[i]);
                     free(choices_numbers[i]);
@@ -156,7 +167,7 @@ void food_menu_func(User *user) {
 }
 
 void regular_food(User *user, int i) {
-    user -> hunger += 2;
+    user -> hunger += 1;
     if (user -> hunger > 14 + (3 - user -> difficulty) * 3) {
         user -> hunger = 14 + (3 - user -> difficulty) * 3;
     }
@@ -170,13 +181,45 @@ void regular_food(User *user, int i) {
     }
 }
 void premium_food(User *user, int i) {
+    (user -> hunger) += 2;
+    if (user -> hunger > 14 + (3 - user -> difficulty) * 3) {
+        user -> hunger = 14 + (3 - user -> difficulty) * 3;
+    }
+    for (int j = i; j < (user -> food) - 1; j++) {
+        (user -> food_menu)[j] = (user -> food_menu)[j+1];
+    }
+    (user -> food)--;
+    user -> health += 6;
+    if (user -> health > 50 + (3 - user -> difficulty) * 25) {
+        user -> health = 50 + (3 - user -> difficulty) * 25;
+    }
+    damage_enchant(user, 0);
 
 }
 void magical_food(User *user, int i) {
-
+    (user -> hunger) += 2;
+    if (user -> hunger > 14 + (3 - user -> difficulty) * 3) {
+        user -> hunger = 14 + (3 - user -> difficulty) * 3;
+    }
+    for (int j = i; j < (user -> food) - 1; j++) {
+        (user -> food_menu)[j] = (user -> food_menu)[j+1];
+    }
+    (user -> food)--;
+    user -> health += 6;
+    if (user -> health > 50 + (3 - user -> difficulty) * 25) {
+        user -> health = 50 + (3 - user -> difficulty) * 25;
+    }
+    speed_enchant(user, 0);
 }
 void rotten_food(User *user, int i) {
-
+    for (int j = i; j < (user -> food) - 1; j++) {
+        (user -> food_menu)[j] = (user -> food_menu)[j+1];
+    }
+    (user -> food)--;
+    user -> health -= 2;
+    if (user -> health < 0) {
+        user -> health = 0;
+    }
 }
 
 #endif

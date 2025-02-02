@@ -11,9 +11,11 @@
 
 #define MAX_SIZE 1000
 
-void health_enchant(User *);
-void speed_enchant(User *);
-void damage_enchant(User *);
+void health_enchant(User *, int);
+void speed_enchant(User *, int);
+void damage_enchant(User *, int);
+void *thread_damage_func(void *);
+void *thread_health_enchant_func(void *);
 
 void enchant_menu_func(User *user) {
 	clear();
@@ -31,7 +33,7 @@ void enchant_menu_func(User *user) {
     int c;
     char choices[3][100];
     char *choices_numbers[3] = {"Health", "Speed", "Damage"};
-    void (*func[3]) (User *) = {health_enchant, speed_enchant, damage_enchant};
+    void (*func[3]) (User *, int) = {health_enchant, speed_enchant, damage_enchant};
     sprintf(choices[0], "%d", (user -> enchant_menu)[0]);
     sprintf(choices[1], "%d", (user -> enchant_menu)[1]);
     sprintf(choices[2], "%d", (user -> enchant_menu)[2]);
@@ -62,16 +64,16 @@ void enchant_menu_func(User *user) {
 			{
                 
                 ITEM *cur_item;
-				void (*p)(User *);
+				void (*p)(User *, int);
 				cur_item = current_item(my_menu);
-				p = (void (*) (User *)) item_userptr(cur_item);
+				p = (void (*) (User *, int)) item_userptr(cur_item);
 				pos_menu_cursor(my_menu);
 				unpost_menu(my_menu);
 				for(int i = 0; i < 3; ++i)
 					free_item(items[i]);
 				free_menu(my_menu);
 				wrefresh(menu_win);
-				(*p)(user);
+				(*p)(user, 1);
 				return;
 			}
 		}
@@ -82,16 +84,39 @@ void enchant_menu_func(User *user) {
 	free_menu(my_menu);
 }
 
-void health_enchant(User * user) {
-	(user -> enchant_menu)[0]--;
+void health_enchant(User * user, int type) {
+	if (type) 
+		(user -> enchant_menu)[0]--;
+	(user -> rate) *= 2;
+	pthread_t thread_health_enchant;
+	pthread_create(&thread_health_enchant, NULL, thread_health_enchant_func, (void *)(user));
 }
 
-void speed_enchant(User *user) {
-	(user -> enchant_menu)[1]--;
+void speed_enchant(User *user, int type) {
+	if (type)
+		(user -> enchant_menu)[1]--;
 }
 
-void damage_enchant(User *user) {
-	(user -> enchant_menu)[2]--;
+void damage_enchant(User *user, int type) {
+	if (type)
+		(user -> enchant_menu)[2]--;
+	(user -> power) *= 2;
+	pthread_t thread_damage;
+	pthread_create(&thread_damage, NULL, thread_damage_func, (void *)(user));
+}
+
+void *thread_damage_func(void *arg) {
+	User *user = (User *)arg;
+	sleep(10);
+	(user -> power) /= 2;
+	return NULL;
+}
+
+void *thread_health_enchant_func(void *arg) {
+	User *user = (User *)arg;
+	sleep(10);
+	(user -> rate) /= 2;
+	return NULL;
 }
 
 #endif

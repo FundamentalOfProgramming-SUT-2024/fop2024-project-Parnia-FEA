@@ -16,14 +16,6 @@
 
 #define MAX_SIZE 1000
 
-struct thread_args {
-    int *health;
-    int *hunger;
-    int *end;
-    int *difficulty;
-    User *user;
-};
-
 void game_func(User *);
 int move_directly(User *, int, int, int);
 int move_indirectly(User *, int, int, int);
@@ -76,18 +68,14 @@ void game_func (User *user) {
     curs_set(0);
     int end = 0;
     user -> end = 0;
+    user -> rate = 1;
     pthread_t thread_hunger;
     pthread_t thread_health;
     pthread_t thread_add_health;
     //pthread_t thread_enemy_damage;
-    struct thread_args args;
-    args.health = &(user -> health);
-    args.hunger = &(user -> hunger);
-    args.end = &(end);
-    args.difficulty = &(user -> difficulty);
-    pthread_create(&thread_hunger, NULL, hunger_rate, (void *)(&args));
-    pthread_create(&thread_health, NULL, health_rate, (void *)(&args));
-    pthread_create(&thread_add_health, NULL, add_health, (void *)(&args));
+    pthread_create(&thread_hunger, NULL, hunger_rate, (void *)user);
+    pthread_create(&thread_health, NULL, health_rate, (void *)user);
+    pthread_create(&thread_add_health, NULL, add_health, (void *)user);
     //pthread_create(&thread_enemy_damage, NULL, enemy_damage, (void *)(user));
     char gamer = toupper((user -> username)[0]);
     int c;
@@ -114,6 +102,24 @@ void game_func (User *user) {
                     mvaddch(START + i, START + j, '.');
                 }
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && (user -> current_y != i || user -> current_x != j)) {
+                    mvprintw(START + i, START + j, "%s", "\U0001F354");
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'b' && user -> current_y == i && user -> current_x == j + 1) {
+                    mvaddch(START + i, START + j, '.');
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'b' && (user -> current_y != i || user -> current_x != j)) {
+                    mvprintw(START + i, START + j, "%s", "\U0001F354");
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'j' && user -> current_y == i && user -> current_x == j + 1) {
+                    mvaddch(START + i, START + j, '.');
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'j' && (user -> current_y != i || user -> current_x != j)) {
+                    mvprintw(START + i, START + j, "%s", "\U0001F354");
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'k' && user -> current_y == i && user -> current_x == j + 1) {
+                    mvaddch(START + i, START + j, '.');
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'k' && (user -> current_y != i || user -> current_x != j)) {
                     mvprintw(START + i, START + j, "%s", "\U0001F354");
                 }
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'x') {
@@ -165,7 +171,7 @@ void game_func (User *user) {
                     mvprintw(START + i, START + j, "%s", "\U00002742");
                     attron(COLOR_PAIR(2));
                 }
-                else if (j == 0 || ((user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'x' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'w' && isdigit((user -> map_screen_char)[user -> current_floor][i][j - 1]) == 0)){
+                else if (j == 0 || ((user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'b' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'j' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'k' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'x' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'w' && isdigit((user -> map_screen_char)[user -> current_floor][i][j - 1]) == 0)){
                     mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
                 }
                 if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
@@ -556,6 +562,24 @@ void game_func (User *user) {
                         else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && (user -> current_y != i || user -> current_x != j)) {
                             mvprintw(START + i, START + j, "%s", "\U0001F354");
                         }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'b' && user -> current_y == i && user -> current_x == j + 1) {
+                            mvaddch(START + i, START + j, '.');
+                        }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'b' && (user -> current_y != i || user -> current_x != j)) {
+                            mvprintw(START + i, START + j, "%s", "\U0001F354");
+                        }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'j' && user -> current_y == i && user -> current_x == j + 1) {
+                            mvaddch(START + i, START + j, '.');
+                        }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'j' && (user -> current_y != i || user -> current_x != j)) {
+                            mvprintw(START + i, START + j, "%s", "\U0001F354");
+                        }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'k' && user -> current_y == i && user -> current_x == j + 1) {
+                            mvaddch(START + i, START + j, '.');
+                        }
+                        else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'k' && (user -> current_y != i || user -> current_x != j)) {
+                            mvprintw(START + i, START + j, "%s", "\U0001F354");
+                        }
                         else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'x') {
                             mvprintw(START + i, START + j, "%s", "\U0001F921");
                         }
@@ -605,9 +629,10 @@ void game_func (User *user) {
                             mvprintw(START + i, START + j, "%s", "\U00002742");
                             attron(COLOR_PAIR(2));
                         }
-                        else if (j == 0 || ((user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'x' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'w' && isdigit((user -> map_screen_char)[user -> current_floor][i][j - 1]) == 0)){
+                        else if (j == 0 || ((user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'b' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'j' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'k' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'x' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'w' && isdigit((user -> map_screen_char)[user -> current_floor][i][j - 1]) == 0)){
                             mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
                         }
+
                         if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
                             attroff(COLOR_PAIR(((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme));
                             if (((user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][i][j] - 1]) -> theme == 5) {
@@ -756,6 +781,78 @@ void game_func (User *user) {
                 refresh();
             }
         }
+        else if (flag_g == 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 'b') {
+            if (user -> food < 5) {
+                (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
+                attron(COLOR_PAIR(user -> color) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x + START, gamer);
+                attroff(COLOR_PAIR(user -> color) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x + 1 + START, '.');
+                (user -> food_menu)[user -> food] = 3;
+                (user -> food)++;
+                refresh();
+            }
+        }
+        else if (flag_g == 0 && user -> current_x > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'b') {
+            if (user -> food < 5) {
+                (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] = '.';
+                attron(COLOR_PAIR(user -> color) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x + START, gamer);
+                attroff(COLOR_PAIR(user -> color) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x - 1 + START, '.');
+                (user -> food_menu)[user -> food] = 3;
+                (user -> food)++;
+                refresh();
+            }
+        }
+        else if (flag_g == 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 'j') {
+            if (user -> food < 5) {
+                (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
+                attron(COLOR_PAIR(user -> color) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x + START, gamer);
+                attroff(COLOR_PAIR(user -> color) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x + 1 + START, '.');
+                (user -> food_menu)[user -> food] = 1;
+                (user -> food)++;
+                refresh();
+            }
+        }
+        else if (flag_g == 0 && user -> current_x > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'j') {
+            if (user -> food < 5) {
+                (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] = '.';
+                attron(COLOR_PAIR(user -> color) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x + START, gamer);
+                attroff(COLOR_PAIR(user -> color) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x - 1 + START, '.');
+                (user -> food_menu)[user -> food] = 1;
+                (user -> food)++;
+                refresh();
+            }
+        }
+        else if (flag_g == 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] == 'k') {
+            if (user -> food < 5) {
+                (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] = '.';
+                attron(COLOR_PAIR(user -> color) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x + START, gamer);
+                attroff(COLOR_PAIR(user -> color) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x + 1 + START, '.');
+                (user -> food_menu)[user -> food] = 2;
+                (user -> food)++;
+                refresh();
+            }
+        }
+        else if (flag_g == 0 && user -> current_x > 0 && (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'k') {
+            if (user -> food < 5) {
+                (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] = '.';
+                attron(COLOR_PAIR(user -> color) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x + START, gamer);
+                attroff(COLOR_PAIR(user -> color) | A_BLINK);
+                mvaddch(user -> current_y + START, user -> current_x - 1 + START, '.');
+                (user -> food_menu)[user -> food] = 2;
+                (user -> food)++;
+                refresh();
+            }
+        }
         else if (flag_g == 0 && isdigit((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x])) {
             attron(COLOR_PAIR(user -> color) | A_BLINK);
             mvaddch(user -> current_y + START, user -> current_x + START, gamer);
@@ -890,15 +987,6 @@ void game_func (User *user) {
         }
         for (int i = 0; i < (user -> rooms_num)[user -> current_floor]; i++) {
             if ((user -> map_rooms)[user -> current_floor][i] -> theme == 6) {
-                /*
-                for (int y = ((user -> map_rooms)[user -> current_floor][i] -> uly) + 1; y < ((user -> map_rooms)[user -> current_floor][i] -> uly) + ((user -> map_rooms)[user -> current_floor][i] -> height) - 1; y++) {
-                    for (int x = ((user -> map_rooms)[user -> current_floor][i] -> ulx) + 1; x < ((user -> map_rooms)[user -> current_floor][i] -> ulx) + ((user -> map_rooms)[user -> current_floor][i] -> width) - 1; x++) {
-                        if ((user -> map_screen_char)[user -> current_floor][y][x] == 'B') {
-                            (user -> map_screen_char)[user -> current_floor][y][x] = '.';
-                        }
-                    }
-                }
-                */
                 int food = rand() % 100;
                 if (food == 0) {
                     int food_x = ((user -> map_rooms)[user -> current_floor][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[user -> current_floor][i] -> width - 2);
@@ -910,7 +998,19 @@ void game_func (User *user) {
                         steps --;
                     }
                     if (steps > 0) {
-                        (user -> map_screen_char)[user -> current_floor][food_y][food_x] = 'B';
+                        int food_theme = rand() % 21;
+                        if (food_theme >= 0 && food_theme < 10) {
+                            (user -> map_screen_char)[user -> current_floor][food_y][food_x] = 'B';
+                        }
+                        else if (food_theme >= 10 && food_theme < 15) {
+                            (user -> map_screen_char)[user -> current_floor][food_y][food_x] = 'b';
+                        }
+                        else if (food_theme >= 15 && food_theme < 18) {
+                            (user -> map_screen_char)[user -> current_floor][food_y][food_x] = 'j';
+                        }
+                        else {
+                            (user -> map_screen_char)[user -> current_floor][food_y][food_x] = 'k';
+                        }
                     }
                 }
             }
@@ -1122,6 +1222,24 @@ void print_screen(User *user, int flag_stair, char gamer) {
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'B' && (user -> current_y != i || user -> current_x != j)) {
                     mvprintw(START + i, START + j, "%s", "\U0001F354");
                 }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'b' && user -> current_y == i && user -> current_x == j + 1) {
+                    mvaddch(START + i, START + j, '.');
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'b' && (user -> current_y != i || user -> current_x != j)) {
+                    mvprintw(START + i, START + j, "%s", "\U0001F354");
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'j' && user -> current_y == i && user -> current_x == j + 1) {
+                    mvaddch(START + i, START + j, '.');
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'j' && (user -> current_y != i || user -> current_x != j)) {
+                    mvprintw(START + i, START + j, "%s", "\U0001F354");
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'k' && user -> current_y == i && user -> current_x == j + 1) {
+                    mvaddch(START + i, START + j, '.');
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'k' && (user -> current_y != i || user -> current_x != j)) {
+                    mvprintw(START + i, START + j, "%s", "\U0001F354");
+                }
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'x') {
                     mvprintw(START + i, START + j, "%s", "\U0001F921");
                 }
@@ -1171,7 +1289,7 @@ void print_screen(User *user, int flag_stair, char gamer) {
                     mvprintw(START + i, START + j, "%s", "\U00002742");
                     attron(COLOR_PAIR(2));
                 }
-                else if (j == 0 || ((user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'x' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'w' && isdigit((user -> map_screen_char)[user -> current_floor][i][j - 1]) == 0)){
+                else if (j == 0 || ((user -> map_screen_char)[user -> current_floor][i][j - 1] != 'B' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'b' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'j' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'k' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'x' && (user -> map_screen_char)[user -> current_floor][i][j - 1] != 'w' && isdigit((user -> map_screen_char)[user -> current_floor][i][j - 1]) == 0)){
                     mvaddch(START + i, START + j, (user -> map_screen_char)[user -> current_floor][i][j]);
                 }
                 if ((user -> map_screen)[user -> current_floor][i][j] > 0) {
@@ -1211,17 +1329,17 @@ void print_screen(User *user, int flag_stair, char gamer) {
 }
 
 void *hunger_rate(void *arguments) {
-    struct thread_args *args = (struct thread_args *) arguments;
-    while (!(*(args -> end))) {
-        for (int i = 0; i < 30 + (3 - *(args -> difficulty)) * 5; i++) {
-            if (*(args -> end)) {
+    User *args = (User *) arguments;
+    while (!(args -> end)) {
+        for (int i = 0; i < 8 +(3 - args -> difficulty) * 5; i++) {
+            if (args -> end) {
                 return NULL;
             }
             sleep(1);
         }
-        (*(args -> hunger))--;
-        if ((*(args -> hunger)) < 0) {
-            (*(args -> hunger)) = 0;
+        (args -> hunger)--;
+        if ((args -> hunger) < 0) {
+            (args -> hunger) = 0;
         }
     }
     return NULL;
@@ -1416,18 +1534,18 @@ int enemy_damage(User *user) {
 }
 
 void *add_health(void *arguments) {
-    struct thread_args *args = (struct thread_args *) arguments;
-    while (!(*(args -> end))) {
-        for (int i = 0; i < 40 + (*(args -> difficulty)) * 5; i++) {
-            if (*(args -> end)) {
+    User *args = (User *) arguments;
+    while (!(args -> end)) {
+        for (int i = 0; i < (5 + (args -> difficulty) * 2)/(args -> rate); i++) {
+            if (args -> end) {
                 return NULL;
             }
             sleep(1);
         }
-        if ((*(args -> hunger)) == 14 + (3 - (*(args -> difficulty))) * 3) {
-            (*(args -> health))++;
-            if ((*(args -> health)) > 50 + (3 - (*(args -> difficulty))) * 25) {
-                (*(args -> health)) = 50 + (3 - (*(args -> difficulty))) * 25;
+        if ((args -> hunger) == 14 + (3 - (args -> difficulty)) * 3) {
+            (args -> health)++;
+            if ((args -> health) > 50 + (3 - (args -> difficulty)) * 25) {
+                (args -> health) = 50 + (3 - (args -> difficulty)) * 25;
             }
         }
     }
@@ -1435,16 +1553,16 @@ void *add_health(void *arguments) {
 }
 
 void *health_rate(void *arguments) {
-    struct thread_args *args = (struct thread_args *) arguments;
-    while (!(*(args -> end))) {
-        for (int i = 0; i < 15 + (3 - *(args -> difficulty)); i++) {
-            if (*(args -> end)) {
+    User *user = (User *) arguments;
+    while (!(user -> end)) {
+        for (int i = 0; i <  8 + (3 - (user -> difficulty)); i++) {
+            if (user -> end) {
                 return NULL;
             }
             sleep(1);
         }
-        if ((*(args -> hunger)) <= 5) {
-            (*(args -> health))--;
+        if ((user -> hunger) <= 5) {
+            (user -> health)--;
         }
     }
     return NULL;
@@ -1684,6 +1802,21 @@ void user_short_damage(User *user, int power,int *enemy, int *explode, int *dama
     if ((user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x] <= power) {
         (*(damage + (*num))) = (user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x];
         (user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x] = 0;
+        if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'x') {
+            (user -> score) += 100;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'w') {
+            (user -> score) += 200;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'q') {
+            (user -> score) += 300;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'z') {
+            (user -> score) += 400;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'u') {
+            (user -> score) += 500;
+        }
         (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] = '.';
         (*(explode + (*num))) = 1;
         (*(health + (*num))) = 0;
@@ -1717,6 +1850,12 @@ void user_short_damage2(User *user, int power,int *enemy, int *explode, int *dam
     if ((user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x] <= power) {
         (*(damage + (*num))) = (user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x];
         (user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x] = 0;
+        if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'x') {
+            (user -> score) += 100;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'w') {
+            (user -> score) += 200;
+        }
         (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] = '.';
         (*(explode + (*num))) = 1;
         (*(health + (*num))) = 0;
@@ -1743,12 +1882,12 @@ void user_long_damage(User *user, int distance, int power, int *enemy, int *expl
                     (user -> weapon_menu)[user -> current_weapon]--;
                     //putting one arrow
                 }
-                break;
+                return;
         }
-        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'x' || (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i - 1] == 'x') {
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'x') {
             (*(enemy + (*num))) = 0;
         }
-        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'w' || (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i - 1] == 'w') {
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'w') {
             (*(enemy + (*num))) = 1;
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'q') {
@@ -1760,25 +1899,58 @@ void user_long_damage(User *user, int distance, int power, int *enemy, int *expl
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'u') {
             (*(enemy + (*num))) = 4;
         }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i - 1] == 'x') {
+            (*(enemy + (*num))) = 5;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i - 1] == 'w') {
+            (*(enemy + (*num))) = 6;
+        }
         if ((*(enemy + (*num))) >= 0) {
             (user -> weapon_menu)[user -> current_weapon]--;
             (*(explode + (*num))) = 0;
             if ((user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] <= power) {
                 (*(damage + (*num))) = (user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i];
                 (user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] = 0;
-                (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] = '.';
+                if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'x' || (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i - 1] == 'x') {
+                    (user -> score) += 100;
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'w' || (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i - 1] == 'w') {
+                    (user -> score) += 200;
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'q') {
+                    (user -> score) += 300;
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'z') {
+                    (user -> score) += 400;
+                }
+                else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'u') {
+                    (user -> score) += 500;
+                }
+                if ((*(enemy + (*num))) < 5) {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] = '.';
+                }
+                else {
+                    (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i - 1] = '.';
+                }
                 (*(explode + (*num))) = 1;
                 (*(health + (*num))) = 0;
             }
             else {
                 (*(damage + (*num))) = power;
-                (user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] -= power;
-                (*(health + (*num))) = (user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i];
+                if ((*(enemy + (*num))) < 5) {
+                    (user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] -= power;
+                    (*(health + (*num))) = (user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i];
+                }
+                else {
+                    (user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i - 1] -= power;
+                    (*(health + (*num))) = (user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i - 1];
+                }
             }
             (*num)++;
-            break;
+            return;
         }
     }
+    (user -> weapon_menu)[user -> current_weapon]--;
 }
 
 #endif
