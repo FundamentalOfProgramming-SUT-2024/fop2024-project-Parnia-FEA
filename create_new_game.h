@@ -34,7 +34,9 @@ void *add_health(void *);
 int enemy_damage(User *);
 void change_info(User *);
 void copy_info();
-int user_short_damage(User *, int, int *);
+void user_short_damage(User *, int, int *, int *, int *, int *, int *, int , int);
+void user_short_damage2(User *, int, int *, int *, int *, int *, int *, int , int);
+void user_long_damage(User *, int, int, int *, int *, int *, int *, int *,int , int );
 
 void create_new_game_func (User *user) {
     (user -> games)++;
@@ -196,14 +198,18 @@ void game_func (User *user) {
     }
     attron(COLOR_PAIR(4));
     mvprintw(3, 0, "gold %d", user -> gold);
+    mvprintw(3, 50, "score %d", user -> score);
     attroff(COLOR_PAIR(4));
     refresh();
     while (user -> health > 0 && (c = getch()) != KEY_F(1)) {
         int flag = 0;
         int flag_stair = 0;
         int flag_g = 0;
-        int damage = 0;
-        int explode = 0;
+        int to_enemies[MAX_SIZE2];
+        int health[MAX_SIZE2];
+        int to = 0;
+        int to_damage[MAX_SIZE2];
+        int explode[MAX_SIZE2];
         //instruction
         if (c == 'w') {
             user -> current_weapon = -1;
@@ -283,7 +289,7 @@ void game_func (User *user) {
             food_menu_func(user);
             flag = 1;
         }
-        else if (c == 'a') {
+        else if (c == 'r') {
             enchant_menu_func(user);
             flag = 1;
         }
@@ -298,16 +304,54 @@ void game_func (User *user) {
                 attron(COLOR_PAIR(1));
             }
             else {
-                if (user -> current_weapon == 0) {
+                if (user -> current_weapon == 0 || user -> current_weapon == 4) {
+                    int power = (user -> power) * 5;
+                    if (user -> current_weapon == 4) {
+                        power *= 2;
+                    }
                     //short range hammer
-                    damage = user_short_damage(user, (user -> power) * 5, &explode);
-                }
-                else if (user -> current_weapon == 4) {
-                    //short damage sword
-                    damage = user_short_damage(user, (user -> power) * 5, &explode);
+                    user_short_damage(user, power, to_enemies, explode, to_damage, health, &to, 0, -1);
+                    user_short_damage(user, power, to_enemies, explode, to_damage, health, &to, 0, 1);
+                    user_short_damage(user, power, to_enemies, explode, to_damage, health, &to, 1, -1);
+                    user_short_damage(user, power, to_enemies, explode, to_damage, health, &to, 1, 0);
+                    user_short_damage(user, power, to_enemies, explode, to_damage, health, &to, 1, 1);
+                    user_short_damage(user, power, to_enemies, explode, to_damage, health, &to, -1, -1);
+                    user_short_damage(user, power, to_enemies, explode, to_damage, health, &to, -1, 0);
+                    user_short_damage(user, power, to_enemies, explode, to_damage, health, &to, -1, 1);
+                    user_short_damage2(user, power, to_enemies, explode, to_damage, health, &to, -2, -1);
+                    user_short_damage2(user, power, to_enemies, explode, to_damage, health, &to, -2, 0);
+                    user_short_damage2(user, power, to_enemies, explode, to_damage, health, &to, -2, 1);
                 }
                 else {
                     //long range
+                    c = getch();
+                    int distance = 5;
+                    int power;
+                    if (user -> current_weapon == 1) {
+                        power = 12;
+                    }
+                    else if (user -> current_weapon == 2) {
+                        distance = 10;
+                        power = 15;
+                    }
+                    else if (user -> current_weapon == 3) {
+                        power = 5;
+                    }
+                    power *= (user -> power);
+                    if (c == KEY_UP) {
+                        user_long_damage(user, distance, power, to_enemies, explode, to_damage, health, &to, 0, -1);
+                    }
+                    else if (c == KEY_LEFT) {
+                        user_long_damage(user, distance, power, to_enemies, explode, to_damage, health, &to, -1, 0);
+                    }
+                    else if (c == KEY_RIGHT) {
+                        user_long_damage(user, distance, power, to_enemies, explode, to_damage, health, &to, 1, 0);
+                    }
+                    else if (c == KEY_DOWN) {
+                        user_long_damage(user, distance, power, to_enemies, explode, to_damage, health, &to, 0, 1);
+                    }
+                    c = ' ';
+
                 }
 
             }
@@ -594,22 +638,47 @@ void game_func (User *user) {
             }
             attron(COLOR_PAIR(4));
             mvprintw(3, 0, "gold %d", user -> gold);
+            mvprintw(3, 50, "score %d", user -> score);
             attroff(COLOR_PAIR(4));
             refresh();
         }
-        if (damage > 0) {
+        if (to > 0) {
+            print_screen(user, 0, gamer);
+            mvprintw(4, 0, "");
             attron(COLOR_PAIR(2));
-            mvprintw(4, 0, "%d damages to the enemy!", damage);
-            attroff(COLOR_PAIR(2));
-            if (explode) {
-                print_screen(user, 0, gamer);
-                attron(COLOR_PAIR(2));
-                mvprintw(4, 0, "%d damages to the enemy!", damage);
-                attron(A_BLINK);
-                printw(" ENEMY EXPLODED");
-                attroff(A_BLINK);
-                attroff(COLOR_PAIR(2));
+            for (int i = 0; i < to; i++) {
+                char enemy_name[MAX_SIZE2];
+                if (to_enemies[i] == 0) {
+                    strcpy(enemy_name, "Deamon");
+                }
+                else if (to_enemies[i] == 1) {
+                    strcpy(enemy_name, "Monster");
+                }
+                else if (to_enemies[i] == 2) {
+                    strcpy(enemy_name, "Giant");
+                }
+                else if (to_enemies[i] == 3) {
+                    strcpy(enemy_name, "Snake");
+                }
+                else if (to_enemies[i] == 4) {
+                    strcpy(enemy_name, "Undeed");
+                }
+
+                printw("%d damages to %s", to_damage[i], enemy_name);
+                if (explode[i] == 1) {
+                    attron(A_BLINK);
+                    printw(" ENEMY EXPLODED   ");
+                    attroff(A_BLINK);
+                }
+                else {
+                    printw(" CURRENT HEALTH : %d   ", health[i]);
+                }
             }
+            attroff(COLOR_PAIR(2));
+            refresh();
+        }
+        else if (c == ' ') {
+            mvprintw(4, 0, "No Enemies were damaged!");
             refresh();
         }
         if (user -> current_x == user -> end_x && user -> current_y == user -> end_y) {
@@ -622,22 +691,25 @@ void game_func (User *user) {
             sleep(1);
             clear();
             refresh();
-            attron(COLOR_PAIR(2) | A_BLINK);
-            mvprintw(29, 100, "YOU HAVE WON THE GAME!");
-            mvprintw(30, 103, "golds        %d", user -> gold);
-            mvprintw(31, 103, "total golds  %d", user -> total_gold);
-            mvprintw(33, 103, "score        %d", user -> score);
-            //prints
-            attroff(COLOR_PAIR(2) | A_BLINK);
-            refresh();
-            sleep(5);
-            //changes
             (user -> complete_games)++;
             (user -> total_gold) += (user -> gold);
             (user -> total_gold) += ((user -> difficulty) * 50);
             (user -> resume) = 0;
             (user -> total_score) += (user -> gold);
             (user -> total_score) += (user -> score);
+            attron(COLOR_PAIR(2) | A_BLINK);
+            mvprintw(29, 100, "YOU HAVE WON THE GAME!");
+            attroff(COLOR_PAIR(2) | A_BLINK);
+            attron(COLOR_PAIR(4));
+            mvprintw(30, 103, "golds        %d", user -> gold);
+            mvprintw(31, 103, "total golds  %d", user -> total_gold);
+            mvprintw(33, 103, "score        %d", user -> score);
+            mvprintw(34, 103, "total score        %d", user -> total_score);
+            //prints
+            attroff(COLOR_PAIR(4));
+            refresh();
+            sleep(3);
+            //changes
             if (user -> is_guest == 0) {
                 change_info(user);
                 copy_info();
@@ -777,15 +849,42 @@ void game_func (User *user) {
             mvprintw(0, 0, "%d damage from enemy!", damage2);
             attroff(COLOR_PAIR(1));
             refresh();
-            if (damage > 0) {
+            if (to > 0) {
+                mvprintw(4, 0, "");
                 attron(COLOR_PAIR(2));
-                mvprintw(4, 0, "%d damages to the enemy!", damage);
-                if (explode) {
-                    attron(A_BLINK);
-                    printw("  ENEMY EXPLODED");
-                    attroff(A_BLINK);
+                for (int i = 0; i < to; i++) {
+                    char enemy_name[MAX_SIZE2];
+                    if (to_enemies[i] == 0) {
+                        strcpy(enemy_name, "Deamon");
+                    }
+                    else if (to_enemies[i] == 1) {
+                        strcpy(enemy_name, "Monster");
+                    }
+                    else if (to_enemies[i] == 2) {
+                        strcpy(enemy_name, "Giant");
+                    }
+                    else if (to_enemies[i] == 3) {
+                        strcpy(enemy_name, "Snake");
+                    }
+                    else if (to_enemies[i] == 4) {
+                        strcpy(enemy_name, "Undeed");
+                    }
+
+                    printw("%d damages to %s", to_damage[i], enemy_name);
+                    if (explode[i] == 1) {
+                        attron(A_BLINK);
+                        printw(" ENEMY EXPLODED   ");
+                        attroff(A_BLINK);
+                    }
+                    else {
+                        printw(" CURRENT HEALTH : %d   ", health[i]);
+                    }
                 }
                 attroff(COLOR_PAIR(2));
+                refresh();
+            }
+            else if (c == ' ') {
+                mvprintw(4, 0, "No Enemies were damaged!");
                 refresh();
             }
         }
@@ -818,22 +917,35 @@ void game_func (User *user) {
         }
     
     }
+    mvprintw(29, 104, "LOADING...");
+    refresh();
+    end = 1;
+    user -> end = 1;
+    pthread_join(thread_hunger, NULL);
+    pthread_join(thread_health, NULL);
+    pthread_join(thread_add_health, NULL);
+    //pthread_join(thread_enemy_damage, NULL);
     clear();
     if (user -> health <= 0) {
+        (user -> total_gold) += (user -> gold);
+        (user -> resume) = 0;
+        (user -> total_score) += (user -> score);
+        attron(COLOR_PAIR(1) | A_BLINK);
         mvprintw(29, 104, "YOU LOST");
+        attroff(COLOR_PAIR(1) | A_BLINK);
+        attron(COLOR_PAIR(4));
+        mvprintw(30, 98, "golds        %d", user -> gold);
+        mvprintw(31, 98, "total golds  %d", user -> total_gold);
+        mvprintw(33, 98, "score        %d", user -> score);
+        mvprintw(34, 98, "total score        %d", user -> total_score);
+        //prints
+        attroff(COLOR_PAIR(4));
+        refresh();
+        sleep(3);
     }
     else {
-        mvprintw(29, 104, "LOADING...");
-        refresh();
-        end = 1;
-        user -> end = 1;
-        pthread_join(thread_hunger, NULL);
-        pthread_join(thread_health, NULL);
-        pthread_join(thread_add_health, NULL);
-        //pthread_join(thread_enemy_damage, NULL);
-        clear();
         if (user -> is_guest == 0) {
-            mvprintw(29, 98, "Do You want to save the game?(y/n)");
+            mvprintw(29, 91, "Do You want to save the game?(y/n)");
             c = getch();
             if (c == 'y') {
                 user -> resume = 1;
@@ -1092,6 +1204,7 @@ void print_screen(User *user, int flag_stair, char gamer) {
     }
     attron(COLOR_PAIR(4));
     mvprintw(3, 0, "gold %d", user -> gold);
+    mvprintw(3, 50, "score %d", user -> score);
     attroff(COLOR_PAIR(4));
     refresh();
     usleep(20000);
@@ -1542,203 +1655,130 @@ void copy_info() {
     fclose(users);
 }
 
-int user_short_damage(User *user, int power, int *explode) {
-    int damage = 0;
-    if (user -> current_x > 1 && 
-        ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 2] == 'x' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 2] == 'w' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 2] == 'q' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 2] == 'z' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 2] == 'u')) {
-            if ((user -> enemy_health)[user -> current_floor][user -> current_y][user -> current_x - 2] <= power) {
-                damage += (user -> enemy_health)[user -> current_floor][user -> current_y][user -> current_x - 2];
-                (user -> enemy_health)[user -> current_floor][user -> current_y][user -> current_x - 2] = 0;
-                (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 2] = '.';
-                (*explode) = 1;
+void user_short_damage(User *user, int power,int *enemy, int *explode, int *damage, int *health, int *num,int x, int y) {
+    if (user -> current_y + y >= 0 && user -> current_y + y < 60 &&
+        user -> current_x + x >= 0 && user -> current_x + x < 200) {
+            if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'x') {
+                (*(enemy + (*num))) = 0;
+            }
+            else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'w') {
+                (*(enemy + (*num))) = 1;
+            }
+            else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'q') {
+                (*(enemy + (*num))) = 2;
+            }
+            else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'z') {
+                (*(enemy + (*num))) = 3;
+            }
+            else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'u') {
+                (*(enemy + (*num))) = 4;
             }
             else {
-                damage += power;
-                (user -> enemy_health)[user -> current_floor][user -> current_y][user -> current_x - 2] -= power;
+                return;
             }
     }
-    if (user -> current_x > 0 && 
-        ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'x' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'w' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'q' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'z' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] == 'u')) {
-            if ((user -> enemy_health)[user -> current_floor][user -> current_y][user -> current_x - 1] <= power) {
-                damage += (user -> enemy_health)[user -> current_floor][user -> current_y][user -> current_x - 1];
-                (user -> enemy_health)[user -> current_floor][user -> current_y][user -> current_x - 1] = 0;
-                (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] = '.';
-                (*explode) = 1;
-            }
-            else {
-                damage += power;
-                (user -> enemy_health)[user -> current_floor][user -> current_y][user -> current_x - 1] -= power;
-            }
+    else {
+        return;
     }
-    if (user -> current_x < 199 && 
-        ((user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == 'x' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == 'w' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == 'q' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == 'z' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] == 'u')) {
-            if ((user -> enemy_health)[user -> current_floor][user -> current_y][user -> current_x + 1] <= power) {
-                damage += (user -> enemy_health)[user -> current_floor][user -> current_y][user -> current_x + 1];
-                (user -> enemy_health)[user -> current_floor][user -> current_y][user -> current_x + 1] = 0;
-                (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x + 1] = '.';
-                (*explode) = 1;
-            }
-            else {
-                damage += power;
-                (user -> enemy_health)[user -> current_floor][user -> current_y][user -> current_x + 1] -= power;
-            }
+    (*(explode + (*num))) = 0;
+    if ((user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x] <= power) {
+        (*(damage + (*num))) = (user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x];
+        (user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x] = 0;
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] = '.';
+        (*(explode + (*num))) = 1;
+        (*(health + (*num))) = 0;
     }
+    else {
+        (*(damage + (*num))) = power;
+        (user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x] -= power;
+        (*(health + (*num))) = (user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x];
+    }
+    (*num)++;
+}
 
-    if (user -> current_x < 199 && user -> current_y > 0 &&
-        ((user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == 'x' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == 'w' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == 'q' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == 'z' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] == 'u')) {
-            if ((user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] <= power) {
-                damage += (user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x + 1];
-                (user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] = 0;
-                (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] = '.';
-                (*explode) = 1;
-            }
-            else {
-                damage += power;
-                (user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x + 1] -= power;
-            }
-    }
-    if (user -> current_x < 199 && user -> current_y < 59 &&
-        ((user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == 'x' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == 'w' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == 'q' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == 'z' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] == 'u')) {
-            if ((user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] <= power) {
-                damage += (user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x + 1];
-                (user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] = 0;
-                (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] = '.';
-                (*explode) = 1;
-            }
-            else {
-                damage += power;
-                (user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x + 1] -= power;
-            }
-    }
+void user_short_damage2(User *user, int power,int *enemy, int *explode, int *damage, int *health, int *num,int x, int y) {
+    if (user -> current_y + y >= 0 && user -> current_y + y < 60 &&
+        user -> current_x + x >= 0 && user -> current_x + x < 200) {
+            if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'x') {
+                (*(enemy + (*num))) = 0;
 
-    if (user -> current_y < 59 &&
-        ((user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == 'x' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == 'w' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == 'q' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == 'z' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] == 'u')) {
-            if ((user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x] <= power) {
-                damage += (user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x];
-                (user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x] = 0;
-                (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x] = '.';
-                (*explode) = 1;
+            }
+            else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] == 'w') {
+                (*(enemy + (*num))) = 1;
             }
             else {
-                damage += power;
-                (user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x] -= power;
+                return;
             }
     }
+    else {
+        return;
+    }
+    (*(explode + (*num))) = 0;
+    if ((user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x] <= power) {
+        (*(damage + (*num))) = (user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x];
+        (user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x] = 0;
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y][user -> current_x + x] = '.';
+        (*(explode + (*num))) = 1;
+        (*(health + (*num))) = 0;
+    }
+    else {
+        (*(damage + (*num))) = power;
+        (user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x] -= power;
+        (*(health + (*num))) = (user -> enemy_health)[user -> current_floor][user -> current_y + y][user -> current_x + x];
+    }
+    (*num)++;
+}
 
-    if (user -> current_y > 0 &&
-        ((user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == 'x' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == 'w' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == 'q' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == 'z' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] == 'u')) {
-            if ((user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x] <= power) {
-                damage += (user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x];
-                (user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x] = 0;
-                (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x] = '.';
-                (*explode) = 1;
+void user_long_damage(User *user, int distance, int power, int *enemy, int *explode, int *damage, int *health, int *num,int x, int y) {
+    for (int i = 1; i <= distance; i++) {
+        (*(enemy + (*num))) = -1;
+        if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == '_' ||
+            (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == '|' ||
+            (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == '+' ||
+            (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == '-' ||
+            (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == '!' ||
+            (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == '?' ||
+            (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'O') {
+                if (i > 1) {
+                    (user -> weapon_menu)[user -> current_weapon]--;
+                    //putting one arrow
+                }
+                break;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'x' || (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i - 1] == 'x') {
+            (*(enemy + (*num))) = 0;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'w' || (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i - 1] == 'w') {
+            (*(enemy + (*num))) = 1;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'q') {
+            (*(enemy + (*num))) = 2;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'z') {
+            (*(enemy + (*num))) = 3;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'u') {
+            (*(enemy + (*num))) = 4;
+        }
+        if ((*(enemy + (*num))) >= 0) {
+            (user -> weapon_menu)[user -> current_weapon]--;
+            (*(explode + (*num))) = 0;
+            if ((user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] <= power) {
+                (*(damage + (*num))) = (user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i];
+                (user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] = 0;
+                (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] = '.';
+                (*(explode + (*num))) = 1;
+                (*(health + (*num))) = 0;
             }
             else {
-                damage += power;
-                (user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x] -= power;
+                (*(damage + (*num))) = power;
+                (user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] -= power;
+                (*(health + (*num))) = (user -> enemy_health)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i];
             }
+            (*num)++;
+            break;
+        }
     }
-
-    if (user -> current_x > 0 && user -> current_y < 59 &&
-        ((user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == 'x' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == 'w' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == 'q' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == 'z' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] == 'u')) {
-            if ((user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] <= power) {
-                damage += (user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x - 1];
-                (user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] = 0;
-                (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] = '.';
-                (*explode) = 1;
-            }
-            else {
-                damage += power;
-                (user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x - 1] -= power;
-            }
-    }
-
-    if (user -> current_x > 0 && user -> current_y > 0 &&
-        ((user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == 'x' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == 'w' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == 'q' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == 'z' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] == 'u')) {
-            if ((user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] <= power) {
-                damage += (user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x - 1];
-                (user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] = 0;
-                (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] = '.';
-                (*explode) = 1;
-            }
-            else {
-                damage += power;
-                (user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x - 1] -= power;
-            }
-    }
-
-    if (user -> current_x > 1 && user -> current_y > 0 &&
-        ((user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 2] == 'x' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 2] == 'w' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 2] == 'q' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 2] == 'z' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 2] == 'u')) {
-            if ((user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x - 2] <= power) {
-                damage += (user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x - 2];
-                (user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x - 2] = 0;
-                (user -> map_screen_char)[user -> current_floor][user -> current_y - 1][user -> current_x - 2] = '.';
-                (*explode) = 1;
-            }
-            else {
-                damage += power;
-                (user -> enemy_health)[user -> current_floor][user -> current_y - 1][user -> current_x - 2] -= power;
-            }
-    }
-
-    if (user -> current_x > 1 && user -> current_y < 59 &&
-        ((user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 2] == 'x' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 2] == 'w' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 2] == 'q' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 2] == 'z' ||
-         (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 2] == 'u')) {
-            if ((user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x - 2] <= power) {
-                damage += (user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x - 2];
-                (user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x - 2] = 0;
-                (user -> map_screen_char)[user -> current_floor][user -> current_y + 1][user -> current_x - 2] = '.';
-                (*explode) = 1;
-            }
-            else {
-                damage += power;
-                (user -> enemy_health)[user -> current_floor][user -> current_y + 1][user -> current_x - 2] -= power;
-            }
-    }
-    return damage;
 }
 
 #endif

@@ -532,7 +532,7 @@ void create_map (User *user) {
                         (user -> map_screen_char)[f][enchant_y][enchant_x] = enchants[enchant_theme];
                     }
                 }
-                int weapon = rand() % 6;
+                int weapon = rand() % 4;
                 if (weapon == 0) {
                     int steps = 100;
                     int weapon_theme = rand() % 4;
@@ -547,8 +547,21 @@ void create_map (User *user) {
                         (user -> map_screen_char)[f][weapon_y][weapon_x] = '1' + weapon_theme;
                     }
                 }
-                int enemy = rand() % 3;
-                if (enemy == 0) {
+                int enemy_p = rand() % 8;
+                int enemy;
+                if (enemy_p == 0 || enemy_p == 1) {
+                    enemy = 0;
+                }
+                else if (enemy_p == 2 || enemy_p == 2 || enemy_p == 3) {
+                    enemy = 1;
+                }
+                else if (enemy_p == 4 || enemy_p == 5 || enemy_p == 6) {
+                    enemy = 2;
+                }
+                else {
+                    enemy = 3;
+                }
+                for (int u = 0; u < enemy; u++) {
                     int enemy_theme = rand() % 5;
                     int steps = 100;
                     if (enemy_theme == 0) {
