@@ -39,6 +39,10 @@ int main() {
     init_pair(10, COLOR_BLACK, COLOR_GOLD);
     init_pair(11, COLOR_BLACK, COLOR_SILVER);
     init_pair(12, COLOR_BLACK, COLOR_BRONZE);
+    mvprintw(0, 0, "%s", "\U0001F363");
+    refresh();
+    sleep(10);
+    
     welcome_menu();
     endwin();
     return 0;

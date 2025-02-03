@@ -19,7 +19,7 @@
 void game_func(User *);
 int move_directly(User *, int, int, int);
 int move_indirectly(User *, int, int, int);
-void print_screen(User *, int, char);
+void print_screen(User *, int, char, int);
 void *hunger_rate(void *);
 void *health_rate(void *);
 void *add_health(void *);
@@ -115,13 +115,13 @@ void game_func (User *user) {
                     mvaddch(START + i, START + j, '.');
                 }
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'j' && (user -> current_y != i || user -> current_x != j)) {
-                    mvprintw(START + i, START + j, "%s", "\U0001F354");
+                    mvprintw(START + i, START + j, "%s", "\U0001F363");
                 }
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'k' && user -> current_y == i && user -> current_x == j + 1) {
                     mvaddch(START + i, START + j, '.');
                 }
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'k' && (user -> current_y != i || user -> current_x != j)) {
-                    mvprintw(START + i, START + j, "%s", "\U0001F354");
+                    mvprintw(START + i, START + j, "%s", "\U0001F36D");
                 }
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'x') {
                     mvprintw(START + i, START + j, "%s", "\U0001F921");
@@ -215,6 +215,7 @@ void game_func (User *user) {
         int to_enemies[MAX_SIZE2];
         int health[MAX_SIZE2];
         int to = 0;
+        int flag_c = 0;
         int to_damage[MAX_SIZE2];
         int explode[MAX_SIZE2];
         //instruction
@@ -306,6 +307,7 @@ void game_func (User *user) {
         }
         else if (c == ' ') {
             if (user -> current_weapon == -1 || (user -> weapon_menu)[user -> current_weapon] == 0) {
+                flag_c = 1;
                 attron(COLOR_PAIR(1));
                 mvprintw(4, 0, "You Have No Weapons In Hand!");
                 attron(COLOR_PAIR(1));
@@ -382,56 +384,56 @@ void game_func (User *user) {
             if (c == 'j') {
                 //up
                 while(move_directly(user, 0, -1, 1)) {
-                    print_screen(user, flag_stair, gamer);
+                    print_screen(user, flag_stair, gamer, 1);
                 }
                 flag = 1;
             }
             else if (c == 'k') {
                 //down
                 while(move_directly(user, 0, 1, 1)) {
-                    print_screen(user, flag_stair, gamer);
+                    print_screen(user, flag_stair, gamer, 1);
                 }
                 flag = 1;
             }
             else if (c == 'h') {
                 //left
                 while(move_directly(user, -1, 0, 1)) {
-                    print_screen(user, flag_stair, gamer);
+                    print_screen(user, flag_stair, gamer, 1);
                 }
                 flag = 1;
             }
             else if (c == 'l') {
                 //right
                 while(move_directly(user, 1, 0, 1)) {
-                    print_screen(user, flag_stair, gamer);
+                    print_screen(user, flag_stair, gamer, 1);
                 }
                 flag = 1;
             }
             else if (c == 'y') {
                 //up left
                 while(move_indirectly(user, -1, -1, 1)) {
-                    print_screen(user, flag_stair, gamer);
+                    print_screen(user, flag_stair, gamer, 1);
                 }
                 flag = 1;
             }
             else if (c == 'u') {
                 //up right
                 while(move_indirectly(user, 1, -1, 1)) {
-                    print_screen(user, flag_stair, gamer);
+                    print_screen(user, flag_stair, gamer, 1);
                 }
                 flag = 1;
             }
             else if (c == 'b') {
                 //down left
                 while(move_indirectly(user, -1, 1, 1)) {
-                    print_screen(user, flag_stair, gamer);
+                    print_screen(user, flag_stair, gamer, 1);
                 }
                 flag = 1;
             }
             else if (c == 'n') {
                 //down right
                 while(move_indirectly(user, 1, 1, 1)) {
-                    print_screen(user, flag_stair, gamer);
+                    print_screen(user, flag_stair, gamer, 1);
                 }
                 flag = 1;
             }
@@ -605,13 +607,13 @@ void game_func (User *user) {
                             mvaddch(START + i, START + j, '.');
                         }
                         else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'j' && (user -> current_y != i || user -> current_x != j)) {
-                            mvprintw(START + i, START + j, "%s", "\U0001F354");
+                            mvprintw(START + i, START + j, "%s", "\U0001F363");
                         }
                         else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'k' && user -> current_y == i && user -> current_x == j + 1) {
                             mvaddch(START + i, START + j, '.');
                         }
                         else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'k' && (user -> current_y != i || user -> current_x != j)) {
-                            mvprintw(START + i, START + j, "%s", "\U0001F354");
+                            mvprintw(START + i, START + j, "%s", "\U0001F36D");
                         }
                         else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'x') {
                             mvprintw(START + i, START + j, "%s", "\U0001F921");
@@ -701,7 +703,7 @@ void game_func (User *user) {
             refresh();
         }
         if (to > 0) {
-            print_screen(user, 0, gamer);
+            print_screen(user, 0, gamer, 1);
             mvprintw(4, 0, "");
             attron(COLOR_PAIR(2));
             for (int i = 0; i < to; i++) {
@@ -735,7 +737,7 @@ void game_func (User *user) {
             attroff(COLOR_PAIR(2));
             refresh();
         }
-        else if (c == ' ') {
+        else if (c == ' ' && flag_c == 0) {
             mvprintw(4, 0, "No Enemies were damaged!");
             refresh();
         }
@@ -894,7 +896,7 @@ void game_func (User *user) {
             mvaddch(user -> current_y + START, user -> current_x + 1 + START, '.');
             int weapon_theme = (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] - '0';
             if ((user -> weapon_type)[user -> current_floor][user -> current_y][user -> current_x] == 1) {
-                (user -> weapon_menu)[weapon_theme] ++;
+                (user -> weapon_menu)[weapon_theme]++;
             }
             else if (weapon_theme == 1) {
                 (user -> weapon_menu)[weapon_theme] += 10;
@@ -980,7 +982,7 @@ void game_func (User *user) {
         }
         int damage2 = enemy_damage(user);
         if (damage2 > 0) {
-            print_screen(user, 0, gamer);
+            print_screen(user, 0, gamer, 1);
             attron(COLOR_PAIR(1));
             mvprintw(0, 0, "%d damage from enemy!", damage2);
             attroff(COLOR_PAIR(1));
@@ -1169,7 +1171,7 @@ int move_indirectly(User *user, int x, int y, int type) {
     return 0;
 }
 
-void print_screen(User *user, int flag_stair, char gamer) {
+void print_screen(User *user, int flag_stair, char gamer, int sp) {
     if ((user -> map_screen)[user -> current_floor][user -> current_y][user -> current_x] > 0) {
         Room *current_room = (user -> map_rooms)[user -> current_floor][(user -> map_screen)[user -> current_floor][user -> current_y][user -> current_x] - 1];
         for (int i = current_room -> uly; i < current_room -> uly + current_room -> height; i++) {
@@ -1272,13 +1274,13 @@ void print_screen(User *user, int flag_stair, char gamer) {
                     mvaddch(START + i, START + j, '.');
                 }
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'j' && (user -> current_y != i || user -> current_x != j)) {
-                    mvprintw(START + i, START + j, "%s", "\U0001F354");
+                    mvprintw(START + i, START + j, "%s", "\U0001F363");
                 }
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'k' && user -> current_y == i && user -> current_x == j + 1) {
                     mvaddch(START + i, START + j, '.');
                 }
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'k' && (user -> current_y != i || user -> current_x != j)) {
-                    mvprintw(START + i, START + j, "%s", "\U0001F354");
+                    mvprintw(START + i, START + j, "%s", "\U0001F36D");
                 }
                 else if ((user -> map_screen_char)[user -> current_floor][i][j] == 'x') {
                     mvprintw(START + i, START + j, "%s", "\U0001F921");
@@ -1365,7 +1367,7 @@ void print_screen(User *user, int flag_stair, char gamer) {
     mvprintw(3, 50, "score %d", user -> score);
     attroff(COLOR_PAIR(4));
     refresh();
-    usleep(20000);
+    usleep(20000 * sp);
 }
 
 void *hunger_rate(void *arguments) {
@@ -1995,6 +1997,10 @@ void user_long_damage(User *user, int distance, int power, int *enemy, int *expl
             (*num)++;
             return;
         }
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] = user -> current_weapon + '0';
+        print_screen(user, 0, toupper((user -> username)[0]), 4);
+        (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] = '.';
+        
     }
     (user -> weapon_menu)[user -> current_weapon]--;
 }
