@@ -16,7 +16,7 @@ void weapon_menu_func(User *user) {
 	mvprintw(29, 83, "weapon      character      number          power");
 	attroff(COLOR_PAIR(3));
 	mvprintw(31, 83, "Hammer          h           1                %d", 5 * (user -> power));
-	mvprintw(32, 83, "Sword           s           %d               %d", (user -> weapon_menu)[4], 5 * (user -> power));
+	mvprintw(32, 83, "Sword           s           %d               %d", (user -> weapon_menu)[4], 10 * (user -> power));
 
 	attron(COLOR_PAIR(3));
 	mvprintw(34, 103, "Long Range");

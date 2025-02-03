@@ -8,6 +8,7 @@
 #include "scoreboard.h"
 #include "setting.h"
 #include "user.h"
+#include "profile.h"
 
 #define MAX_SIZE 1000
 
@@ -17,20 +18,20 @@ void game_menu_func(User *user) {
 	MENU *my_menu;
 	WINDOW *menu_win;
     int c, i;
-    char *choices[] = {"New Game", "Continue Game", "Score Board", "Settings"};
-    char *choices_numbers[] = {" ", " ", " ", " "};
-    void (*func[4]) (User *) = {create_new_game_func, continue_game_func, show_score_board, show_settings};
-    items = (ITEM **)calloc(5, sizeof(ITEM *));
-    for(i = 0; i < 4; ++i) {       
+    char *choices[] = {"New Game", "Continue Game", "Score Board", "Settings", "Profile"};
+    char *choices_numbers[] = {" ", " ", " ", " ", " "};
+    void (*func[5]) (User *) = {create_new_game_func, continue_game_func, show_score_board, show_settings, show_profile};
+    items = (ITEM **)calloc(6, sizeof(ITEM *));
+    for(i = 0; i < 5; ++i) {       
         items[i] = new_item(choices_numbers[i], choices[i]);
         set_item_userptr(items[i], func[i]);
 	}
-	items[4] = (ITEM *)NULL;
+	items[5] = (ITEM *)NULL;
 	my_menu = new_menu((ITEM **)items);
-	menu_win = newwin(4, 40, 32, 100);
+	menu_win = newwin(5, 40, 32, 100);
 	keypad(menu_win, TRUE);
 	set_menu_win(my_menu, menu_win);
-	set_menu_sub(my_menu, derwin(menu_win, 4, 40, 0, 0));
+	set_menu_sub(my_menu, derwin(menu_win, 5, 40, 0, 0));
 	mvprintw(LINES - 3, 0, "Press <ENTER> to see the option selected");
 	mvprintw(LINES - 2, 0, "Up and Down arrow keys to navigate (F1 to Log Out)");
 	attron(COLOR_PAIR(1) | A_BLINK);

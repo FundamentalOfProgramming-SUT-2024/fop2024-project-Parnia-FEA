@@ -1050,6 +1050,7 @@ void game_func (User *user) {
         }
     
     }
+    clear();
     mvprintw(29, 104, "LOADING...");
     refresh();
     end = 1;

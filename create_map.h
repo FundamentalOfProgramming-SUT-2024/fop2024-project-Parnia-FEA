@@ -599,7 +599,7 @@ void create_map (User *user) {
                         //giant q
                         int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                         int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
-                        while (steps > 0 && (user -> map_screen_char)[f][enemy_y][enemy_x] != '.' ) {
+                        while (steps > 0 && ((user -> map_screen_char)[f][enemy_y][enemy_x] != '.' || (user -> map_screen_char)[f][enemy_y][enemy_x-1] != '.')) {
                             enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                             enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
                             steps --;
@@ -614,7 +614,7 @@ void create_map (User *user) {
                         //snake z
                         int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                         int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
-                        while (steps > 0 && (user -> map_screen_char)[f][enemy_y][enemy_x] != '.' ) {
+                        while (steps > 0 && ((user -> map_screen_char)[f][enemy_y][enemy_x] != '.' || (user -> map_screen_char)[f][enemy_y][enemy_x-1] != '.')) {
                             enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                             enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
                             steps --;
@@ -629,7 +629,7 @@ void create_map (User *user) {
                         //undeed u
                         int enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                         int enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
-                        while (steps > 0 && (user -> map_screen_char)[f][enemy_y][enemy_x] != '.' ) {
+                        while (steps > 0 && ((user -> map_screen_char)[f][enemy_y][enemy_x] != '.' || (user -> map_screen_char)[f][enemy_y][enemy_x-1] != '.')) {
                             enemy_x = ((user -> map_rooms)[f][i] -> ulx) + 1 + rand() % ((user -> map_rooms)[f][i] -> width - 2);
                             enemy_y = ((user -> map_rooms)[f][i] -> uly) + 1 + rand() % ((user -> map_rooms)[f][i] -> height - 2);
                             steps --;
@@ -689,7 +689,7 @@ void create_map (User *user) {
                 int steps = 100;
                 int pillar_x = rooms[f][i] -> ulx + 2 + rand() % (rooms[f][i] -> width - 4);
                 int pillar_y = rooms[f][i] -> uly + 2 + rand() % (rooms[f][i] -> height - 4);
-                while (steps > 0 && (user -> map_screen_char)[f][pillar_y][pillar_x] != '.') {
+                while (steps > 0 && ((user -> map_screen_char)[f][pillar_y][pillar_x] != '.' || (user -> map_screen_char)[f][pillar_y][pillar_x - 1] != '.')) {
                     pillar_x = rooms[f][i] -> ulx + 2 + rand() % (rooms[f][i] -> width - 4);
                     pillar_y = rooms[f][i] -> uly + 2 + rand() % (rooms[f][i] -> height - 4);
                     steps--;
@@ -704,7 +704,7 @@ void create_map (User *user) {
                 int steps = 100;
                 int gold_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
                 int gold_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
-                while (steps > 0 && (user -> map_screen_char)[f][gold_y][gold_x] != '.' || (user -> map_screen_char)[f][gold_y][gold_x+1] != '.') {
+                while (steps > 0 && (user -> map_screen_char)[f][gold_y][gold_x] != '.' || (user -> map_screen_char)[f][gold_y][gold_x-1] != '.') {
                     gold_x = rooms[f][i] -> ulx + 1 + rand() % (rooms[f][i] -> width - 2);
                     gold_y = rooms[f][i] -> uly + 1 + rand() % (rooms[f][i] -> height - 2);
                     steps--;
