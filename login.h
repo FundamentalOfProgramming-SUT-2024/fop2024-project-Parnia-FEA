@@ -241,6 +241,19 @@ void build_user(User *user) {
                             }
                         }
                     }
+
+                    //weapon type
+                    for (int f = 0; f < 4; f++) {
+                        for (i = 0; i < 60; i++) {
+                            fgets(line, MAX_SIZE, users);
+                            line[strlen(line)-1] = '\0';
+                            ptr = strtok(line, " ");
+                            for (int j = 0; j < 200; j++) {
+                                sscanf(ptr, "%d", &((user -> weapon_type)[f][i][j]));
+                                ptr = strtok(NULL, " ");
+                            }
+                        }
+                    }
                     
 
                     //in_staircase 1 2 3

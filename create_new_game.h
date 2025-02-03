@@ -358,7 +358,7 @@ void game_func (User *user) {
                         user_long_damage(user, distance, power, to_enemies, explode, to_damage, health, &to, 0, 1);
                     }
                     c = ' ';
-
+                    flag = 1;
                 }
 
             }
@@ -893,7 +893,10 @@ void game_func (User *user) {
             mvprintw(0, 0, "WEAPON COLLECTED!");
             mvaddch(user -> current_y + START, user -> current_x + 1 + START, '.');
             int weapon_theme = (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x] - '0';
-            if (weapon_theme == 1) {
+            if ((user -> weapon_type)[user -> current_floor][user -> current_y][user -> current_x] == 1) {
+                (user -> weapon_menu)[weapon_theme] ++;
+            }
+            else if (weapon_theme == 1) {
                 (user -> weapon_menu)[weapon_theme] += 10;
             }
             else if (weapon_theme == 2) {
@@ -918,6 +921,9 @@ void game_func (User *user) {
             mvprintw(0, 0, "WEAPON COLLECTED!");
             mvaddch(user -> current_y + START, user -> current_x - 1 + START, '.');
             int weapon_theme = (user -> map_screen_char)[user -> current_floor][user -> current_y][user -> current_x - 1] - '0';
+            if ((user -> weapon_type)[user -> current_floor][user -> current_y][user -> current_x - 1] == 1) {
+                (user -> weapon_menu)[weapon_theme] ++;
+            }
             if (weapon_theme == 1) {
                 (user -> weapon_menu)[weapon_theme] += 10;
             }
@@ -1678,6 +1684,16 @@ void change_info(User *user) {
                         }
                     }
 
+                    //weapon type
+                    for (int f = 0; f < 4; f++) {
+                        for (i = 0; i < 60; i++) {
+                            for (int j = 0; j < 200; j++) {
+                                fprintf(users_copy, "%d ", (user -> weapon_type)[f][i][j]);
+                            }
+                            fprintf(users_copy, "\n");
+                        }
+                    }
+
                     //in_staircase 1 2 3
                     for (i = 1; i < 4; i++) {
                         fprintf(users_copy, "%d %d ", (user -> in_staircase)[i] -> x, (user -> in_staircase)[i] -> y);
@@ -1905,20 +1921,7 @@ void user_short_damage2(User *user, int power,int *enemy, int *explode, int *dam
 void user_long_damage(User *user, int distance, int power, int *enemy, int *explode, int *damage, int *health, int *num,int x, int y) {
     for (int i = 1; i <= distance; i++) {
         (*(enemy + (*num))) = -1;
-        if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == '_' ||
-            (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == '|' ||
-            (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == '+' ||
-            (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == '-' ||
-            (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == '!' ||
-            (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == '?' ||
-            (user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'O') {
-                if (i > 1) {
-                    (user -> weapon_menu)[user -> current_weapon]--;
-                    //putting one arrow
-                }
-                return;
-        }
-        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'x') {
+        if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'x') {
             (*(enemy + (*num))) = 0;
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] == 'w') {
@@ -1938,6 +1941,15 @@ void user_long_damage(User *user, int distance, int power, int *enemy, int *expl
         }
         else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i - 1] == 'w') {
             (*(enemy + (*num))) = 6;
+        }
+        else if ((user -> map_screen_char)[user -> current_floor][user -> current_y + y * i][user -> current_x + x * i] != '.') {
+            if (i > 1) {
+                (user -> weapon_menu)[user -> current_weapon]--;
+                //putting one arrow
+                (user -> map_screen_char)[user -> current_floor][user -> current_y + y * (i-1)][user -> current_x + x * (i-1)] = (user -> current_weapon) + '0';
+                (user -> weapon_type)[user -> current_floor][user -> current_y + y * (i-1)][user -> current_x + x * (i-1)] = 1;
+            }
+            return;
         }
         if ((*(enemy + (*num))) >= 0) {
             (user -> weapon_menu)[user -> current_weapon]--;

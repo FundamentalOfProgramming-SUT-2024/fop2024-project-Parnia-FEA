@@ -396,6 +396,7 @@ void create_map (User *user) {
                 (user -> map_screen)[f][i][j] = screen[f][i][j];
                 (user -> map_screen_char)[f][i][j] = screen_char[f][i][j];
                 (user -> visible)[f][i][j] = 0;
+                (user -> weapon_type)[f][i][j] = 0;
                 if (screen_char[f][i][j] == '#') {
                     (user -> map_screen)[f][i][j] = -1;
                 }

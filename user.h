@@ -19,6 +19,7 @@ typedef struct {
     int visible[4][60][200];
     int enemy_health[4][60][200];
     int enemy_move[4][60][200];
+    int weapon_type[4][60][200];
     int end_x;
     int end_y;
     int end;
